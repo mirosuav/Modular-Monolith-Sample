@@ -1,16 +1,22 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
-using RiverBooks.Users.Infrastructure.Data;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using RiverBooks.Users.Domain;
+using RiverBooks.Users.Infrastructure.Data;
 using RiverBooks.Users.Interfaces;
-using RiverBooks.SharedKernel;
+using Serilog;
 
-namespace RiverBooks.Users;
+namespace RiverBooks.Users.Api;
 
-public static class UsersModuleServiceExtensions
+public static class ModuleBootstrap
 {
+  public static WebApplication MapBookModuleEndpoints(this WebApplication app)
+  {
+    app.MapGroup("/users").MapUserEndpoints();
+    return app;
+  }
+
   public static IServiceCollection AddUserModuleServices(
     this IServiceCollection services,
     ConfigurationManager config,
@@ -18,8 +24,7 @@ public static class UsersModuleServiceExtensions
     List<System.Reflection.Assembly> mediatRAssemblies)
   {
     string? connectionString = config.GetConnectionString("UsersConnectionString");
-    services.AddDbContext<UsersDbContext>(config =>
-      config.UseSqlServer(connectionString));
+    services.AddDbContext<UsersDbContext>(config => config.UseSqlServer(connectionString));
 
     services.AddIdentityCore<ApplicationUser>()
         .AddEntityFrameworkStores<UsersDbContext>();
@@ -27,9 +32,9 @@ public static class UsersModuleServiceExtensions
     // Add User Services
     services.AddScoped<IApplicationUserRepository, EfApplicationUserRepository>();
     services.AddScoped<IReadOnlyUserStreetAddressRepository, EfUserStreetAddressRepository>();
-    
+
     // if using MediatR in this module, add any assemblies that contain handlers to the list
-    mediatRAssemblies.Add(typeof(UsersModuleServiceExtensions).Assembly);
+    mediatRAssemblies.Add(typeof(Users.Domain.CartItem).Assembly);
 
     logger.Information("{Module} module services registered", "Users");
 

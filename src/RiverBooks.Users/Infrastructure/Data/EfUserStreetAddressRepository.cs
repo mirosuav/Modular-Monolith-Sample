@@ -4,7 +4,7 @@ using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.Infrastructure.Data;
 
-internal class EfUserStreetAddressRepository : IReadOnlyUserStreetAddressRepository
+public class EfUserStreetAddressRepository : IReadOnlyUserStreetAddressRepository
 {
   private readonly UsersDbContext _dbContext;
 

@@ -4,7 +4,7 @@ using RiverBooks.Users.Contracts;
 using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.Integrations;
-internal class UserAddressDetailsByIdQueryHandler : 
+public class UserAddressDetailsByIdQueryHandler : 
   IRequestHandler<UserAddressDetailsByIdQuery, Result<UserAddressDetails>>
 {
   private readonly IReadOnlyUserStreetAddressRepository _addressRepo;

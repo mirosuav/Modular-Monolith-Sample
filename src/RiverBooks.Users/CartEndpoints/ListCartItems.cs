@@ -7,7 +7,7 @@ using RiverBooks.Users.UseCases.Cart.ListItems;
 
 namespace RiverBooks.Users.CartEndpoints;
 
-internal class ListCartItems : EndpointWithoutRequest<CartResponse>
+public class ListCartItems : EndpointWithoutRequest<CartResponse>
 {
   private readonly IMediator _mediator;
 

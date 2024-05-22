@@ -5,7 +5,7 @@ using RiverBooks.Users.Interfaces;
 namespace RiverBooks.Users.Infrastructure.Data;
 
 
-internal class EfApplicationUserRepository : IApplicationUserRepository
+public class EfApplicationUserRepository : IApplicationUserRepository
 {
   private readonly UsersDbContext _dbContext;
 

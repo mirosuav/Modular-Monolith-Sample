@@ -5,7 +5,7 @@ using RiverBooks.Users.UseCases.User.GetById;
 
 namespace RiverBooks.Users.Integrations;
 
-internal class UserDetailsByIdHandler :
+public class UserDetailsByIdHandler :
   IRequestHandler<UserDetailsByIdQuery, Result<UserDetails>>
 {
   private readonly IMediator _mediator;

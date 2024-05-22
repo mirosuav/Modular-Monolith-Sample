@@ -4,7 +4,7 @@ using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.UseCases.User.GetById;
 
-internal class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, Result<UserDTO>>
+public class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, Result<UserDTO>>
 {
   private readonly IApplicationUserRepository _userRepository;
 

@@ -6,7 +6,7 @@ using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.UseCases.User.AddAddress;
 
-internal class AddAddressToUserHandler : IRequestHandler<AddAddressToUserCommand, Result>
+public class AddAddressToUserHandler : IRequestHandler<AddAddressToUserCommand, Result>
 {
   private readonly IApplicationUserRepository _userRepository;
   private readonly ILogger<AddAddressToUserHandler> _logger;

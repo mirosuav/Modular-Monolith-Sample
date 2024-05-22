@@ -1,4 +1,4 @@
-﻿namespace RiverBooks.Users.UserEndpoints;
+﻿namespace RiverBooks.Users.Contracts;
 
 internal record AddAddressRequest(string Street1,
                       string Street2,

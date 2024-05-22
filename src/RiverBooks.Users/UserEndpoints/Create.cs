@@ -5,7 +5,7 @@ using RiverBooks.Users.UseCases.User.Create;
 
 namespace RiverBooks.Users.UserEndpoints;
 
-internal class Create : Endpoint<CreateUserRequest>
+public class Create : Endpoint<CreateUserRequest>
 {
   private readonly IMediator _mediator;
 

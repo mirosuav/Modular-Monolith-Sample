@@ -7,7 +7,7 @@ using RiverBooks.Users.UseCases.User.ListAddresses;
 
 namespace RiverBooks.Users.UserEndpoints;
 
-internal class ListAddresses :
+public class ListAddresses :
   EndpointWithoutRequest<AddressListResponse>
 {
   private readonly IMediator _mediator;

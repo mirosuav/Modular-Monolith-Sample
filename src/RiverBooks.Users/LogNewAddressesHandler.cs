@@ -4,7 +4,7 @@ using RiverBooks.Users.Domain;
 
 namespace RiverBooks.Users;
 
-internal class LogNewAddressesHandler : INotificationHandler<AddressAddedEvent>
+public class LogNewAddressesHandler : INotificationHandler<AddressAddedEvent>
 {
   private readonly ILogger<LogNewAddressesHandler> _logger;
 

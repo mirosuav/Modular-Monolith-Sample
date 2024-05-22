@@ -10,8 +10,7 @@ public class UsersDbContext : IdentityDbContext
 {
   private readonly IDomainEventDispatcher? _dispatcher;
 
-  public UsersDbContext(DbContextOptions<UsersDbContext> options,
-    IDomainEventDispatcher? dispatcher)
+  public UsersDbContext(DbContextOptions<UsersDbContext> options, IDomainEventDispatcher? dispatcher)
     : base(options)
   {
     _dispatcher = dispatcher;

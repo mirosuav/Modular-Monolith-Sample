@@ -5,7 +5,7 @@ using RiverBooks.Users.Domain;
 
 namespace RiverBooks.Users.UserEndpoints;
 
-internal class Login : Endpoint<UserLoginRequest>
+public class Login : Endpoint<UserLoginRequest>
 {
   private readonly UserManager<ApplicationUser> _userManager;
 

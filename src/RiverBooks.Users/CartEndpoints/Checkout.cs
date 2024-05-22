@@ -9,7 +9,7 @@ namespace RiverBooks.Users.CartEndpoints;
 public record CheckoutRequest(Guid ShippingAddressId, Guid BillingAddressId);
 public record CheckoutResponse(Guid NewOrderId);
 
-internal class Checkout : Endpoint<CheckoutRequest, CheckoutResponse>
+public class Checkout : Endpoint<CheckoutRequest, CheckoutResponse>
 {
   private readonly IMediator _mediator;
 

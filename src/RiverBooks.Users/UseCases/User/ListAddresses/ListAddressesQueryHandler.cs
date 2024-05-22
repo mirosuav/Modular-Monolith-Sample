@@ -5,7 +5,7 @@ using RiverBooks.Users.UserEndpoints;
 
 namespace RiverBooks.Users.UseCases.User.ListAddresses;
 
-internal class ListAddressesQueryHandler : IRequestHandler<ListAddressesQuery, Result<List<UserAddressDto>>>
+public class ListAddressesQueryHandler : IRequestHandler<ListAddressesQuery, Result<List<UserAddressDto>>>
 {
   private readonly IApplicationUserRepository _userRepository;
 

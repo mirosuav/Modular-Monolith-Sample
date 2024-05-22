@@ -6,7 +6,7 @@ using RiverBooks.Users.Domain;
 
 namespace RiverBooks.Users.UseCases.User.Create;
 
-internal class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result>
+public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result>
 {
   private readonly UserManager<ApplicationUser> _userManager;
   private readonly IMediator _mediator;

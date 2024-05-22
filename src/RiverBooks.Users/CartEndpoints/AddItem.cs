@@ -7,7 +7,7 @@ using RiverBooks.Users.UseCases;
 using RiverBooks.Users.UseCases.Cart.AddItem;
 
 namespace RiverBooks.Users.CartEndpoints;
-internal class AddItem : Endpoint<AddCartItemRequest>
+public class AddItem : Endpoint<AddCartItemRequest>
 {
   private readonly IMediator _mediator;
 
