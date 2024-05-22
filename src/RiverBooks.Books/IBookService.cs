@@ -1,6 +1,5 @@
 ﻿namespace RiverBooks.Books;
-
-internal interface IBookService
+public interface IBookService
 {
   Task<List<BookDto>> ListBooksAsync();
   Task<BookDto> GetBookByIdAsync(Guid id);

@@ -1,4 +1,4 @@
-﻿namespace RiverBooks.Books.Endpoints;
+﻿namespace RiverBooks.Books.Contracts;
 
 public class CreateBookRequest
 {

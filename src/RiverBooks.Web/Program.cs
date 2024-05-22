@@ -10,6 +10,7 @@ using RiverBooks.SharedKernel;
 using RiverBooks.Users;
 using RiverBooks.Users.UseCases.Cart.AddItem;
 using Serilog;
+using RiverBooks.Books.Api;
 
 var logger = Log.Logger = new LoggerConfiguration()
   .Enrich.FromLogContext()
@@ -49,6 +50,9 @@ var app = builder.Build();
 
 app.UseAuthentication()
   .UseAuthorization();
+
+app.MapGroup("/books").MapBooksEndpoints();
+
 
 app.UseFastEndpoints()
   .UseSwaggerGen();

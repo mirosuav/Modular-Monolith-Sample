@@ -1,7 +1,7 @@
 ﻿using Ardalis.GuardClauses;
 
 namespace RiverBooks.Books;
-internal class Book
+public class Book
 {
   public Guid Id { get; private set; } = Guid.NewGuid();
   public string Title { get; private set; } = string.Empty;

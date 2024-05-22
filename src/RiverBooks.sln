@@ -25,25 +25,29 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.Books.Contracts"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OrderProcessing Module", "OrderProcessing Module", "{6C462A57-D3FE-43A3-8CD6-20072BA3615A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.OrderProcessing", "RiverBooks.OrderProcessing\RiverBooks.OrderProcessing.csproj", "{43218B36-248E-4616-B6EA-D095BE799078}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.OrderProcessing", "RiverBooks.OrderProcessing\RiverBooks.OrderProcessing.csproj", "{43218B36-248E-4616-B6EA-D095BE799078}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.OrderProcessing.Contracts", "OrderProcessing.Contracts\RiverBooks.OrderProcessing.Contracts.csproj", "{E54CFC67-0DC4-4978-8918-A09F9F65861D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.OrderProcessing.Contracts", "OrderProcessing.Contracts\RiverBooks.OrderProcessing.Contracts.csproj", "{E54CFC67-0DC4-4978-8918-A09F9F65861D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.Users.Contracts", "RiverBooks.Users.Contracts\RiverBooks.Users.Contracts.csproj", "{73BF6373-2BAC-4E20-A3E2-0A7C320A50B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.Users.Contracts", "RiverBooks.Users.Contracts\RiverBooks.Users.Contracts.csproj", "{73BF6373-2BAC-4E20-A3E2-0A7C320A50B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.SharedKernel", "RiverBooks.SharedKernel\RiverBooks.SharedKernel.csproj", "{83CFD5FC-005D-46ED-87E2-BC2542E2DBA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.SharedKernel", "RiverBooks.SharedKernel\RiverBooks.SharedKernel.csproj", "{83CFD5FC-005D-46ED-87E2-BC2542E2DBA4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.OrderProcessing.Tests", "RiverBooks.OrderProcessing.Tests\RiverBooks.OrderProcessing.Tests.csproj", "{679F1B0B-C35D-445A-96E7-936877C5D545}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.OrderProcessing.Tests", "RiverBooks.OrderProcessing.Tests\RiverBooks.OrderProcessing.Tests.csproj", "{679F1B0B-C35D-445A-96E7-936877C5D545}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmailSending Module", "EmailSending Module", "{6E5A27C3-DC35-482A-8B36-861D4FD6321C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.EmailSending", "RiverBooks.EmailSending\RiverBooks.EmailSending.csproj", "{861C05E3-60E3-43F0-A63E-A284ED8C44E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.EmailSending", "RiverBooks.EmailSending\RiverBooks.EmailSending.csproj", "{861C05E3-60E3-43F0-A63E-A284ED8C44E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.EmailSending.Contracts", "RiverBooks.EmailSending.Contracts\RiverBooks.EmailSending.Contracts.csproj", "{DB5A7E69-9D91-4D7B-9046-11B4DE432314}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.EmailSending.Contracts", "RiverBooks.EmailSending.Contracts\RiverBooks.EmailSending.Contracts.csproj", "{DB5A7E69-9D91-4D7B-9046-11B4DE432314}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reporting Module", "Reporting Module", "{ED16DF5F-8BD0-42E4-ABE0-C46D506A7101}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.Reporting", "RiverBooks.Reporting\RiverBooks.Reporting.csproj", "{126F9F18-ECCE-4395-BAEF-908C6DE9ACDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.Reporting", "RiverBooks.Reporting\RiverBooks.Reporting.csproj", "{126F9F18-ECCE-4395-BAEF-908C6DE9ACDF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.Books.Api", "RiverBooks.Books.Api\RiverBooks.Books.Api.csproj", "{1D9FC296-5290-4770-ABEA-108A1E469A8B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.Users.Api", "RiverBooks.Users.Api\RiverBooks.Users.Api.csproj", "{5DCBDD6B-A052-4EB8-AE29-58FE26774FF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +107,14 @@ Global
 		{126F9F18-ECCE-4395-BAEF-908C6DE9ACDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{126F9F18-ECCE-4395-BAEF-908C6DE9ACDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{126F9F18-ECCE-4395-BAEF-908C6DE9ACDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D9FC296-5290-4770-ABEA-108A1E469A8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D9FC296-5290-4770-ABEA-108A1E469A8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D9FC296-5290-4770-ABEA-108A1E469A8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D9FC296-5290-4770-ABEA-108A1E469A8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DCBDD6B-A052-4EB8-AE29-58FE26774FF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DCBDD6B-A052-4EB8-AE29-58FE26774FF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DCBDD6B-A052-4EB8-AE29-58FE26774FF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DCBDD6B-A052-4EB8-AE29-58FE26774FF7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -119,6 +131,8 @@ Global
 		{861C05E3-60E3-43F0-A63E-A284ED8C44E1} = {6E5A27C3-DC35-482A-8B36-861D4FD6321C}
 		{DB5A7E69-9D91-4D7B-9046-11B4DE432314} = {6E5A27C3-DC35-482A-8B36-861D4FD6321C}
 		{126F9F18-ECCE-4395-BAEF-908C6DE9ACDF} = {ED16DF5F-8BD0-42E4-ABE0-C46D506A7101}
+		{1D9FC296-5290-4770-ABEA-108A1E469A8B} = {07C528A1-B512-45B0-A7F4-5ADC2C39A30C}
+		{5DCBDD6B-A052-4EB8-AE29-58FE26774FF7} = {24E68DB3-D0A7-428C-8404-6B6F9E8A242F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9E0CD6BB-A43C-44EE-89D7-6B9407FC3409}
