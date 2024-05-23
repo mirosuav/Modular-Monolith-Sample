@@ -1,6 +1,6 @@
 ﻿using Ardalis.Result;
 using MediatR;
-using RiverBooks.Users.UserEndpoints;
+using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.Users.UseCases.User.ListAddresses;
 public record ListAddressesQuery(string EmailAddress) :

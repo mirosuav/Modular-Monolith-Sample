@@ -1,17 +1,16 @@
-﻿using System.Reflection;
+﻿
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
 using RiverBooks.Books;
-using RiverBooks.EmailSending;
-using RiverBooks.OrderProcessing;
+using RiverBooks.EmailSending.Api;
+using RiverBooks.OrderProcessing.Api;
 using RiverBooks.Reporting;
 using RiverBooks.SharedKernel;
-using RiverBooks.Users;
+using RiverBooks.Users.Api;
 using RiverBooks.Users.UseCases.Cart.AddItem;
 using Serilog;
-using RiverBooks.Books.Api;
-using RiverBooks.Users.Api;
+using System.Reflection;
 
 var logger = Log.Logger = new LoggerConfiguration()
   .Enrich.FromLogContext()
@@ -22,8 +21,7 @@ logger.Information("Starting web host");
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog((_, config) => 
-  config.ReadFrom.Configuration(builder.Configuration));
+builder.Host.UseSerilog((_, config) => config.ReadFrom.Configuration(builder.Configuration));
 
 builder.Services.AddFastEndpoints()
   .AddJWTBearerAuth(builder.Configuration["Auth:JwtSecret"]!)
@@ -47,16 +45,20 @@ builder.Services.AddValidatorsFromAssemblyContaining<AddItemToCartCommandValidat
 // Add MediatR Domain Event Dispatcher
 builder.Services.AddScoped<IDomainEventDispatcher, MediatRDomainEventDispatcher>();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserClaimsProvider, UserClaimsProvider>();
+
 var app = builder.Build();
 
 app.UseAuthentication()
   .UseAuthorization();
 
 app.MapBookModuleEndpoints();
+app.MapUserModuleEndpoints();
+app.MapOrderProcessingModuleEndpoints();
+app.MapEmailSendingModuleEndpoints();
 
-
-app.UseFastEndpoints()
-  .UseSwaggerGen();
+app.UseOpenApi();
 
 app.Run();
 

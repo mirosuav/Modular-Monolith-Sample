@@ -1,4 +1,6 @@
-﻿namespace RiverBooks.Users.UserEndpoints;
+﻿using RiverBooks.Users.Contracts;
+
+namespace RiverBooks.Users.Contracts;
 
 public class AddressListResponse
 {

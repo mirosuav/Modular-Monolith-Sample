@@ -1,8 +1,9 @@
 ﻿using Ardalis.Result;
 using MediatR;
+using RiverBooks.OrderProcessing.Contracts;
 using RiverBooks.OrderProcessing.Interfaces;
 
-namespace RiverBooks.OrderProcessing.Endpoints;
+namespace RiverBooks.OrderProcessing.ListOrdersForUser;
 
 internal class ListOrdersForUserQueryHandler :
   IRequestHandler<ListOrdersForUserQuery,

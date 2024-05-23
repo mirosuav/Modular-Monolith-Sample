@@ -1,4 +1,6 @@
-﻿namespace RiverBooks.OrderProcessing.Endpoints;
+﻿using RiverBooks.OrderProcessing.Contracts;
+
+namespace RiverBooks.OrderProcessing.Endpoints;
 
 public class ListOrdersForUserResponse
 {

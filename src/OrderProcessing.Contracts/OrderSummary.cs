@@ -1,4 +1,4 @@
-﻿namespace RiverBooks.OrderProcessing.Endpoints;
+﻿namespace RiverBooks.OrderProcessing.Contracts;
 
 public class OrderSummary
 {

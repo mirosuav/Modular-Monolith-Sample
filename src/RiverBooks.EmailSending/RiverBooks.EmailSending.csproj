@@ -1,16 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <PackageReference Include="FastEndpoints" Version="5.21.2" />
-    <PackageReference Include="FastEndpoints.Security" Version="5.21.2" />
-    <PackageReference Include="MailKit" Version="4.2.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
-    <PackageReference Include="MongoDB.Driver" Version="2.23.1" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\RiverBooks.EmailSending.Contracts\RiverBooks.EmailSending.Contracts.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<InternalsVisibleTo Include="RiverBooks.EmailSending.Api" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FastEndpoints" Version="5.21.2" />
+		<PackageReference Include="FastEndpoints.Security" Version="5.21.2" />
+		<PackageReference Include="MailKit" Version="4.2.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+		<PackageReference Include="MongoDB.Driver" Version="2.23.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\RiverBooks.EmailSending.Contracts\RiverBooks.EmailSending.Contracts.csproj" />
+	</ItemGroup>
 
 </Project>

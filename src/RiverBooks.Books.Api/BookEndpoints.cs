@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using RiverBooks.Books.Contracts;
+using System.Net;
 
 namespace RiverBooks.Books.Api;
 
@@ -11,50 +13,60 @@ internal static class BookEndpoints
 {
     internal static RouteGroupBuilder MapBookEndpoints(this RouteGroupBuilder group)
     {
-        group.MapGet("/", static async (IBookService bookService) =>
-        {
-            var books = await bookService.ListBooksAsync();
-            return new ListBooksResponse() { Books = books };
-        })
-        .Produces<Ok<ListBooksResponse>>();
-
-        group.MapGet("/{bookId}", static async Task<IResult> (Guid bookId, IBookService bookService) =>
-        {
-            return await bookService.GetBookByIdAsync(bookId) is BookDto book
-               ? TypedResults.Ok(book)
-               : TypedResults.NotFound();
-        })
-        .Produces<Ok<BookDto>>()
-        .Produces<NotFound>();
-
-        group.MapPost("/", static async (CreateBookRequest request, IBookService _bookService) =>
-        {
-            var newBookDto = new BookDto(request.Id ?? Guid.NewGuid(), //TODO don't create Guid in code
-            request.Title,
-            request.Author,
-            request.Price);
-
-            await _bookService.CreateBookAsync(newBookDto);
-
-            return Results.Created($"{newBookDto.Id}", newBookDto);
-        });
-
-        group.MapPost("/{bookId}/pricehistory", static async (
-            Guid bookId,
-            [FromBody] decimal newPrice,
-            IBookService _bookService) =>
-        {
-            await _bookService.UpdateBookPriceAsync(bookId, newPrice);
-            return Results.NoContent();
-        });
-
-        group.MapDelete("/{bookId}", static async (Guid bookId, IBookService _bookService) =>
-        {
-            // Todo: check if exists
-            await _bookService.DeleteBookAsync(bookId);
-            return Results.NoContent();
-        });
+        group.MapGet("/", ListBooksAsync);
+        group.MapGet("/{bookId}", GetBookAsync);
+        group.MapPost("/", CreateBookAsync);
+        group.MapPost("/{bookId}/pricehistory", UpdateBookPriceAsync);
+        group.MapDelete("/{bookId}", DeleteBookAsync);
 
         return group;
+    }
+
+    internal static async Task<Results<NoContent, NotFound>> DeleteBookAsync(
+            Guid bookId,
+            IBookService _bookService)
+    {
+        // Todo: check if exists
+        await _bookService.DeleteBookAsync(bookId);
+        return TypedResults.NoContent();
+    }
+
+    internal static async Task<Results<NoContent, BadRequest>> UpdateBookPriceAsync(
+            Guid bookId,
+            [FromBody] decimal newPrice,
+            IBookService _bookService)
+    {
+        await _bookService.UpdateBookPriceAsync(bookId, newPrice);
+        return TypedResults.NoContent();
+    }
+
+    internal static async Task<Results<Created<BookDto>, BadRequest>> CreateBookAsync(
+        CreateBookRequest request,
+        IBookService bookService)
+    {
+        var newBookDto = new BookDto(request.Id ?? Guid.NewGuid(), //TODO don't create Guid in code
+        request.Title,
+        request.Author,
+        request.Price);
+
+        await bookService.CreateBookAsync(newBookDto);
+        return TypedResults.Created($"{newBookDto.Id}", newBookDto);
+    }
+
+    internal static async Task<Results<Ok<BookDto>, NotFound>> GetBookAsync(
+        Guid bookId,
+        IBookService bookService)
+    {
+        return await bookService.GetBookByIdAsync(bookId) is BookDto book
+           ? TypedResults.Ok(book)
+           : TypedResults.NotFound();
+    }
+
+    internal static async Task<Results<Ok<ListBooksResponse>, BadRequest>> ListBooksAsync(
+        IBookService bookService,
+        CancellationToken cancellationToken)
+    {
+        var books = await bookService.ListBooksAsync();
+        return TypedResults.Ok(new ListBooksResponse() { Books = books });
     }
 }

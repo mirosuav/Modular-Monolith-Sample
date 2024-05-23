@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,33 +12,35 @@ namespace RiverBooks.Users.Api;
 
 public static class ModuleBootstrap
 {
-  public static WebApplication MapBookModuleEndpoints(this WebApplication app)
-  {
-    app.MapGroup("/users").MapUserEndpoints();
-    return app;
-  }
+    public static IEndpointRouteBuilder MapUserModuleEndpoints(this IEndpointRouteBuilder app)
+    {
+        app.MapGroup("/users").MapUserEndpoints();
+        app.MapGroup("/cart").MapCartEndpoints();
 
-  public static IServiceCollection AddUserModuleServices(
-    this IServiceCollection services,
-    ConfigurationManager config,
-    ILogger logger,
-    List<System.Reflection.Assembly> mediatRAssemblies)
-  {
-    string? connectionString = config.GetConnectionString("UsersConnectionString");
-    services.AddDbContext<UsersDbContext>(config => config.UseSqlServer(connectionString));
+        return app;
+    }
 
-    services.AddIdentityCore<ApplicationUser>()
-        .AddEntityFrameworkStores<UsersDbContext>();
+    public static IServiceCollection AddUserModuleServices(
+      this IServiceCollection services,
+      ConfigurationManager config,
+      ILogger logger,
+      List<System.Reflection.Assembly> mediatRAssemblies)
+    {
+        string? connectionString = config.GetConnectionString("UsersConnectionString");
+        services.AddDbContext<UsersDbContext>(config => config.UseSqlServer(connectionString));
 
-    // Add User Services
-    services.AddScoped<IApplicationUserRepository, EfApplicationUserRepository>();
-    services.AddScoped<IReadOnlyUserStreetAddressRepository, EfUserStreetAddressRepository>();
+        services.AddIdentityCore<ApplicationUser>()
+            .AddEntityFrameworkStores<UsersDbContext>();
 
-    // if using MediatR in this module, add any assemblies that contain handlers to the list
-    mediatRAssemblies.Add(typeof(Users.Domain.CartItem).Assembly);
+        // Add User Services
+        services.AddScoped<IApplicationUserRepository, EfApplicationUserRepository>();
+        services.AddScoped<IReadOnlyUserStreetAddressRepository, EfUserStreetAddressRepository>();
 
-    logger.Information("{Module} module services registered", "Users");
+        // if using MediatR in this module, add any assemblies that contain handlers to the list
+        mediatRAssemblies.Add(typeof(Users.Domain.CartItem).Assembly);
 
-    return services;
-  }
+        logger.Information("{Module} module services registered", "Users");
+
+        return services;
+    }
 }

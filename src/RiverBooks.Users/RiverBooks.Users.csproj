@@ -1,5 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="RiverBooks.Users.Api" />
+	</ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="FastEndpoints" Version="5.22.0" />
     <PackageReference Include="FastEndpoints.Security" Version="5.22.0" />
