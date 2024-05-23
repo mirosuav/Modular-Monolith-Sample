@@ -1,18 +1,20 @@
 <Project>
-  <PropertyGroup>
+	<PropertyGroup>
 
-    <LangVersion>latest</LangVersion>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
-    <PackageReference Include="Ardalis.GuardClauses" Version="4.4.0" />
-    <PackageReference Include="Ardalis.Result" Version="7.2.0" />
-    <PackageReference Include="Ardalis.Result.AspNetCore" Version="7.2.0" />
-    <PackageReference Include="MediatR" Version="12.2.0" />
-  </ItemGroup>
+		<LangVersion>latest</LangVersion>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\RiverBooks.SharedKernel\RiverBooks.SharedKernel.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+		<PackageReference Include="Ardalis.GuardClauses" Version="4.4.0" />
+		<PackageReference Include="MediatR" Version="12.2.0" />
+	</ItemGroup>
 </Project>

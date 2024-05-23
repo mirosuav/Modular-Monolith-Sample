@@ -1,6 +1,6 @@
-﻿using Ardalis.Result;
-using MediatR;
+﻿using MediatR;
 using OrderProcessing.Contracts;
+using RiverBooks.SharedKernel.Helpers;
 using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.UseCases.Cart.Checkout;
@@ -24,7 +24,7 @@ public class CheckoutCartHandler : IRequestHandler<CheckoutCartCommand,
 
     if (user is null)
     {
-      return Result.Unauthorized();
+      return Error.UserNotAauthorized;
     }
 
     var items = user.CartItems.Select(item =>
