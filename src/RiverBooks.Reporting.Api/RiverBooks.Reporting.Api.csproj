@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\RiverBooks.Reporting.Contracts\RiverBooks.Reporting.Contracts.csproj" />
+		<ProjectReference Include="..\RiverBooks.Reporting\RiverBooks.Reporting.csproj" />
+	</ItemGroup>
+
+</Project>

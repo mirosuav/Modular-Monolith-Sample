@@ -1,47 +1,47 @@
-﻿using Ardalis.GuardClauses;
+﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Reflection;
-using MediatR;
-using Microsoft.Extensions.Logging;
 
 namespace RiverBooks.SharedKernel;
 
-public class LoggingBehavior<TRequest, TResponse> : 
+public class LoggingBehavior<TRequest, TResponse> :
   IPipelineBehavior<TRequest, TResponse>
   where TRequest : IRequest<TResponse>
 {
-  private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
+    private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
 
-  public LoggingBehavior(ILogger<LoggingBehavior<TRequest, TResponse>> logger)
-  {
-    _logger = logger;
-  }
-
-  public async Task<TResponse> Handle(TRequest request, 
-    RequestHandlerDelegate<TResponse> next, 
-    CancellationToken ct)
-  {
-    Guard.Against.Null(request);
-    if (_logger.IsEnabled(LogLevel.Information))
+    public LoggingBehavior(ILogger<LoggingBehavior<TRequest, TResponse>> logger)
     {
-      _logger.LogInformation("Handling {RequestName}", typeof(TRequest).Name);
-
-      // Reflection! Could be a performance concern
-      Type myType = request.GetType();
-      IList<PropertyInfo> props = new List<PropertyInfo>(myType.GetProperties());
-      foreach (PropertyInfo prop in props)
-      {
-        object? propValue = prop?.GetValue(request, null);
-        _logger.LogInformation("Property {Property} : {@Value}", prop?.Name, propValue);
-      }
+        _logger = logger;
     }
 
-    var sw = Stopwatch.StartNew();
+    public async Task<TResponse> Handle(TRequest request,
+      RequestHandlerDelegate<TResponse> next,
+      CancellationToken ct)
+    {
+        ArgumentNullException.ThrowIfNull(request);
 
-    var response = await next();
+        if (_logger.IsEnabled(LogLevel.Debug))
+        {
+            _logger.LogInformation("Handling {RequestName}", typeof(TRequest).Name);
 
-    _logger.LogInformation("Handled {RequestName} with {Response} in {ms} ms", typeof(TRequest).Name, response, sw.ElapsedMilliseconds);
-    sw.Stop();
-    return response;
-  }
+            // Reflection! Could be a performance concern
+            Type myType = request.GetType();
+            IList<PropertyInfo> props = new List<PropertyInfo>(myType.GetProperties());
+            foreach (PropertyInfo prop in props)
+            {
+                object? propValue = prop?.GetValue(request, null);
+                _logger.LogInformation("Property {Property} : {@Value}", prop?.Name, propValue);
+            }
+        }
+
+        var sw = Stopwatch.StartNew();
+
+        var response = await next();
+
+        _logger.LogInformation("Handled {RequestName} with {Response} in {ms} ms", typeof(TRequest).Name, response, sw.ElapsedMilliseconds);
+        sw.Stop();
+        return response;
+    }
 }

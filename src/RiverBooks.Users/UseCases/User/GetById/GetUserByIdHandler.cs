@@ -1,28 +1,28 @@
-﻿using Ardalis.Result;
-using MediatR;
+﻿using MediatR;
+using RiverBooks.SharedKernel.Helpers;
 using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.UseCases.User.GetById;
 
-public class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, Result<UserDTO>>
+public class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, ResultOr<UserDTO>>
 {
-  private readonly IApplicationUserRepository _userRepository;
+    private readonly IApplicationUserRepository _userRepository;
 
-  public GetUserByIdHandler(IApplicationUserRepository userRepository)
-  {
-    _userRepository = userRepository;
-  }
-
-  public async Task<Result<UserDTO>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
-  {
-    var user = await _userRepository.GetUserByIdAsync(request.UserId);
-
-    if (user is null)
+    public GetUserByIdHandler(IApplicationUserRepository userRepository)
     {
-      return Result.NotFound();
+        _userRepository = userRepository;
     }
 
-    return new UserDTO(Guid.Parse(user!.Id), user.Email!);
-  }
+    public async Task<ResultOr<UserDTO>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+    {
+        var user = await _userRepository.GetUserByIdAsync(request.UserId);
+
+        if (user is null)
+        {
+            return Error.CreateNotFound("No such user");
+        }
+
+        return new UserDTO(Guid.Parse(user!.Id), user.Email!);
+    }
 }
 

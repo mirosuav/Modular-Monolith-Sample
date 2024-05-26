@@ -36,7 +36,7 @@ public static class ModuleBootstrap
           DefaultSendEmailsFromOutboxService>();
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list
-        mediatRAssemblies.Add(typeof(EmailSendingBackgroundService).Assembly);
+        mediatRAssemblies.Add(typeof(Marker).Assembly);
 
         // Add BackgroundWorker
         services.AddHostedService<EmailSendingBackgroundService>();

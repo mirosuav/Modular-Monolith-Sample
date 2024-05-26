@@ -37,7 +37,7 @@ public static class ModuleBootstrap
         services.AddScoped<IReadOnlyUserStreetAddressRepository, EfUserStreetAddressRepository>();
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list
-        mediatRAssemblies.Add(typeof(Users.Domain.CartItem).Assembly);
+        mediatRAssemblies.Add(typeof(Marker).Assembly);
 
         logger.Information("{Module} module services registered", "Users");
 

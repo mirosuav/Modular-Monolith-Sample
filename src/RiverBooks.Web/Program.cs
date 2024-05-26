@@ -2,13 +2,10 @@
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
-using RiverBooks.Books;
-using RiverBooks.EmailSending.Api;
-using RiverBooks.OrderProcessing.Api;
-using RiverBooks.Reporting;
+
 using RiverBooks.SharedKernel;
-using RiverBooks.Users.Api;
 using RiverBooks.Users.UseCases.Cart.AddItem;
+using RiverBooks.Web;
 using Serilog;
 using System.Reflection;
 
@@ -29,12 +26,8 @@ builder.Services.AddFastEndpoints()
   .SwaggerDocument();
 
 // Add Module Services
-List<Assembly> mediatRAssemblies = [typeof(Program).Assembly];
-builder.Services.AddBookModuleServices(builder.Configuration, logger, mediatRAssemblies);
-builder.Services.AddEmailSendingModuleServices(builder.Configuration, logger, mediatRAssemblies);
-builder.Services.AddReportingModuleServices(builder.Configuration, logger, mediatRAssemblies);
-builder.Services.AddOrderProcessingModuleServices(builder.Configuration, logger, mediatRAssemblies);
-builder.Services.AddUserModuleServices(builder.Configuration, logger, mediatRAssemblies);
+List<Assembly> mediatRAssemblies = [];
+builder.Services.AddModules(mediatRAssemblies, builder.Configuration, logger);
 
 // Set up MediatR
 builder.Services.AddMediatR(cfg =>
@@ -53,13 +46,9 @@ var app = builder.Build();
 app.UseAuthentication()
   .UseAuthorization();
 
-app.MapBookModuleEndpoints();
-app.MapUserModuleEndpoints();
-app.MapOrderProcessingModuleEndpoints();
-app.MapEmailSendingModuleEndpoints();
+app.MapModulesEndpoints();
 
 app.UseOpenApi();
 
 app.Run();
 
-public partial class Program { } // needed for tests

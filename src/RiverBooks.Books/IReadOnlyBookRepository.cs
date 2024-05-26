@@ -1,7 +1,7 @@
 ﻿namespace RiverBooks.Books;
 
-public interface IReadOnlyBookRepository
+internal interface IReadOnlyBookRepository
 {
-  Task<Book?> GetByIdAsync(Guid id);
-  Task<List<Book>> ListAsync();
+    Task<Book?> GetByIdAsync(Guid id);
+    Task<List<Book>> ListAsync();
 }

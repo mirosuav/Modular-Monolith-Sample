@@ -1,7 +1,7 @@
-﻿using Ardalis.Result;
-using MediatR;
+﻿using MediatR;
+using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.Users.Contracts;
 
 public record UserDetailsByIdQuery(Guid UserId) :
-  IRequest<Result<UserDetails>>;
+  IRequest<ResultOr<UserDetails>>;

@@ -1,6 +1,8 @@
-﻿namespace RiverBooks.Reporting.ReportEndpoints;
+﻿using RiverBooks.Reporting.Contracts;
+
+namespace RiverBooks.Reporting;
 
 internal interface ITopSellingBooksReportService
 {
-  TopBooksByMonthReport ReachInSqlQuery(int month, int year);
+    TopBooksByMonthReport ReachInSqlQuery(int month, int year);
 }

@@ -1,61 +1,61 @@
 ﻿
 namespace RiverBooks.Books;
 
-public class BookService : IBookService
+internal class BookService : IBookService
 {
-  private readonly IBookRepository _bookRepository;
+    private readonly IBookRepository _bookRepository;
 
-  public BookService(IBookRepository bookRepository)
-  {
-    _bookRepository = bookRepository;
-  }
-
-  public async Task CreateBookAsync(BookDto newBook)
-  {
-    var book = new Book(newBook.Id, newBook.Title, newBook.Author, newBook.Price);
-
-    await _bookRepository.AddAsync(book);
-    await _bookRepository.SaveChangesAsync();
-  }
-
-  public async Task DeleteBookAsync(Guid id)
-  {
-    var bookToDelete = await _bookRepository.GetByIdAsync(id);
-
-    if (bookToDelete is not null)
+    public BookService(IBookRepository bookRepository)
     {
-      await _bookRepository.DeleteAsync(bookToDelete);
-      await _bookRepository.SaveChangesAsync();
+        _bookRepository = bookRepository;
     }
-  }
 
-  public async Task<BookDto> GetBookByIdAsync(Guid id)
-  {
-    var book = await _bookRepository.GetByIdAsync(id);
+    public async Task CreateBookAsync(BookDto newBook)
+    {
+        var book = new Book(newBook.Id, newBook.Title, newBook.Author, newBook.Price);
 
-    // TODO: handle not found case
+        await _bookRepository.AddAsync(book);
+        await _bookRepository.SaveChangesAsync();
+    }
 
-    return new BookDto(book!.Id, book.Title, book.Author, book.Price);
-  }
+    public async Task DeleteBookAsync(Guid id)
+    {
+        var bookToDelete = await _bookRepository.GetByIdAsync(id);
 
-  public async Task<List<BookDto>> ListBooksAsync()
-  {
-    var books = (await _bookRepository.ListAsync())
-      .Select(book => new BookDto(book.Id, book.Title, book.Author, book.Price))
-      .ToList();
+        if (bookToDelete is not null)
+        {
+            await _bookRepository.DeleteAsync(bookToDelete);
+            await _bookRepository.SaveChangesAsync();
+        }
+    }
 
-    return books;
-  }
+    public async Task<BookDto> GetBookByIdAsync(Guid id)
+    {
+        var book = await _bookRepository.GetByIdAsync(id);
 
-  public async Task UpdateBookPriceAsync(Guid bookId, decimal newPrice)
-  {
-    // validate the price
+        // TODO: handle not found case
 
-    var book = await _bookRepository.GetByIdAsync(bookId);
+        return new BookDto(book!.Id, book.Title, book.Author, book.Price);
+    }
 
-    // handle not found case
+    public async Task<List<BookDto>> ListBooksAsync()
+    {
+        var books = (await _bookRepository.ListAsync())
+          .Select(book => new BookDto(book.Id, book.Title, book.Author, book.Price))
+          .ToList();
 
-    book!.UpdatePrice(newPrice);
-    await _bookRepository.SaveChangesAsync();
-  }
+        return books;
+    }
+
+    public async Task UpdateBookPriceAsync(Guid bookId, decimal newPrice)
+    {
+        // validate the price
+
+        var book = await _bookRepository.GetByIdAsync(bookId);
+
+        // handle not found case
+
+        book!.UpdatePrice(newPrice);
+        await _bookRepository.SaveChangesAsync();
+    }
 }

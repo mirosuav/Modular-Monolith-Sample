@@ -1,11 +1,9 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using RiverBooks.Books.Contracts;
-using System.Net;
 
 namespace RiverBooks.Books.Api;
 
@@ -13,34 +11,38 @@ internal static class BookEndpoints
 {
     internal static RouteGroupBuilder MapBookEndpoints(this RouteGroupBuilder group)
     {
-        group.MapGet("/", ListBooksAsync);
-        group.MapGet("/{bookId}", GetBookAsync);
-        group.MapPost("/", CreateBookAsync);
-        group.MapPost("/{bookId}/pricehistory", UpdateBookPriceAsync);
-        group.MapDelete("/{bookId}", DeleteBookAsync);
+        group.MapGet("/", ListBooksAsync)
+            .Produces<Ok<ListBooksResponse>>();
+
+        group.MapGet("/{bookId}", GetBookAsync)
+            .Produces<Ok<BookDto>>()
+            .Produces<NotFound>();
+
+        group.MapPost("/", CreateBookAsync)
+            .Produces<Created<BookDto>>()
+            .Produces<BadRequest>();
+
+        group.MapPost("/{bookId}/pricehistory", UpdateBookPriceAsync)
+            .Produces<NoContent>()
+            .Produces<BadRequest>()
+            .Produces<NotFound>();
+
+        group.MapDelete("/{bookId}", DeleteBookAsync)
+            .Produces<NoContent>()
+            .Produces<BadRequest>();
 
         return group;
     }
 
-    internal static async Task<Results<NoContent, NotFound>> DeleteBookAsync(
-            Guid bookId,
-            IBookService _bookService)
+    internal static async Task<IResult> ListBooksAsync(
+        IBookService bookService,
+        CancellationToken cancellationToken)
     {
-        // Todo: check if exists
-        await _bookService.DeleteBookAsync(bookId);
-        return TypedResults.NoContent();
+        var books = await bookService.ListBooksAsync();
+        return TypedResults.Ok(new ListBooksResponse() { Books = books });
     }
 
-    internal static async Task<Results<NoContent, BadRequest>> UpdateBookPriceAsync(
-            Guid bookId,
-            [FromBody] decimal newPrice,
-            IBookService _bookService)
-    {
-        await _bookService.UpdateBookPriceAsync(bookId, newPrice);
-        return TypedResults.NoContent();
-    }
-
-    internal static async Task<Results<Created<BookDto>, BadRequest>> CreateBookAsync(
+    internal static async Task<IResult> CreateBookAsync(
         CreateBookRequest request,
         IBookService bookService)
     {
@@ -62,11 +64,22 @@ internal static class BookEndpoints
            : TypedResults.NotFound();
     }
 
-    internal static async Task<Results<Ok<ListBooksResponse>, BadRequest>> ListBooksAsync(
-        IBookService bookService,
-        CancellationToken cancellationToken)
+    internal static async Task<IResult> UpdateBookPriceAsync(
+            Guid bookId,
+            [FromBody] decimal newPrice,
+            IBookService _bookService)
     {
-        var books = await bookService.ListBooksAsync();
-        return TypedResults.Ok(new ListBooksResponse() { Books = books });
+        // Todo: check if exists
+        await _bookService.UpdateBookPriceAsync(bookId, newPrice);
+        return TypedResults.NoContent();
+    }
+
+    internal static async Task<IResult> DeleteBookAsync(
+            Guid bookId,
+            IBookService _bookService)
+    {
+        // Todo: check if exists
+        await _bookService.DeleteBookAsync(bookId);
+        return TypedResults.NoContent();
     }
 }

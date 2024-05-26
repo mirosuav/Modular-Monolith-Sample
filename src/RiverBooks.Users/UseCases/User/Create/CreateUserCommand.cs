@@ -1,5 +1,5 @@
-﻿using Ardalis.Result;
-using MediatR;
+﻿using MediatR;
+using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.Users.UseCases.User.Create;
-public record CreateUserCommand(string Email, string Password) : IRequest<Result>;
+public record CreateUserCommand(string Email, string Password) : IRequest<ResultOr>;

@@ -1,4 +1,4 @@
-﻿namespace RiverBooks.Reporting.ReportEndpoints;
+﻿namespace RiverBooks.Reporting.Contracts;
 
 public record BookSalesResult(Guid BookId,
                               string Title,
@@ -6,7 +6,7 @@ public record BookSalesResult(Guid BookId,
                               int Units,
                               decimal Sales)
 {
-  private BookSalesResult() : this(default!, default!, default!, default!, default!) { }
+    private BookSalesResult() : this(default!, default!, default!, default!, default!) { }
 }
 
 

@@ -1,6 +1,5 @@
-﻿using System.Net;
-using Ardalis.Result;
-using MediatR;
+﻿using MediatR;
+using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.Users.UseCases.User.AddAddress;
 public record AddAddressToUserCommand(string EmailAddress,
@@ -9,4 +8,4 @@ public record AddAddressToUserCommand(string EmailAddress,
                       string City,
                       string State,
                       string PostalCode,
-                      string Country) : IRequest<Result>;
+                      string Country) : IRequest<ResultOr>;

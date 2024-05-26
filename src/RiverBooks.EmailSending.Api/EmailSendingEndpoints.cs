@@ -9,7 +9,9 @@ internal static class EmailSendingEndpoints
 {
     internal static RouteGroupBuilder MapEmailSendingEndpoints(this RouteGroupBuilder group)
     {
-        group.MapGet("", ListEmailsAsync).AllowAnonymous();
+        group.MapGet("", ListEmailsAsync)
+            .Produces<Ok>()
+            .AllowAnonymous();
 
         return group;
     }

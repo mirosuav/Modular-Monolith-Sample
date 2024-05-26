@@ -1,32 +1,32 @@
-﻿using Ardalis.Result;
-using MediatR;
+﻿using MediatR;
 using RiverBooks.Books.Contracts;
+using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.Books.Integrations;
 
 internal class BookDetailsQueryHandler :
-  IRequestHandler<BookDetailsQuery, Result<BookDetailsResponse>>
+  IRequestHandler<BookDetailsQuery, ResultOr<BookDetailsResponse>>
 {
-  private readonly IBookService _bookService;
+    private readonly IBookService _bookService;
 
-  public BookDetailsQueryHandler(IBookService bookService)
-  {
-    _bookService = bookService;
-  }
-
-  public async Task<Result<BookDetailsResponse>> Handle(BookDetailsQuery request,
-    CancellationToken cancellationToken)
-  {
-    var book = await _bookService.GetBookByIdAsync(request.BookId);
-
-    if (book is null)
+    public BookDetailsQueryHandler(IBookService bookService)
     {
-      return Result.NotFound();
+        _bookService = bookService;
     }
 
-    var response = new BookDetailsResponse(book.Id, book.Title, book.Author,
-                              book.Price);
+    public async Task<ResultOr<BookDetailsResponse>> Handle(BookDetailsQuery request,
+      CancellationToken cancellationToken)
+    {
+        var book = await _bookService.GetBookByIdAsync(request.BookId);
 
-    return response;
-  }
+        if (book is null)
+        {
+            return Error.CreateNotFound("Book not found");
+        }
+
+        var response = new BookDetailsResponse(book.Id, book.Title, book.Author,
+                                  book.Price);
+
+        return response;
+    }
 }

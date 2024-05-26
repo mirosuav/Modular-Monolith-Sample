@@ -1,12 +1,12 @@
-﻿using Ardalis.Result;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
-using RiverBooks.OrderProcessing.Contracts;
 using RiverBooks.OrderProcessing.Endpoints;
 using RiverBooks.OrderProcessing.ListOrdersForUser;
+using RiverBooks.SharedKernel;
+using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.OrderProcessing.Api;
 
@@ -14,41 +14,27 @@ internal static class OrderProcessingEndpoints
 {
     internal static RouteGroupBuilder MapOrderProcessingEndpoints(this RouteGroupBuilder group)
     {
-        group.MapGet("", ListOrdersForUserAsync);
+        group.MapGet("", ListOrdersForUserAsync)
+            .Produces<Ok<ListOrdersForUserResponse>>()
+            .Produces<UnauthorizedHttpResult>();
 
         return group;
     }
 
-
-    internal static async Task<Results<Ok<ListOrdersForUserResponse>, UnauthorizedHttpResult>> ListOrdersForUserAsync(
+    internal static async Task<IResult> ListOrdersForUserAsync(
         ISender sender,
+        IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken)
     {
-        var emailAddress = ""; // TODO User.FindFirstValue("EmailAddress");
+        var emailAddress = userClaimsProvider.GetClaim("EmailAddress");
+
+        if (emailAddress is null)
+            return TypedResults.Unauthorized();
 
         var query = new ListOrdersForUserQuery(emailAddress!);
 
         var result = await sender.Send(query, cancellationToken);
 
-        if (result.Status == ResultStatus.Unauthorized)
-        {
-            return TypedResults.Unauthorized();
-        }
-        else
-        {
-            var response = new ListOrdersForUserResponse();
-            response.Orders = result.Value.Select(o => new OrderSummary
-            {
-                DateCreated = o.DateCreated,
-                DateShipped = o.DateShipped,
-                Total = o.Total,
-                UserId = o.UserId,
-                OrderId = o.OrderId
-            }).ToList();
-
-            return TypedResults.Ok(response);
-        }
+        return result.MatchHttpOk(v => new ListOrdersForUserResponse(v));
     }
-
-
 }

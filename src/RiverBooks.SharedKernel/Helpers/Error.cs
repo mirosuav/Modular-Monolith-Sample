@@ -3,51 +3,48 @@
 namespace RiverBooks.SharedKernel.Helpers;
 
 /// <summary>
-/// Error
+/// Error struct
 /// </summary>
 /// <param name="Code">Short error code</param>
 /// <param name="Description">Error human readable description</param>
-/// <param name="ErrorType">Error type</param>
+/// <param name="ErrorType">Error type mappedto HttpStatusCode</param>
 public readonly record struct Error(string Code, string Description, ErrorType ErrorType)
 {
-    public static readonly Error None = 
-        Failure(string.Empty, string.Empty);
+    public static readonly Error None =
+        CreateFailure(string.Empty, string.Empty);
 
-    public static readonly Error NullValue = 
-        Failure($"{nameof(Error)}.{nameof(NullValue)}", "Null or missing value provided.");
+    public static readonly Error NullOrEmpty =
+        CreateFailure("Error.NullOrEmptyValue", "Null or empty value provided.");
 
-    public static readonly Error ServerError = 
-        Failure($"{nameof(Error)}.{nameof(ServerError)}", "Internal server error");
+    public static readonly Error ServerError =
+        CreateFailure("Error.ServerError", "Internal server error");
 
-    public static readonly Error OperationCancelled = 
-        Failure($"{nameof(Error)}.{nameof(OperationCancelled)}", "Operation cancelled");
+    public static readonly Error OperationCancelled =
+        CreateFailure("Error.OperationCancelled", "Operation cancelled");
 
-    public static readonly Error UserNotAauthorized = 
-        Failure($"{nameof(Error)}.{nameof(UserNotAauthorized)}", "Access denied");
+    public static readonly Error Unauthorized =
+        CreateUnauthorized("Unauthorized");
 
-    public static Error Failure(string code, string description) => 
+    public static Error CreateFailure(string code, string description) =>
         new(code, description, ErrorType.Failure);
 
-    public static Error Validation(string code, string description) => 
+    public static Error CreateValidation(string code, string description) =>
         new(code, description, ErrorType.Validation);
 
-    public static Error NotFound(string code, string description) => 
+    public static Error CreateNotFound(string code, string description) =>
         new(code, description, ErrorType.NotFound);
 
-    public static Error NotFound(string description) => 
-        new($"{nameof(Error)}.{nameof(NotFound)}", description, ErrorType.NotFound);
+    public static Error CreateNotFound(string description) =>
+        new("Error.NotFound", description, ErrorType.NotFound);
 
-    public static Error Conflict(string code, string description) =>
+    public static Error CreateConflict(string code, string description) =>
         new(code, description, ErrorType.Conflict);
 
-    public static Error Conflict(string description) => 
-        new($"{nameof(Error)}.{nameof(Conflict)}", description, ErrorType.Conflict);
+    public static Error CreateConflict(string description) =>
+        new("Error.Conflict", description, ErrorType.Conflict);
 
-    public static Error Unauthorized(string code, string description) => 
-        new(code, description, ErrorType.Unauthorized);
-
-    public static Error Unauthorized(string description) =>
-        new($"{nameof(Error)}.{nameof(Unauthorized)}", description, ErrorType.Unauthorized);
+    public static Error CreateUnauthorized(string description) =>
+        new("Error.Unauthorized", description, ErrorType.Unauthorized);
 }
 
 public enum ErrorType

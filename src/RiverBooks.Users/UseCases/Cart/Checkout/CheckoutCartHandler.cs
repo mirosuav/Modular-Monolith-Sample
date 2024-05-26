@@ -5,52 +5,50 @@ using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.UseCases.Cart.Checkout;
 
-public class CheckoutCartHandler : IRequestHandler<CheckoutCartCommand,
-  Result<Guid>>
+public class CheckoutCartHandler : IRequestHandler<CheckoutCartCommand, ResultOr<Guid>>
 {
-  private readonly IApplicationUserRepository _userRepository;
-  private readonly IMediator _mediator;
+    private readonly IApplicationUserRepository _userRepository;
+    private readonly IMediator _mediator;
 
-  public CheckoutCartHandler(IApplicationUserRepository userRepository,
-    IMediator mediator)
-  {
-    _userRepository = userRepository;
-    _mediator = mediator;
-  }
-
-  public async Task<Result<Guid>> Handle(CheckoutCartCommand request, CancellationToken cancellationToken)
-  {
-    var user = await _userRepository.GetUserWithCartByEmailAsync(request.EmailAddress);
-
-    if (user is null)
+    public CheckoutCartHandler(IApplicationUserRepository userRepository,
+      IMediator mediator)
     {
-      return Error.UserNotAauthorized;
+        _userRepository = userRepository;
+        _mediator = mediator;
     }
 
-    var items = user.CartItems.Select(item =>
-      new OrderItemDetails(item.BookId,
-                           item.Quantity,
-                           item.UnitPrice,
-                           item.Description))
-      .ToList();
-
-    var createOrderCommand = new CreateOrderCommand(Guid.Parse(user.Id),
-      request.shippingAddressId,
-      request.billingAddressId,
-      items);
-
-    // TODO: Consider replacing with a message-based approach for perf reasons
-    var result = await _mediator.Send(createOrderCommand); // synchronous
-
-    if (!result.IsSuccess)
+    public async Task<ResultOr<Guid>> Handle(CheckoutCartCommand request, CancellationToken cancellationToken)
     {
-      // Change from a Result<OrderDetailsResponse> to Result<Guid>
-      return result.Map(x => x.OrderId);
+        var user = await _userRepository.GetUserWithCartByEmailAsync(request.EmailAddress);
+
+        if (user is null)
+        {
+            return Error.Unauthorized;
+        }
+
+        var items = user.CartItems.Select(item =>
+          new OrderItemDetails(item.BookId,
+                               item.Quantity,
+                               item.UnitPrice,
+                               item.Description))
+          .ToList();
+
+        var createOrderCommand = new CreateOrderCommand(Guid.Parse(user.Id),
+          request.shippingAddressId,
+          request.billingAddressId,
+          items);
+
+        // TODO: Consider replacing with a message-based approach for perf reasons
+        var result = await _mediator.Send(createOrderCommand); // synchronous
+
+        if (!result.IsSuccess)
+        {
+            return ResultOr.Failure<Guid>(result.Errors);
+        }
+
+        user.ClearCart();
+        await _userRepository.SaveChangesAsync();
+
+        return ResultOr.Success(result.Value.OrderId);
     }
-
-    user.ClearCart();
-    await _userRepository.SaveChangesAsync();
-
-    return Result.Success(result.Value.OrderId);
-  }
 }

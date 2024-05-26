@@ -1,6 +1,4 @@
-﻿using Ardalis.Result;
-using FastEndpoints;
-using FastEndpoints.Security;
+﻿using FastEndpoints.Security;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using RiverBooks.SharedKernel;
+using RiverBooks.SharedKernel.Helpers;
 using RiverBooks.Users.Contracts;
 using RiverBooks.Users.Domain;
 using RiverBooks.Users.UseCases.User.AddAddress;
@@ -22,19 +21,28 @@ internal static class UserEndpoints
     internal static RouteGroupBuilder MapUserEndpoints(this RouteGroupBuilder group)
     {
         group.MapPost("", CreateUserAsync)
+            .Produces<Ok>()
+            .Produces<BadRequest>()
             .AllowAnonymous();
 
         group.MapPost("/login", LoginUserAsync)
+            .Produces<Ok<string>>()
+            .Produces<UnauthorizedHttpResult>()
+            .Produces<BadRequest>()
             .AllowAnonymous();
 
-        group.MapGet("/addresses", ListUserAdressesAsync);
+        group.MapGet("/addresses", ListUserAdressesAsync)
+            .Produces<Ok<AddressListResponse>>()
+            .Produces<BadRequest>();
 
-        group.MapPost("/addresses", AddUserAdressesAsync);
+        group.MapPost("/addresses", AddUserAdressesAsync)
+            .Produces<Ok>()
+            .Produces<BadRequest>();
 
         return group;
     }
 
-    internal static async Task<Results<Ok, BadRequest, ProblemHttpResult>> CreateUserAsync(
+    internal static async Task<IResult> CreateUserAsync(
         CreateUserRequest request,
         ISender sender,
         CancellationToken cancellationToken = default)
@@ -43,15 +51,10 @@ internal static class UserEndpoints
 
         var result = await sender.Send(command);
 
-        if (!result.IsSuccess)
-        {
-            return TypedResults.BadRequest(); //TODO return ProblemDetails
-        }
-
-        return TypedResults.Ok();
+        return result.ToHttpOk();
     }
 
-    internal static async Task<Results<Ok<string>, UnauthorizedHttpResult>> LoginUserAsync(
+    internal static async Task<IResult> LoginUserAsync(
         UserLoginRequest request,
         UserManager<ApplicationUser> userManager,
         IConfiguration configuration,
@@ -62,6 +65,7 @@ internal static class UserEndpoints
         {
             return TypedResults.Unauthorized();
         }
+
         var loginSuccessful = await userManager.CheckPasswordAsync(user, request.Password);
 
         if (!loginSuccessful)
@@ -75,7 +79,7 @@ internal static class UserEndpoints
         return TypedResults.Ok(token);
     }
 
-    internal static async Task<Results<Ok<AddressListResponse>, UnauthorizedHttpResult>> ListUserAdressesAsync(
+    internal static async Task<IResult> ListUserAdressesAsync(
         ISender sender,
         IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken = default)
@@ -89,21 +93,10 @@ internal static class UserEndpoints
 
         var result = await sender.Send(query, cancellationToken);
 
-        if (result.Status == ResultStatus.Unauthorized)
-        {
-            return TypedResults.Unauthorized();
-        }
-        else
-        {
-            var response = new AddressListResponse();
-
-            response.Addresses = result.Value;
-
-            return TypedResults.Ok(response);
-        }
+        return result.MatchHttpOk(r => new AddressListResponse(r));
     }
 
-    internal static async Task<Results<Ok, UnauthorizedHttpResult>> AddUserAdressesAsync(
+    internal static async Task<IResult> AddUserAdressesAsync(
         AddAddressRequest request,
         ISender sender,
         IUserClaimsProvider userClaimsProvider,
@@ -124,13 +117,6 @@ internal static class UserEndpoints
 
         var result = await sender.Send(command);
 
-        if (result.Status == ResultStatus.Unauthorized)
-        {
-            return TypedResults.Unauthorized();
-        }
-        else
-        {
-            return TypedResults.Ok();
-        }
+        return result.ToHttpOk();
     }
 }

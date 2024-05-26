@@ -1,46 +1,46 @@
-﻿using Ardalis.Result;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using RiverBooks.SharedKernel.Helpers;
 using RiverBooks.Users.Domain;
 using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.UseCases.User.AddAddress;
 
-public class AddAddressToUserHandler : IRequestHandler<AddAddressToUserCommand, Result>
+public class AddAddressToUserHandler : IRequestHandler<AddAddressToUserCommand, ResultOr>
 {
-  private readonly IApplicationUserRepository _userRepository;
-  private readonly ILogger<AddAddressToUserHandler> _logger;
+    private readonly IApplicationUserRepository _userRepository;
+    private readonly ILogger<AddAddressToUserHandler> _logger;
 
-  public AddAddressToUserHandler(IApplicationUserRepository userRepository,
-    ILogger<AddAddressToUserHandler> logger)
-  {
-    _userRepository = userRepository;
-    _logger = logger;
-  }
-
-  public async Task<Result> Handle(AddAddressToUserCommand request, CancellationToken ct)
-  {
-    var user = await _userRepository.GetUserWithAddressesByEmailAsync(request.EmailAddress);
-
-    if (user is null)
+    public AddAddressToUserHandler(IApplicationUserRepository userRepository,
+      ILogger<AddAddressToUserHandler> logger)
     {
-      return Result.Unauthorized();
+        _userRepository = userRepository;
+        _logger = logger;
     }
 
-    var addressToAdd = new Address(request.Street1,
-                                   request.Street2,
-                                   request.City,
-                                   request.State,
-                                   request.PostalCode,
-                                   request.Country);
-    var userAddress = user.AddAddress(addressToAdd);
-    await _userRepository.SaveChangesAsync();
+    public async Task<ResultOr> Handle(AddAddressToUserCommand request, CancellationToken ct)
+    {
+        var user = await _userRepository.GetUserWithAddressesByEmailAsync(request.EmailAddress);
 
-    _logger.LogInformation("[UseCase] Added address {address} to user {email} (Total: {total})",
-      userAddress.StreetAddress,
-      request.EmailAddress,
-      user.Addresses.Count);
+        if (user is null)
+        {
+            return Error.Unauthorized;
+        }
 
-    return Result.Success();
-  }
+        var addressToAdd = new Address(request.Street1,
+                                       request.Street2,
+                                       request.City,
+                                       request.State,
+                                       request.PostalCode,
+                                       request.Country);
+        var userAddress = user.AddAddress(addressToAdd);
+        await _userRepository.SaveChangesAsync();
+
+        _logger.LogInformation("[UseCase] Added address {address} to user {email} (Total: {total})",
+          userAddress.StreetAddress,
+          request.EmailAddress,
+          user.Addresses.Count);
+
+        return ResultOr.Success();
+    }
 }

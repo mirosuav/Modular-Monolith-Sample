@@ -6,16 +6,16 @@ namespace RiverBooks.Users.Infrastructure.Data;
 
 public class EfUserStreetAddressRepository : IReadOnlyUserStreetAddressRepository
 {
-  private readonly UsersDbContext _dbContext;
+    private readonly UsersDbContext _dbContext;
 
-  public EfUserStreetAddressRepository(UsersDbContext _dbContext)
-  {
-    this._dbContext = _dbContext;
-  }
+    public EfUserStreetAddressRepository(UsersDbContext _dbContext)
+    {
+        this._dbContext = _dbContext;
+    }
 
-  public Task<UserStreetAddress?> GetById(Guid userStreetAddressId)
-  {
-    return _dbContext.UserStreetAddresses
-      .SingleOrDefaultAsync(a => a.Id == userStreetAddressId);
-  }
+    public Task<UserStreetAddress?> GetById(Guid userStreetAddressId)
+    {
+        return _dbContext.UserStreetAddresses
+          .SingleOrDefaultAsync(a => a.Id == userStreetAddressId);
+    }
 }

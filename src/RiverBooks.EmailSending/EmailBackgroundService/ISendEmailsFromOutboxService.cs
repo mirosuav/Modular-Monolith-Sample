@@ -2,5 +2,5 @@
 
 internal interface ISendEmailsFromOutboxService
 {
-  Task CheckForAndSendEmails();
+    Task CheckForAndSendEmails();
 }

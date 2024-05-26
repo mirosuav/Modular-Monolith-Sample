@@ -2,7 +2,7 @@
 
 public static class Constants
 {
-  public const string EMAIL_SERVER = "localhost";
+    public const string EMAIL_SERVER = "localhost";
 }
 
 

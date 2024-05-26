@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RiverBooks.Books.Api;
 using RiverBooks.Books.Data;
 
-namespace RiverBooks.Books;
+namespace RiverBooks.Books.Api;
 
 public static class ModuleBootstrap
 {
-    public static WebApplication MapBookModuleEndpoints(this WebApplication app)
+    public static IEndpointRouteBuilder MapBookModuleEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGroup("/books").MapBookEndpoints();
         return app;
@@ -28,7 +28,7 @@ public static class ModuleBootstrap
         services.AddScoped<IBookService, BookService>();
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list
-        mediatRAssemblies.Add(typeof(BookService).Assembly);
+        mediatRAssemblies.Add(typeof(Marker).Assembly);
 
         logger.Information("{Module} module services registered", "Books");
 

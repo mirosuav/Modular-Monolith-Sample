@@ -1,10 +1,10 @@
-﻿using Ardalis.Result;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 using RiverBooks.SharedKernel;
+using RiverBooks.SharedKernel.Helpers;
 using RiverBooks.Users.CartEndpoints;
 using RiverBooks.Users.UseCases.Cart.AddItem;
 using RiverBooks.Users.UseCases.Cart.Checkout;
@@ -16,16 +16,22 @@ internal static class CartEndpoints
 {
     internal static RouteGroupBuilder MapCartEndpoints(this RouteGroupBuilder group)
     {
-        group.MapPost("", AddItemToCartAsync);
+        group.MapPost("", AddItemToCartAsync)
+            .Produces<Ok>()
+            .Produces<BadRequest>();
 
-        group.MapPost("/checkout", CheckoutCartAsync);
+        group.MapPost("/checkout", CheckoutCartAsync)
+            .Produces<Ok<CheckoutResponse>>()
+            .Produces<BadRequest>();
 
-        group.MapGet("", ListCartItemsAsync);
+        group.MapGet("", ListCartItemsAsync)
+            .Produces<Ok<CartResponse>>()
+            .Produces<BadRequest>();
 
         return group;
     }
 
-    internal static async Task<Results<Ok, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> AddItemToCartAsync(
+    internal static async Task<IResult> AddItemToCartAsync(
         AddCartItemRequest request,
         ISender sender,
         IUserClaimsProvider userClaimsProvider,
@@ -40,23 +46,12 @@ internal static class CartEndpoints
 
         var result = await sender.Send(command, cancellationToken);
 
-        if (result.Status == ResultStatus.Unauthorized)
-        {
-            return TypedResults.Unauthorized();
-        }
-        if (result.Status == ResultStatus.Invalid)
-        {
-            return TypedResults.BadRequest(); //TODO return ProblemDetails
-        }
-        else
-        {
-            return TypedResults.Ok();
-        }
+        return result.ToHttpOk();
     }
 
-    internal static async Task<Results<Ok<CheckoutResponse>, UnauthorizedHttpResult, ProblemHttpResult>> CheckoutCartAsync(
+    internal static async Task<IResult> CheckoutCartAsync(
         CheckoutRequest request,
-        ISender sender, 
+        ISender sender,
         IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken = default)
     {
@@ -71,18 +66,11 @@ internal static class CartEndpoints
 
         var result = await sender.Send(command);
 
-        if (result.Status == ResultStatus.Unauthorized)
-        {
-            return TypedResults.Unauthorized();
-        }
-        else
-        {
-            return TypedResults.Ok(new CheckoutResponse(result.Value));
-        }
+        return result.MatchHttpOk(v => new CheckoutResponse(v));
     }
 
-    internal static async Task<Results<Ok<CartResponse>, UnauthorizedHttpResult, ProblemHttpResult>> ListCartItemsAsync(
-        ISender sender, 
+    internal static async Task<IResult> ListCartItemsAsync(
+        ISender sender,
         IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken = default)
     {
@@ -95,17 +83,6 @@ internal static class CartEndpoints
 
         var result = await sender.Send(query);
 
-        if (result.Status == ResultStatus.Unauthorized)
-        {
-            return TypedResults.Unauthorized();
-        }
-        else
-        {
-            var response = new CartResponse()
-            {
-                CartItems = result.Value
-            };
-            return TypedResults.Ok(response);
-        }
+        return result.MatchHttpOk(v => new CartResponse(v));
     }
 }

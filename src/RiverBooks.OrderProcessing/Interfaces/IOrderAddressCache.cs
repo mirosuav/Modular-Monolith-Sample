@@ -1,10 +1,10 @@
-﻿using Ardalis.Result;
-using RiverBooks.OrderProcessing.Infrastructure;
+﻿using RiverBooks.OrderProcessing.Infrastructure;
+using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.OrderProcessing.Interfaces;
 
 internal interface IOrderAddressCache
 {
-  Task<Result<OrderAddress>> GetByIdAsync(Guid addressId);
-  Task<Result> StoreAsync(OrderAddress orderAddress);
+    Task<ResultOr<OrderAddress>> GetByIdAsync(Guid addressId);
+    Task<ResultOr> StoreAsync(OrderAddress orderAddress);
 }
