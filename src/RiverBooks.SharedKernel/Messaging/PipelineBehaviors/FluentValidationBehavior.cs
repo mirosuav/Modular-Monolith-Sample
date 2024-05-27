@@ -3,7 +3,7 @@ using MediatR;
 using RiverBooks.SharedKernel.Extensions;
 using RiverBooks.SharedKernel.Helpers;
 
-namespace RiverBooks.SharedKernel;
+namespace RiverBooks.SharedKernel.Messaging.PipelineBehaviors;
 
 public class FluentValidationBehavior<TRequest, TResponse> :
   IPipelineBehavior<TRequest, TResponse>

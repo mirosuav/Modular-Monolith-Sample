@@ -20,14 +20,13 @@ public static class ModuleBootstrap
     }
 
     public static IServiceCollection AddOrderProcessingModuleServices(
-    this IServiceCollection services,
-    ConfigurationManager config,
-    ILogger logger,
-    List<System.Reflection.Assembly> mediatRAssemblies)
+        this IServiceCollection services,
+        ConfigurationManager config,
+        ILogger logger,
+        List<System.Reflection.Assembly> mediatRAssemblies)
     {
         string? connectionString = config.GetConnectionString("OrderProcessingConnectionString");
-        services.AddDbContext<OrderProcessingDbContext>(config =>
-          config.UseSqlServer(connectionString));
+        services.AddDbContext<OrderProcessingDbContext>(config => config.UseSqlServer(connectionString));
 
         // Add Services
         services.AddScoped<IOrderRepository, EfOrderRepository>();

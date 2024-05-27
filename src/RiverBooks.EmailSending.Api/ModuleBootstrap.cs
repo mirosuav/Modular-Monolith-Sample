@@ -32,8 +32,7 @@ public static class ModuleBootstrap
         services.AddTransient<ISendEmail, MimeKitEmailSender>();
         services.AddTransient<IQueueEmailsInOutboxService, MongoDbQueueEmailOutboxService>();
         services.AddTransient<IGetEmailsFromOutboxService, MongoDbGetEmailsFromOutboxService>();
-        services.AddTransient<ISendEmailsFromOutboxService,
-          DefaultSendEmailsFromOutboxService>();
+        services.AddTransient<ISendEmailsFromOutboxService, DefaultSendEmailsFromOutboxService>();
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list
         mediatRAssemblies.Add(typeof(Marker).Assembly);

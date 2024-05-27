@@ -1,5 +1,4 @@
-﻿using FastEndpoints.Security;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -73,10 +72,11 @@ internal static class UserEndpoints
             return TypedResults.Unauthorized();
         }
 
-        var jwtSecret = configuration["Auth:JwtSecret"]!; //TODO move it to separate handler
-        var token = JWTBearer.CreateToken(jwtSecret,
-          p => p["EmailAddress"] = user.Email!);
-        return TypedResults.Ok(token);
+        //var jwtSecret = configuration["Auth:JwtSecret"]!; //TODO move it to separate handler
+        //var token = JWTBearer.CreateToken(jwtSecret,
+        //  p => p["EmailAddress"] = user.Email!);
+       // TODO Implement JWT auth
+        return TypedResults.Ok(Guid.NewGuid());
     }
 
     internal static async Task<IResult> ListUserAdressesAsync(

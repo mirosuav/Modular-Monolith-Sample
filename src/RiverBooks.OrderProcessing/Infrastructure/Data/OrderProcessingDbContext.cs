@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RiverBooks.OrderProcessing.Domain;
-using RiverBooks.SharedKernel;
+using RiverBooks.SharedKernel.DomainEvents;
 using System.Reflection;
 
 namespace RiverBooks.OrderProcessing.Infrastructure.Data;

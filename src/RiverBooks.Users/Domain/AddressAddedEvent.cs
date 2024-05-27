@@ -1,4 +1,4 @@
-﻿using RiverBooks.SharedKernel;
+﻿using RiverBooks.SharedKernel.DomainEvents;
 
 namespace RiverBooks.Users.Domain;
 

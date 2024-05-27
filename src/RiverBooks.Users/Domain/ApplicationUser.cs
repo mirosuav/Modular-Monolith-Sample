@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using RiverBooks.SharedKernel;
+using RiverBooks.SharedKernel.DomainEvents;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RiverBooks.Users.Domain;

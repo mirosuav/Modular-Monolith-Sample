@@ -1,4 +1,4 @@
-﻿using RiverBooks.SharedKernel;
+﻿using RiverBooks.SharedKernel.DomainEvents;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RiverBooks.OrderProcessing.Domain;

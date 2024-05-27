@@ -13,19 +13,15 @@ internal class MongoDbGetEmailsFromOutboxService : IGetEmailsFromOutboxService
 {
     private readonly IMongoCollection<EmailOutboxEntity> _emailCollection;
 
-    public MongoDbGetEmailsFromOutboxService(
-      IMongoCollection<EmailOutboxEntity> emailCollection)
+    public MongoDbGetEmailsFromOutboxService(IMongoCollection<EmailOutboxEntity> emailCollection)
     {
         _emailCollection = emailCollection;
     }
 
     public async Task<ResultOr<EmailOutboxEntity>> GetUnprocessedEmailEntity()
     {
-        var filter = Builders<EmailOutboxEntity>.Filter.Eq(entity =>
-                entity.DateTimeUtcProcessed, null);
-        var unsentEmailEntity = await _emailCollection
-                              .Find(filter)
-                              .FirstOrDefaultAsync();
+        var filter = Builders<EmailOutboxEntity>.Filter.Eq(entity => entity.DateTimeUtcProcessed, null);
+        var unsentEmailEntity = await _emailCollection.Find(filter).FirstOrDefaultAsync();
 
         if (unsentEmailEntity == null)
             return Error.CreateNotFound("User EmailAddress not found");

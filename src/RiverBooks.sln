@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solution Items", "{B9DBBD6B-6A5A-4DF6-B3E1-69DD1F89F9F2}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
+		Readme.md = Readme.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Books Module", "Books Module", "{07C528A1-B512-45B0-A7F4-5ADC2C39A30C}"
@@ -48,9 +49,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.OrderProcessing.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.EmailSending.Api", "RiverBooks.EmailSending.Api\RiverBooks.EmailSending.Api.csproj", "{8313E66C-33AB-4444-A4C0-EDA96B73ABEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.Reporting.Api", "RiverBooks.Reporting.Api\RiverBooks.Reporting.Api.csproj", "{A7C2E986-53D6-41F4-9EE0-D421029FAEDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.Reporting.Api", "RiverBooks.Reporting.Api\RiverBooks.Reporting.Api.csproj", "{A7C2E986-53D6-41F4-9EE0-D421029FAEDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.Reporting.Contracts", "RiverBooks.Reporting.Contracts\RiverBooks.Reporting.Contracts.csproj", "{58C565B7-12FC-4E24-9CCE-E07E1EC01592}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.Reporting.Contracts", "RiverBooks.Reporting.Contracts\RiverBooks.Reporting.Contracts.csproj", "{58C565B7-12FC-4E24-9CCE-E07E1EC01592}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

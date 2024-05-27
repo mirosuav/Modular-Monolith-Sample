@@ -3,10 +3,9 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace RiverBooks.SharedKernel;
+namespace RiverBooks.SharedKernel.Messaging.PipelineBehaviors;
 
-public class LoggingBehavior<TRequest, TResponse> :
-  IPipelineBehavior<TRequest, TResponse>
+public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   where TRequest : IRequest<TResponse>
 {
     private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
@@ -16,13 +15,11 @@ public class LoggingBehavior<TRequest, TResponse> :
         _logger = logger;
     }
 
-    public async Task<TResponse> Handle(TRequest request,
-      RequestHandlerDelegate<TResponse> next,
-      CancellationToken ct)
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken ct)
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        if (_logger.IsEnabled(LogLevel.Debug))
+        if (_logger.IsEnabled(LogLevel.Information))
         {
             _logger.LogInformation("Handling {RequestName}", typeof(TRequest).Name);
 

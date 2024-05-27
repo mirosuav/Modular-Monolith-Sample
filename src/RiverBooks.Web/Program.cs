@@ -1,9 +1,6 @@
-﻿
-using FastEndpoints;
-using FastEndpoints.Security;
-using FastEndpoints.Swagger;
-
-using RiverBooks.SharedKernel;
+﻿using RiverBooks.SharedKernel;
+using RiverBooks.SharedKernel.DomainEvents;
+using RiverBooks.SharedKernel.Messaging.PipelineBehaviors;
 using RiverBooks.Users.UseCases.Cart.AddItem;
 using RiverBooks.Web;
 using Serilog;
@@ -17,38 +14,33 @@ var logger = Log.Logger = new LoggerConfiguration()
 logger.Information("Starting web host");
 
 var builder = WebApplication.CreateBuilder(args);
+{
+    builder.Host.UseSerilog((_, config) => config.ReadFrom.Configuration(builder.Configuration));
 
-builder.Host.UseSerilog((_, config) => config.ReadFrom.Configuration(builder.Configuration));
+    builder.Services.AddAuth();
 
-builder.Services.AddFastEndpoints()
-  .AddJWTBearerAuth(builder.Configuration["Auth:JwtSecret"]!)
-  .AddAuthorization()
-  .SwaggerDocument();
+    builder.Services.AddCommonServices();
 
-// Add Module Services
-List<Assembly> mediatRAssemblies = [];
-builder.Services.AddModules(mediatRAssemblies, builder.Configuration, logger);
+    // Register modules
+    builder.Services.AddModules(builder.Configuration, logger, out var moduleAssemblies);
 
-// Set up MediatR
-builder.Services.AddMediatR(cfg =>
-  cfg.RegisterServicesFromAssemblies(mediatRAssemblies.ToArray()));
-builder.Services.AddMediatRLoggingBehavior();
-builder.Services.AddMediatRFluentValidationBehavior();
-builder.Services.AddValidatorsFromAssemblyContaining<AddItemToCartCommandValidator>();
-// Add MediatR Domain Event Dispatcher
-builder.Services.AddScoped<IDomainEventDispatcher, MediatRDomainEventDispatcher>();
+    // CQRS with MediatR
+    builder.Services.AddMessaging(moduleAssemblies);
 
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IUserClaimsProvider, UserClaimsProvider>();
+    // MediatR pipeline bahaviors
+    builder.Services.AddMessagingPipelineBahaviors();
+
+    // Add MediatR Domain Event Dispatcher
+    builder.Services.AddScoped<IDomainEventDispatcher, MediatRDomainEventDispatcher>();
+}
 
 var app = builder.Build();
+{
+    app.UseAuthentication()
+      .UseAuthorization();
 
-app.UseAuthentication()
-  .UseAuthorization();
+    app.MapModulesEndpoints();
 
-app.MapModulesEndpoints();
-
-app.UseOpenApi();
-
-app.Run();
+    app.Run();
+}
 
