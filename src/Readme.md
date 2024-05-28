@@ -13,6 +13,11 @@ Modular Monoliths course on domtrain
 - Replace Ardalis.Result with custom tailored implementation of Result pattern that supports ASP.Net Core http result types
 - Replace Ardalis.Guard with custom guard helper class
 - Use MediatR
+- Uses Registration/Login with JWT Bearer authentication scheme
+
+TODO:
+- Use client generate incrementa UUIDv7 as guids
+- Use strongly typed Ids
 
 
 ### Update databases in each module

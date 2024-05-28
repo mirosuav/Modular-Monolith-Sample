@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -12,6 +13,7 @@ public static class ThrowIf
         ArgumentNullException.ThrowIfNull(argument, paramName);
         return argument;
     }
+
     public static string NullOrEmpty([NotNull] string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(argument, paramName);
@@ -28,6 +30,12 @@ public static class ThrowIf
     {
         if (argument.Equals(Guid.Empty))
             throw new ArgumentException("Value cannot be empty Guid", paramName);
+        return argument;
+    }
+    public static string ShorterThan(string? argument, int minimumLength, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+    {
+        if (argument is null || argument.Length < minimumLength)
+            throw new ArgumentException($"Value must have at least {minimumLength} characters long.", paramName);
         return argument;
     }
 

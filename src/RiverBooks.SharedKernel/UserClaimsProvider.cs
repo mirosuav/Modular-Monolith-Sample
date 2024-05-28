@@ -10,15 +10,15 @@ public interface IUserClaimsProvider
 
 public class UserClaimsProvider : IUserClaimsProvider
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ClaimsPrincipal _user;
 
-    public UserClaimsProvider(IHttpContextAccessor httpContextAccessor)
+    public UserClaimsProvider(ClaimsPrincipal user)
     {
-        _httpContextAccessor = httpContextAccessor;
+        _user = user;
     }
 
     public string? GetClaim(string claimType)
     {
-        return _httpContextAccessor.HttpContext?.User.FindFirstValue(claimType);
+        return _user.FindFirstValue(claimType);
     }
 }

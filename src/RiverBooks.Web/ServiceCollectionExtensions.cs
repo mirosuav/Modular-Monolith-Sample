@@ -3,24 +3,30 @@ using RiverBooks.EmailSending.Api;
 using RiverBooks.OrderProcessing.Api;
 using RiverBooks.Reporting.Api;
 using RiverBooks.SharedKernel;
+using RiverBooks.SharedKernel.Authentication;
 using RiverBooks.SharedKernel.Messaging.PipelineBehaviors;
 using RiverBooks.Users.Api;
-using RiverBooks.Users.UseCases.Cart.AddItem;
 using System.Reflection;
 
 namespace RiverBooks.Web;
 
 internal static class ServiceCollectionExtensions
 {
-
     internal static IServiceCollection AddCommonServices(this IServiceCollection services)
     {
         services.AddHttpContextAccessor();
+        services.AddSingleton(TimeProvider.System);
+
         return services;
     }
 
-    internal static IServiceCollection AddAuth(this IServiceCollection services)
+    internal static IServiceCollection AddAuth(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
+        services.AddJwtTokenBasedAuthentication(configuration);
+        services.AddAuthenticatedUsersOnlyFallbackPolicy();
+
         services.AddScoped<IUserClaimsProvider, UserClaimsProvider>();
         return services;
     }
