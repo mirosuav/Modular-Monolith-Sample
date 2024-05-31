@@ -1,53 +1,35 @@
 ﻿using Asp.Versioning;
-using RiverBooks.SharedKernel.DomainEvents;
 using RiverBooks.Web;
 using Serilog;
+using System.Reflection;
 
-var logger = Log.Logger = new LoggerConfiguration()
-  .Enrich.FromLogContext()
-  .WriteTo.Console()
-  .CreateLogger();
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
-logger.Information("Starting web host");
+Log.Logger.Information("Starting web host");
+
+// Collect modules assemblies
+List<Assembly> moduleAssemblies = [typeof(Marker).Assembly];
 
 var builder = WebApplication.CreateBuilder(args);
 {
-    builder.Host.UseSerilog((_, config) => config.ReadFrom.Configuration(builder.Configuration));
-
-    builder.Services.AddAuth(builder.Configuration);
-
-    builder.Services.AddCommonServices();
-
-    // Register modules
-    builder.Services.AddModules(builder.Configuration, logger, out var moduleAssemblies);
-
-    // CQRS with MediatR
-    builder.Services.AddMessaging(moduleAssemblies);
-
-    // MediatR pipeline bahaviors
-    builder.Services.AddMessagingPipelineBahaviors();
-
-    // Add MediatR Domain Event Dispatcher
-    builder.Services.AddScoped<IDomainEventDispatcher, MediatRDomainEventDispatcher>();
-
-    builder.Services.AddApiVersioning(opt =>
-    {
-        opt.DefaultApiVersion = new ApiVersion(1, 0);
-        opt.AssumeDefaultVersionWhenUnspecified = true;
-        opt.ReportApiVersions = true;
-        opt.ApiVersionReader = new UrlSegmentApiVersionReader(); // new QueryStringApiVersionReader();
-    });
+    builder.Services
+        .AddModules(builder.Configuration, Log.Logger, moduleAssemblies)
+        .AddLogging(builder.Configuration, moduleAssemblies)
+        .AddAuth(builder.Configuration)
+        .AddApplicationServices()
+        .AddMessaging(moduleAssemblies)
+        .AddEvents()
+        .AddApiVersioning(new ApiVersion(1, 0));
 }
 
 var app = builder.Build();
 {
-    app.UseAuthentication()
-      .UseAuthorization();
-
-
-
+    app.UseAuthentication();
+    app.UseAuthorization();
     app.MapModulesEndpoints();
-
     app.Run();
 }
 

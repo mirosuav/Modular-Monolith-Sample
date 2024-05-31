@@ -22,18 +22,19 @@ internal class TopSellingBooksReportService : ITopSellingBooksReportService
     public TopBooksByMonthReport ReachInSqlQuery(int month, int year)
     {
         string sql = @"
-select b.Id, b.Title, b.Author, sum(oi.Quantity) as Units, sum(oi.UnitPrice * oi.Quantity) as Sales
-from Books.Books b 
-	inner join OrderProcessing.OrderItem oi on b.Id = oi.BookId
-	inner join OrderProcessing.Orders o on o.Id = oi.OrderId
-where MONTH(o.DateCreated) = @month and YEAR(o.DateCreated) = @year
-group by b.Id, b.Title, b.Author
-ORDER BY Sales DESC
-";
+            select b.Id, b.Title, b.Author, sum(oi.Quantity) as Units, sum(oi.UnitPrice * oi.Quantity) as Sales
+            from Books.Books b 
+	            inner join OrderProcessing.OrderItem oi on b.Id = oi.BookId
+	            inner join OrderProcessing.Orders o on o.Id = oi.OrderId
+            where MONTH(o.DateCreated) = @month and YEAR(o.DateCreated) = @year
+            group by b.Id, b.Title, b.Author
+            ORDER BY Sales DESC
+            ";
         using var conn = new SqlConnection(_connString);
+
         _logger.LogInformation("Executing query: {sql}", sql);
-        var results = conn.Query<BookSalesResult>(sql, new { month, year })
-          .ToList();
+
+        var results = conn.Query<BookSalesResult>(sql, new { month, year }).ToList();
 
         var report = new TopBooksByMonthReport
         {
