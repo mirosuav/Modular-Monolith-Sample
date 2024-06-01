@@ -2,14 +2,9 @@
 
 namespace RiverBooks.SharedKernel.DomainEvents;
 
-public class MediatRDomainEventDispatcher : IDomainEventDispatcher
+public class MediatRDomainEventDispatcher(IPublisher publisher) : IDomainEventDispatcher
 {
-    private readonly IPublisher _publisher;
-
-    public MediatRDomainEventDispatcher(IPublisher publisher)
-    {
-        _publisher = publisher;
-    }
+    private readonly IPublisher _publisher = publisher;
 
     public async Task DispatchAndClearEvents(IEnumerable<IHaveDomainEvents> entitiesWithEvents)
     {

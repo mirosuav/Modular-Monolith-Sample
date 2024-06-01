@@ -6,15 +6,9 @@ using System.Reflection;
 
 namespace RiverBooks.Users.Infrastructure.Data;
 
-public class UsersDbContext : IdentityDbContext
+public class UsersDbContext(DbContextOptions<UsersDbContext> options, IDomainEventDispatcher? dispatcher) : IdentityDbContext(options)
 {
-    private readonly IDomainEventDispatcher? _dispatcher;
-
-    public UsersDbContext(DbContextOptions<UsersDbContext> options, IDomainEventDispatcher? dispatcher)
-      : base(options)
-    {
-        _dispatcher = dispatcher;
-    }
+    private readonly IDomainEventDispatcher? _dispatcher = dispatcher;
 
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     public DbSet<UserStreetAddress> UserStreetAddresses { get; set; }

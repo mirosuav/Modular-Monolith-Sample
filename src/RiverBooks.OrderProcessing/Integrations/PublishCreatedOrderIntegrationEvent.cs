@@ -3,15 +3,10 @@ using OrderProcessing.Contracts;
 using RiverBooks.OrderProcessing.Domain;
 
 namespace RiverBooks.OrderProcessing.Integrations;
-internal class PublishCreatedOrderIntegrationEventHandler :
+internal class PublishCreatedOrderIntegrationEventHandler(IMediator mediator) :
   INotificationHandler<OrderCreatedEvent>
 {
-    private readonly IMediator _mediator;
-
-    public PublishCreatedOrderIntegrationEventHandler(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    private readonly IMediator _mediator = mediator;
 
     public async Task Handle(OrderCreatedEvent notification, CancellationToken cancellationToken)
     {
@@ -29,7 +24,7 @@ internal class PublishCreatedOrderIntegrationEventHandler :
         };
         var integrationEvent = new OrderCreatedIntegrationEvent(dto);
 
-        await _mediator.Publish(integrationEvent);
+        await _mediator.Publish(integrationEvent, cancellationToken);
 
     }
 }

@@ -4,14 +4,9 @@ using RiverBooks.OrderProcessing.Interfaces;
 
 namespace RiverBooks.OrderProcessing.Infrastructure.Data;
 
-internal class EfOrderRepository : IOrderRepository
+internal class EfOrderRepository(OrderProcessingDbContext dbContext) : IOrderRepository
 {
-    private readonly OrderProcessingDbContext _dbContext;
-
-    public EfOrderRepository(OrderProcessingDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    private readonly OrderProcessingDbContext _dbContext = dbContext;
 
     public async Task AddAsync(Order order)
     {

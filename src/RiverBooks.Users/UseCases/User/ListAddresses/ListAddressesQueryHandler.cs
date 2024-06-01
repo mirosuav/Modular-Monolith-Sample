@@ -5,16 +5,11 @@ using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.UseCases.User.ListAddresses;
 
-public class ListAddressesQueryHandler : IRequestHandler<ListAddressesQuery, ResultOr<List<UserAddressDto>>>
+public class ListAddressesQueryHandler(IApplicationUserRepository userRepository) : IRequestHandler<ListAddressesQuery, Resultable<List<UserAddressDto>>>
 {
-    private readonly IApplicationUserRepository _userRepository;
+    private readonly IApplicationUserRepository _userRepository = userRepository;
 
-    public ListAddressesQueryHandler(IApplicationUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-    }
-
-    public async Task<ResultOr<List<UserAddressDto>>> Handle(ListAddressesQuery request,
+    public async Task<Resultable<List<UserAddressDto>>> Handle(ListAddressesQuery request,
       CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetUserWithAddressesByEmailAsync(request.EmailAddress);

@@ -8,4 +8,4 @@ public record AddAddressToUserCommand(string EmailAddress,
                       string City,
                       string State,
                       string PostalCode,
-                      string Country) : IRequest<ResultOr>;
+                      string Country) : IRequest<Resultable>;

@@ -7,16 +7,10 @@ using System.Text;
 
 namespace RiverBooks.SharedKernel.Authentication;
 
-public class JwtTokenHandler
+public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProvider)
 {
-    private readonly TimeProvider _timeProvider;
-    private readonly IConfiguration _configuration;
-
-    public JwtTokenHandler(IConfiguration configuration, TimeProvider timeProvider)
-    {
-        _configuration = configuration;
-        _timeProvider = timeProvider;
-    }
+    private readonly TimeProvider _timeProvider = timeProvider;
+    private readonly IConfiguration _configuration = configuration;
 
     public static TokenValidationParameters CreateValidationParameters(IConfiguration configuration)
     {
@@ -51,15 +45,17 @@ public class JwtTokenHandler
             SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature)
         };
 
-        var tokenHandler = new JsonWebTokenHandler();
-        tokenHandler.SetDefaultTimesOnTokenCreation = false;
+        var tokenHandler = new JsonWebTokenHandler
+        {
+            SetDefaultTimesOnTokenCreation = false
+        };
         return tokenHandler.CreateToken(tokenDescriptor);
     }
 
     private static SymmetricSecurityKey CreateSecurityKey(string? secretString)
     {
-        ThrowIf.NullOrWhitespace(secretString);
-        ThrowIf.ShorterThan(secretString, 32);
+        Throwable.IfNullOrWhitespace(secretString);
+        Throwable.IfShorterThan(secretString, 32);
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretString));
         return securityKey;
     }

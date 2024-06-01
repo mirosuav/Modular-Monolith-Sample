@@ -5,18 +5,12 @@ using Microsoft.Extensions.Logging;
 
 namespace RiverBooks.Reporting.Integrations;
 
-public class OrderIngestionService
+public class OrderIngestionService(IConfiguration config,
+  ILogger<OrderIngestionService> logger)
 {
-    private readonly ILogger<OrderIngestionService> _logger;
-    private readonly string _connString;
+    private readonly ILogger<OrderIngestionService> _logger = logger;
+    private readonly string _connString = config.GetConnectionString("ReportingConnectionString")!;
     private static bool _ensureTableCreated = false;
-
-    public OrderIngestionService(IConfiguration config,
-      ILogger<OrderIngestionService> logger)
-    {
-        _connString = config.GetConnectionString("ReportingConnectionString")!;
-        _logger = logger;
-    }
 
     private async Task CreateTableAsync()
     {
@@ -49,7 +43,8 @@ END
         _ensureTableCreated = true;
     }
 
-
+    // TODO Reporting module currenlty uses Dapper to create table and store incoming events about
+    // Books sales Refactor it to Use EfCore ReadModel approach
     public async Task AddOrUpdateMonthlyBookSalesAsync(BookSale sale)
     {
         if (!_ensureTableCreated) await CreateTableAsync();

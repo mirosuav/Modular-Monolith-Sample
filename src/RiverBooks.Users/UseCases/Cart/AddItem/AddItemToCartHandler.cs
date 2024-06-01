@@ -6,20 +6,14 @@ using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.UseCases.Cart.AddItem;
 
-public class AddItemToCartHandler : IRequestHandler<AddItemToCartCommand, ResultOr>
+public class AddItemToCartHandler(
+    IApplicationUserRepository userRepository,
+    IMediator mediator) : IRequestHandler<AddItemToCartCommand, Resultable>
 {
-    private readonly IApplicationUserRepository _userRepository;
-    private readonly IMediator _mediator;
+    private readonly IApplicationUserRepository _userRepository = userRepository;
+    private readonly IMediator _mediator = mediator;
 
-    public AddItemToCartHandler(
-        IApplicationUserRepository userRepository,
-        IMediator mediator)
-    {
-        _userRepository = userRepository;
-        _mediator = mediator;
-    }
-
-    public async Task<ResultOr> Handle(AddItemToCartCommand request, CancellationToken ct)
+    public async Task<Resultable> Handle(AddItemToCartCommand request, CancellationToken ct)
     {
         var user = await _userRepository.GetUserWithCartByEmailAsync(request.EmailAddress);
 
@@ -30,7 +24,7 @@ public class AddItemToCartHandler : IRequestHandler<AddItemToCartCommand, Result
 
         var query = new BookDetailsQuery(request.BookId);
 
-        var result = await _mediator.Send(query);
+        var result = await _mediator.Send(query, ct);
 
         if (!result.IsSuccess)
             return result.Errors;
@@ -47,6 +41,6 @@ public class AddItemToCartHandler : IRequestHandler<AddItemToCartCommand, Result
 
         await _userRepository.SaveChangesAsync();
 
-        return ResultOr.Success();
+        return Resultable.Success();
     }
 }

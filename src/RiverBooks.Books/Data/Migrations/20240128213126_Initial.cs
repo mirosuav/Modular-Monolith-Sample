@@ -1,12 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-#nullable disable
-
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace RiverBooks.Books.Data.Migrations;
 
-/// <inheritdoc />
+
 public partial class Initial : Migration
 {
     /// <inheritdoc />
@@ -33,7 +29,7 @@ public partial class Initial : Migration
         migrationBuilder.InsertData(
             schema: "Books",
             table: "Books",
-            columns: new[] { "Id", "Author", "Price", "Title" },
+            columns: ["Id", "Author", "Price", "Title"],
             values: new object[,]
             {
                   { new Guid("17c61e41-3953-42cd-8f88-d3f698869b35"), "J.R.R. Tolkien", 12.99m, "The Return of the King" },

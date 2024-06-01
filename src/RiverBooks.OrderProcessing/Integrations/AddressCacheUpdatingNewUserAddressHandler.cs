@@ -7,18 +7,12 @@ using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.OrderProcessing.Integrations;
 
-internal class AddressCacheUpdatingNewUserAddressHandler :
+internal class AddressCacheUpdatingNewUserAddressHandler(IOrderAddressCache addressCache,
+  ILogger<AddressCacheUpdatingNewUserAddressHandler> logger) :
   INotificationHandler<NewUserAddressAddedIntegrationEvent>
 {
-    private readonly IOrderAddressCache _addressCache;
-    private readonly ILogger<AddressCacheUpdatingNewUserAddressHandler> _logger;
-
-    public AddressCacheUpdatingNewUserAddressHandler(IOrderAddressCache addressCache,
-      ILogger<AddressCacheUpdatingNewUserAddressHandler> logger)
-    {
-        _addressCache = addressCache;
-        _logger = logger;
-    }
+    private readonly IOrderAddressCache _addressCache = addressCache;
+    private readonly ILogger<AddressCacheUpdatingNewUserAddressHandler> _logger = logger;
 
     public async Task Handle(NewUserAddressAddedIntegrationEvent notification,
       CancellationToken ct)

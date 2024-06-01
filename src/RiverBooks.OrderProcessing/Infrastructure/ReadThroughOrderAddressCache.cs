@@ -6,22 +6,15 @@ using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.OrderProcessing.Infrastructure;
 
-internal class ReadThroughOrderAddressCache : IOrderAddressCache
+internal class ReadThroughOrderAddressCache(RedisOrderAddressCache redisCache,
+  IMediator mediator,
+  ILogger<ReadThroughOrderAddressCache> logger) : IOrderAddressCache
 {
-    private readonly RedisOrderAddressCache _redisCache;
-    private readonly IMediator _mediator;
-    private readonly ILogger<ReadThroughOrderAddressCache> _logger;
+    private readonly RedisOrderAddressCache _redisCache = redisCache;
+    private readonly IMediator _mediator = mediator;
+    private readonly ILogger<ReadThroughOrderAddressCache> _logger = logger;
 
-    public ReadThroughOrderAddressCache(RedisOrderAddressCache redisCache,
-      IMediator mediator,
-      ILogger<ReadThroughOrderAddressCache> logger)
-    {
-        _redisCache = redisCache;
-        _mediator = mediator;
-        _logger = logger;
-    }
-
-    public async Task<ResultOr<OrderAddress>> GetByIdAsync(Guid id)
+    public async Task<Resultable<OrderAddress>> GetByIdAsync(Guid id)
     {
         var result = await _redisCache.GetByIdAsync(id);
         if (result.IsSuccess) return result;
@@ -51,7 +44,7 @@ internal class ReadThroughOrderAddressCache : IOrderAddressCache
         return Error.CreateNotFound("Could not retreive user address");
     }
 
-    public Task<ResultOr> StoreAsync(OrderAddress orderAddress)
+    public Task<Resultable> StoreAsync(OrderAddress orderAddress)
     {
         return _redisCache.StoreAsync(orderAddress);
     }

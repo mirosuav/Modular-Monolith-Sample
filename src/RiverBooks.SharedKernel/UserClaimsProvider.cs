@@ -8,14 +8,9 @@ public interface IUserClaimsProvider
     string? GetClaim(string claimType);
 }
 
-public class UserClaimsProvider : IUserClaimsProvider
+public class UserClaimsProvider(ClaimsPrincipal user) : IUserClaimsProvider
 {
-    private readonly ClaimsPrincipal _user;
-
-    public UserClaimsProvider(ClaimsPrincipal user)
-    {
-        _user = user;
-    }
+    private readonly ClaimsPrincipal _user = user;
 
     public string? GetClaim(string claimType)
     {

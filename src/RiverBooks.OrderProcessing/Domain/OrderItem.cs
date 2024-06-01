@@ -6,10 +6,10 @@ internal class OrderItem
 {
     public OrderItem(Guid bookId, int quantity, decimal unitPrice, string description)
     {
-        BookId = ThrowIf.Empty(bookId);
-        Quantity = ThrowIf.Negative(quantity);
-        UnitPrice = ThrowIf.Negative(unitPrice);
-        Description = ThrowIf.NullOrWhitespace(description);
+        BookId = Throwable.IfEmpty(bookId);
+        Quantity = Throwable.IfNegative(quantity);
+        UnitPrice = Throwable.IfNegative(unitPrice);
+        Description = Throwable.IfNullOrWhitespace(description);
     }
 
     private OrderItem()

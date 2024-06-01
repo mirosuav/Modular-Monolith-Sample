@@ -1,3 +1,3 @@
 ﻿namespace RiverBooks.Web;
 
-public interface Marker { }
+public interface IMarker { }

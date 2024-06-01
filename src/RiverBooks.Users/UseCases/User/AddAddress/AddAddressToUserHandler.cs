@@ -6,19 +6,13 @@ using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.UseCases.User.AddAddress;
 
-public class AddAddressToUserHandler : IRequestHandler<AddAddressToUserCommand, ResultOr>
+public class AddAddressToUserHandler(IApplicationUserRepository userRepository,
+  ILogger<AddAddressToUserHandler> logger) : IRequestHandler<AddAddressToUserCommand, Resultable>
 {
-    private readonly IApplicationUserRepository _userRepository;
-    private readonly ILogger<AddAddressToUserHandler> _logger;
+    private readonly IApplicationUserRepository _userRepository = userRepository;
+    private readonly ILogger<AddAddressToUserHandler> _logger = logger;
 
-    public AddAddressToUserHandler(IApplicationUserRepository userRepository,
-      ILogger<AddAddressToUserHandler> logger)
-    {
-        _userRepository = userRepository;
-        _logger = logger;
-    }
-
-    public async Task<ResultOr> Handle(AddAddressToUserCommand request, CancellationToken ct)
+    public async Task<Resultable> Handle(AddAddressToUserCommand request, CancellationToken ct)
     {
         var user = await _userRepository.GetUserWithAddressesByEmailAsync(request.EmailAddress);
 
@@ -41,6 +35,6 @@ public class AddAddressToUserHandler : IRequestHandler<AddAddressToUserCommand, 
           request.EmailAddress,
           user.Addresses.Count);
 
-        return ResultOr.Success();
+        return Resultable.Success();
     }
 }

@@ -18,7 +18,7 @@ internal class RedisOrderAddressCache : IOrderAddressCache
         _logger = logger;
     }
 
-    public async Task<ResultOr<OrderAddress>> GetByIdAsync(Guid id)
+    public async Task<Resultable<OrderAddress>> GetByIdAsync(Guid id)
     {
         string? fetchedJson = await _db.StringGetAsync(id.ToString());
 
@@ -33,10 +33,10 @@ internal class RedisOrderAddressCache : IOrderAddressCache
             return Error.CreateNotFound("User address not found");
 
         _logger.LogInformation("Address {id} returned from {db}", id, "REDIS");
-        return ResultOr.Success(address);
+        return Resultable.Success(address);
     }
 
-    public async Task<ResultOr> StoreAsync(OrderAddress orderAddress)
+    public async Task<Resultable> StoreAsync(OrderAddress orderAddress)
     {
         var key = orderAddress.Id.ToString();
         var addressJson = JsonSerializer.Serialize(orderAddress);
@@ -44,6 +44,6 @@ internal class RedisOrderAddressCache : IOrderAddressCache
         await _db.StringSetAsync(key, addressJson);
         _logger.LogInformation("Address {id} stored in {db}", orderAddress.Id, "REDIS");
 
-        return ResultOr.Success();
+        return Resultable.Success();
     }
 }

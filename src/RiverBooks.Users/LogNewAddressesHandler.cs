@@ -4,14 +4,9 @@ using RiverBooks.Users.Domain;
 
 namespace RiverBooks.Users;
 
-internal class LogNewAddressesHandler : INotificationHandler<AddressAddedEvent>
+internal class LogNewAddressesHandler(ILogger<LogNewAddressesHandler> logger) : INotificationHandler<AddressAddedEvent>
 {
-    private readonly ILogger<LogNewAddressesHandler> _logger;
-
-    public LogNewAddressesHandler(ILogger<LogNewAddressesHandler> logger)
-    {
-        _logger = logger;
-    }
+    private readonly ILogger<LogNewAddressesHandler> _logger = logger;
 
     public Task Handle(AddressAddedEvent notification, CancellationToken ct)
     {

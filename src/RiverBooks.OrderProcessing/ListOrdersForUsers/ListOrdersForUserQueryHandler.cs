@@ -5,17 +5,13 @@ using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.OrderProcessing.ListOrdersForUser;
 
-internal class ListOrdersForUserQueryHandler :
+internal class ListOrdersForUserQueryHandler(IOrderRepository orderRepository) :
   IRequestHandler<ListOrdersForUserQuery,
-  ResultOr<List<OrderSummary>>>
+  Resultable<List<OrderSummary>>>
 {
-    private readonly IOrderRepository _orderRepository;
+    private readonly IOrderRepository _orderRepository = orderRepository;
 
-    public ListOrdersForUserQueryHandler(IOrderRepository orderRepository)
-    {
-        _orderRepository = orderRepository;
-    }
-    public async Task<ResultOr<List<OrderSummary>>> Handle(ListOrdersForUserQuery request, CancellationToken cancellationToken)
+    public async Task<Resultable<List<OrderSummary>>> Handle(ListOrdersForUserQuery request, CancellationToken cancellationToken)
     {
         // look up UserId for EmailAddress
 

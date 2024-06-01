@@ -2,18 +2,12 @@
 using Microsoft.Extensions.Logging;
 
 namespace RiverBooks.EmailSending.EmailBackgroundService;
-internal class EmailSendingBackgroundService : BackgroundService
+internal class EmailSendingBackgroundService(
+    ILogger<EmailSendingBackgroundService> logger,
+    ISendEmailsFromOutboxService sendEmailsFromOutboxService) : BackgroundService
 {
-    private readonly ILogger<EmailSendingBackgroundService> _logger;
-    private readonly ISendEmailsFromOutboxService _sendEmailsFromOutboxService;
-
-    public EmailSendingBackgroundService(
-        ILogger<EmailSendingBackgroundService> logger,
-        ISendEmailsFromOutboxService sendEmailsFromOutboxService)
-    {
-        _logger = logger;
-        _sendEmailsFromOutboxService = sendEmailsFromOutboxService;
-    }
+    private readonly ILogger<EmailSendingBackgroundService> _logger = logger;
+    private readonly ISendEmailsFromOutboxService _sendEmailsFromOutboxService = sendEmailsFromOutboxService;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

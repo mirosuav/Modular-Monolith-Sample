@@ -48,7 +48,7 @@ internal static class UserEndpoints
     {
         var command = new CreateUserCommand(request.Email, request.Password);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.ToHttpOk();
     }
@@ -115,7 +115,7 @@ internal static class UserEndpoints
           request.PostalCode,
           request.Country);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.ToHttpOk();
     }

@@ -3,13 +3,9 @@ using System.Reflection;
 
 namespace RiverBooks.Books.Data;
 
-internal class BookDbContext : DbContext
+internal class BookDbContext(DbContextOptions<BookDbContext> options) : DbContext(options)
 {
     internal DbSet<Book> Books { get; set; }
-
-    public BookDbContext(DbContextOptions<BookDbContext> options) : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

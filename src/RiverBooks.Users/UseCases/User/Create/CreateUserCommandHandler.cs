@@ -7,19 +7,13 @@ using RiverBooks.Users.Domain;
 
 namespace RiverBooks.Users.UseCases.User.Create;
 
-public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ResultOr>
+public class CreateUserCommandHandler(UserManager<ApplicationUser> userManager,
+  IMediator mediator) : IRequestHandler<CreateUserCommand, Resultable>
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IMediator _mediator;
+    private readonly UserManager<ApplicationUser> _userManager = userManager;
+    private readonly IMediator _mediator = mediator;
 
-    public CreateUserCommandHandler(UserManager<ApplicationUser> userManager,
-      IMediator mediator)
-    {
-        _userManager = userManager;
-        _mediator = mediator;
-    }
-
-    public async Task<ResultOr> Handle(CreateUserCommand command, CancellationToken cancellationToken)
+    public async Task<Resultable> Handle(CreateUserCommand command, CancellationToken cancellationToken)
     {
         var newUser = new ApplicationUser
         {
@@ -43,8 +37,8 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
             Body = "Thank you for registering."
         };
 
-        _ = await _mediator.Send(sendEmailCommand);
+        _ = await _mediator.Send(sendEmailCommand, cancellationToken);
 
-        return ResultOr.Success();
+        return Resultable.Success();
     }
 }

@@ -3,14 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RiverBooks.Books.Data;
 
-internal class EfBookRepository : IBookRepository
+internal class EfBookRepository(BookDbContext dbContext) : IBookRepository
 {
-    private readonly BookDbContext _dbContext;
+    private readonly BookDbContext _dbContext = dbContext;
 
-    public EfBookRepository(BookDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
     public Task AddAsync(Book book)
     {
         _dbContext.Add(book);

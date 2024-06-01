@@ -2,12 +2,7 @@
 
 namespace RiverBooks.OrderProcessing.Domain;
 
-internal class OrderCreatedEvent : DomainEventBase
+internal class OrderCreatedEvent(Order order) : DomainEventBase
 {
-    public OrderCreatedEvent(Order order)
-    {
-        Order = order;
-    }
-
-    public Order Order { get; }
+    public Order Order { get; } = order;
 }

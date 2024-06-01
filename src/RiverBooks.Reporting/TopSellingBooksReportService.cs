@@ -7,17 +7,11 @@ using System.Globalization;
 
 namespace RiverBooks.Reporting;
 
-internal class TopSellingBooksReportService : ITopSellingBooksReportService
+internal class TopSellingBooksReportService(IConfiguration config,
+  ILogger<TopSellingBooksReportService> logger) : ITopSellingBooksReportService
 {
-    private readonly ILogger<TopSellingBooksReportService> _logger;
-    private readonly string _connString;
-
-    public TopSellingBooksReportService(IConfiguration config,
-      ILogger<TopSellingBooksReportService> logger)
-    {
-        _connString = config.GetConnectionString("OrderProcessingConnectionString")!;
-        _logger = logger;
-    }
+    private readonly ILogger<TopSellingBooksReportService> _logger = logger;
+    private readonly string _connString = config.GetConnectionString("OrderProcessingConnectionString")!;
 
     public TopBooksByMonthReport ReachInSqlQuery(int month, int year)
     {

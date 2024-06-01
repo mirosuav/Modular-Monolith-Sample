@@ -4,16 +4,11 @@ using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.UseCases.User.GetById;
 
-public class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, ResultOr<UserDTO>>
+public class GetUserByIdHandler(IApplicationUserRepository userRepository) : IRequestHandler<GetUserByIdQuery, Resultable<UserDTO>>
 {
-    private readonly IApplicationUserRepository _userRepository;
+    private readonly IApplicationUserRepository _userRepository = userRepository;
 
-    public GetUserByIdHandler(IApplicationUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-    }
-
-    public async Task<ResultOr<UserDTO>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Resultable<UserDTO>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetUserByIdAsync(request.UserId);
 

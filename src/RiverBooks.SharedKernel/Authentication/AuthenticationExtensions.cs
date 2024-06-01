@@ -13,7 +13,7 @@ public static class AuthenticationExtensions
         {
             o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;           
+            o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         })
         .AddJwtBearer(o =>
          {
@@ -24,11 +24,13 @@ public static class AuthenticationExtensions
          });
     }
 
-    public static void AddAuthenticatedUsersOnlyFallbackPolicy(this IServiceCollection services)
+    public static IServiceCollection AddAuthenticatedUsersOnlyFallbackPolicy(this IServiceCollection services)
     {
-        services.AddAuthorization(authOpt =>
+        _ = services.AddAuthorization(authOpt =>
             authOpt.FallbackPolicy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
                 .Build());
+
+        return services;
     }
 }

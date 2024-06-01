@@ -4,4 +4,4 @@ using RiverBooks.Users.CartEndpoints;
 
 namespace RiverBooks.Users.UseCases.Cart.ListItems;
 
-public record ListCartItemsQuery(string EmailAddress) : IRequest<ResultOr<List<CartItemDto>>>;
+public record ListCartItemsQuery(string EmailAddress) : IRequest<Resultable<List<CartItemDto>>>;

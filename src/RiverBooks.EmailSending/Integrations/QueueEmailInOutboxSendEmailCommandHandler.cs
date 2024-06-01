@@ -1,42 +1,14 @@
 ﻿using MediatR;
-using MongoDB.Driver;
 using RiverBooks.EmailSending.Contracts;
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.EmailSending.Integrations;
 
-internal interface IQueueEmailsInOutboxService
+internal class QueueEmailInOutboxSendEmailCommandHandler(IQueueEmailsInOutboxService outboxService) : IRequestHandler<SendEmailCommand, Resultable<Guid>>
 {
-    Task QueueEmailForSending(EmailOutboxEntity entity);
-}
+    private readonly IQueueEmailsInOutboxService _outboxService = outboxService;
 
-internal class MongoDbQueueEmailOutboxService : IQueueEmailsInOutboxService
-{
-    private readonly IMongoCollection<EmailOutboxEntity> _emailCollection;
-
-    public MongoDbQueueEmailOutboxService(
-      IMongoCollection<EmailOutboxEntity> emailCollection)
-    {
-        _emailCollection = emailCollection;
-    }
-    public async Task QueueEmailForSending(EmailOutboxEntity entity)
-    {
-        await _emailCollection.InsertOneAsync(entity);
-    }
-}
-
-internal class QueueEmailInOutboxSendEmailCommandHandler :
-  IRequestHandler<SendEmailCommand, ResultOr<Guid>>
-{
-    private readonly IQueueEmailsInOutboxService _outboxService;
-
-    public QueueEmailInOutboxSendEmailCommandHandler(IQueueEmailsInOutboxService outboxService)
-    {
-        _outboxService = outboxService;
-    }
-
-    public async Task<ResultOr<Guid>> Handle(SendEmailCommand request,
-      CancellationToken ct)
+    public async Task<Resultable<Guid>> Handle(SendEmailCommand request, CancellationToken ct)
     {
         var newEntity = new EmailOutboxEntity
         {

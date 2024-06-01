@@ -8,13 +8,13 @@ public class ApplicationUser : IdentityUser, IHaveDomainEvents
 {
     public string FullName { get; set; } = string.Empty;
 
-    private readonly List<CartItem> _cartItems = new();
+    private readonly List<CartItem> _cartItems = [];
     public IReadOnlyCollection<CartItem> CartItems => _cartItems.AsReadOnly();
 
-    private readonly List<UserStreetAddress> _addresses = new();
+    private readonly List<UserStreetAddress> _addresses = [];
     public IReadOnlyCollection<UserStreetAddress> Addresses => _addresses.AsReadOnly();
 
-    private List<DomainEventBase> _domainEvents = new();
+    private readonly List<DomainEventBase> _domainEvents = [];
     [NotMapped]
     public IEnumerable<DomainEventBase> DomainEvents => _domainEvents.AsReadOnly();
 

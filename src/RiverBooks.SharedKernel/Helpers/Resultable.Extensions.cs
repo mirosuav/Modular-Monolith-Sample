@@ -4,29 +4,29 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace RiverBooks.SharedKernel.Helpers;
 
-public static class ResultOrExtensions
+public static class ResultableExtensions
 {
-    public static IResult ToHttpOk(this ResultOr result)
+    public static IResult ToHttpOk(this Resultable result)
     => result.IsSuccess
         ? Results.Ok()
         : result.ToProblemHttpResult();
 
-    public static IResult ToHttpNoContent(this IResultOr result)
+    public static IResult ToHttpNoContent(this IResultable result)
         => result.IsSuccess
             ? TypedResults.NoContent()
             : result.ToProblemHttpResult();
 
-    public static IResult ToHttpOk<T>(this ResultOr<T> result)
+    public static IResult ToHttpOk<T>(this Resultable<T> result)
         => result.IsSuccess
             ? TypedResults.Ok(result.Value)
             : result.ToProblemHttpResult();
 
-    public static IResult MatchHttpOk<T, TResult>(this ResultOr<T> result, Func<T, TResult> resultFactory)
+    public static IResult MatchHttpOk<T, TResult>(this Resultable<T> result, Func<T, TResult> resultFactory)
         => result.IsSuccess
             ? TypedResults.Ok(resultFactory(result.Value))
             : result.ToProblemHttpResult();
 
-    public static ProblemHttpResult ToProblemHttpResult(this IResultOr result)
+    public static ProblemHttpResult ToProblemHttpResult(this IResultable result)
     {
         if (result.IsSuccess)
             throw new ApplicationException("No Error to detils to crete.");
@@ -35,7 +35,7 @@ public static class ResultOrExtensions
     }
 
     /// <see href="https://datatracker.ietf.org/doc/html/rfc7807#section-3.1"/>
-    public static ProblemDetails ToProblemDetails(this IResultOr result, string? instance = null)
+    public static ProblemDetails ToProblemDetails(this IResultable result, string? instance = null)
     {
         if (result.Errors is null or [])
             throw new ArgumentException("Not a failure result.");

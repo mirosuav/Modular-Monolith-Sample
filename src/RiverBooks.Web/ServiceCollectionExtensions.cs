@@ -43,7 +43,7 @@ internal static class ServiceCollectionExtensions
         List<Assembly> moduleAssemblies)
     {
         // Configure logging from all modules configuration
-        var options = new ConfigurationReaderOptions(moduleAssemblies.ToArray());
+        var options = new ConfigurationReaderOptions([.. moduleAssemblies]);
 
         services.AddSerilog((services, lc) => lc
             .ReadFrom.Configuration(configuration, options)
@@ -81,7 +81,7 @@ internal static class ServiceCollectionExtensions
 
     internal static IServiceCollection AddMessaging(this IServiceCollection services, List<Assembly> messagingAssemblies)
     {
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(messagingAssemblies.ToArray()));
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies([.. messagingAssemblies]));
 
         // MediatR pipeline bahaviors
         services.AddLoggingBehavior();

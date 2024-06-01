@@ -3,17 +3,11 @@ using RiverBooks.EmailSending.EmailBackgroundService;
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.EmailSending.Integrations;
-internal class SendEmailCommandHandler //:  IRequestHandler<SendEmailCommand, ResultOr<Guid>>
+internal class SendEmailCommandHandler(ISendEmail emailSender) //:  IRequestHandler<SendEmailCommand, ResultOr<Guid>>
 {
-    private readonly ISendEmail _emailSender;
+    private readonly ISendEmail _emailSender = emailSender;
 
-    public SendEmailCommandHandler(ISendEmail emailSender)
-    {
-        _emailSender = emailSender;
-    }
-
-    public async Task<ResultOr<Guid>> HandleAsync(SendEmailCommand request,
-      CancellationToken ct)
+    public async Task<Resultable<Guid>> HandleAsync(SendEmailCommand request, CancellationToken ct)
     {
         await _emailSender.SendEmailAsync(request.To,
           request.From,

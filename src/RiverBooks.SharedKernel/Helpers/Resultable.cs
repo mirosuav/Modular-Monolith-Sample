@@ -4,9 +4,9 @@ using System.Text.Json.Serialization;
 namespace RiverBooks.SharedKernel.Helpers;
 
 /// <summary>
-/// Optional Result Is either sucessfull or Error
+/// Optional <see cref="Resultable"/> either returns value or Error
 /// </summary>
-public partial record ResultOr : IResultOr
+public partial record Resultable : IResultable
 {
     [JsonInclude]
     [MemberNotNullWhen(false, nameof(Errors))]
@@ -18,13 +18,13 @@ public partial record ResultOr : IResultOr
     [JsonIgnore]
     public virtual Error Error => Errors?.FirstOrDefault() ?? Error.None;
 
-    public ResultOr() =>
+    public Resultable() =>
         IsSuccess = true;
 
-    public ResultOr(Error error) =>
+    public Resultable(Error error) =>
         (IsSuccess, Errors) = (false, [error]);
 
-    public ResultOr(IEnumerable<Error> errors) =>
+    public Resultable(IEnumerable<Error> errors) =>
         (IsSuccess, Errors) = (false, errors is List<Error> list ? list : errors.ToList());
 
     public TMatchedResult Match<TMatchedResult>(
@@ -51,9 +51,9 @@ public partial record ResultOr : IResultOr
     public override string ToString() =>
         IsSuccess ? "Success" : Error!.ToString();
 
-    public static implicit operator ResultOr(Error error) =>
+    public static implicit operator Resultable(Error error) =>
         new(error);
 
-    public static implicit operator ResultOr(List<Error> errors) =>
+    public static implicit operator Resultable(List<Error> errors) =>
         Failure(errors);
 }

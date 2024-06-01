@@ -7,17 +7,11 @@ using System.Globalization;
 
 namespace RiverBooks.Reporting;
 
-internal class DefaultSalesReportService : ISalesReportService
+internal class DefaultSalesReportService(IConfiguration config,
+  ILogger<DefaultSalesReportService> logger) : ISalesReportService
 {
-    private readonly ILogger<DefaultSalesReportService> _logger;
-    private readonly string _connString;
-
-    public DefaultSalesReportService(IConfiguration config,
-      ILogger<DefaultSalesReportService> logger)
-    {
-        _connString = config.GetConnectionString("ReportingConnectionString")!;
-        _logger = logger;
-    }
+    private readonly ILogger<DefaultSalesReportService> _logger = logger;
+    private readonly string _connString = config.GetConnectionString("ReportingConnectionString")!;
 
     public async Task<TopBooksByMonthReport> GetTopBooksByMonthReportAsync(int month, int year)
     {

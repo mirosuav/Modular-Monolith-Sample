@@ -4,17 +4,12 @@ using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.Books.Integrations;
 
-internal class BookDetailsQueryHandler :
-  IRequestHandler<BookDetailsQuery, ResultOr<BookDetailsResponse>>
+internal class BookDetailsQueryHandler(IBookService bookService) :
+  IRequestHandler<BookDetailsQuery, Resultable<BookDetailsResponse>>
 {
-    private readonly IBookService _bookService;
+    private readonly IBookService _bookService = bookService;
 
-    public BookDetailsQueryHandler(IBookService bookService)
-    {
-        _bookService = bookService;
-    }
-
-    public async Task<ResultOr<BookDetailsResponse>> Handle(BookDetailsQuery request,
+    public async Task<Resultable<BookDetailsResponse>> Handle(BookDetailsQuery request,
       CancellationToken cancellationToken)
     {
         var book = await _bookService.GetBookByIdAsync(request.BookId);

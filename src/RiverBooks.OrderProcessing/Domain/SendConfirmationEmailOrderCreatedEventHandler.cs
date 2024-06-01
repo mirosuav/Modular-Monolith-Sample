@@ -4,20 +4,15 @@ using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.OrderProcessing.Domain;
 
-internal class SendConfirmationEmailOrderCreatedEventHandler : INotificationHandler<OrderCreatedEvent>
+internal class SendConfirmationEmailOrderCreatedEventHandler(IMediator mediator) : INotificationHandler<OrderCreatedEvent>
 {
-    private readonly IMediator _mediator;
-
-    public SendConfirmationEmailOrderCreatedEventHandler(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    private readonly IMediator _mediator = mediator;
 
     public async Task Handle(OrderCreatedEvent notification, CancellationToken ct)
     {
         var userByIdQuery = new UserDetailsByIdQuery(notification.Order.UserId);
 
-        var result = await _mediator.Send(userByIdQuery);
+        var result = await _mediator.Send(userByIdQuery, ct);
 
         if (!result.IsSuccess)
         {
@@ -34,7 +29,7 @@ internal class SendConfirmationEmailOrderCreatedEventHandler : INotificationHand
             Body = $"You bought {notification.Order.OrderItems.Count} items."
         };
 
-        var resultGuid = await _mediator.Send(command);
+        var resultGuid = await _mediator.Send(command, ct);
 
         // TODO: Do something with emailId
 

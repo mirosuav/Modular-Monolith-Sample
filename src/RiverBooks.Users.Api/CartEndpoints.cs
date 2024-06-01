@@ -64,7 +64,7 @@ internal static class CartEndpoints
                                               request.ShippingAddressId,
                                               request.BillingAddressId);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.MatchHttpOk(v => new CheckoutResponse(v));
     }
@@ -81,7 +81,7 @@ internal static class CartEndpoints
 
         var query = new ListCartItemsQuery(emailAddress!);
 
-        var result = await sender.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         return result.MatchHttpOk(v => new CartResponse(v));
     }

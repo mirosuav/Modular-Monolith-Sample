@@ -5,14 +5,9 @@ using RiverBooks.Users.Interfaces;
 namespace RiverBooks.Users.Infrastructure.Data;
 
 
-public class EfApplicationUserRepository : IApplicationUserRepository
+public class EfApplicationUserRepository(UsersDbContext dbContext) : IApplicationUserRepository
 {
-    private readonly UsersDbContext _dbContext;
-
-    public EfApplicationUserRepository(UsersDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    private readonly UsersDbContext _dbContext = dbContext;
 
     public Task<ApplicationUser> GetUserByIdAsync(Guid userId)
     {

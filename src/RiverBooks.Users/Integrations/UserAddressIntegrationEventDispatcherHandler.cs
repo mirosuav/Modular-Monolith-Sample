@@ -5,19 +5,13 @@ using RiverBooks.Users.Domain;
 
 namespace RiverBooks.Users.Integrations;
 
-internal class UserAddressIntegrationEventDispatcherHandler :
+internal class UserAddressIntegrationEventDispatcherHandler(
+  IMediator mediator,
+  ILogger<UserAddressIntegrationEventDispatcherHandler> logger) :
   INotificationHandler<AddressAddedEvent>
 {
-    private readonly IMediator _mediator;
-    private readonly ILogger<UserAddressIntegrationEventDispatcherHandler> _logger;
-
-    public UserAddressIntegrationEventDispatcherHandler(
-      IMediator mediator,
-      ILogger<UserAddressIntegrationEventDispatcherHandler> logger)
-    {
-        _mediator = mediator;
-        _logger = logger;
-    }
+    private readonly IMediator _mediator = mediator;
+    private readonly ILogger<UserAddressIntegrationEventDispatcherHandler> _logger = logger;
 
     public async Task Handle(AddressAddedEvent notification,
       CancellationToken ct)
@@ -33,7 +27,7 @@ internal class UserAddressIntegrationEventDispatcherHandler :
           notification.NewAddress.StreetAddress.PostalCode,
           notification.NewAddress.StreetAddress.Country);
 
-        await _mediator!.Publish(new NewUserAddressAddedIntegrationEvent(addressDetails));
+        await _mediator!.Publish(new NewUserAddressAddedIntegrationEvent(addressDetails), ct);
 
         _logger.LogInformation("[DE Handler]New address integration event sent for {user}: {address}",
           notification.NewAddress.UserId,

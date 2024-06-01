@@ -11,7 +11,7 @@ Log.Logger = new LoggerConfiguration()
 Log.Logger.Information("Starting web host");
 
 // Collect modules assemblies
-List<Assembly> moduleAssemblies = [typeof(Marker).Assembly];
+List<Assembly> moduleAssemblies = [typeof(IMarker).Assembly];
 
 var builder = WebApplication.CreateBuilder(args);
 {

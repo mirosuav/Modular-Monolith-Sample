@@ -4,14 +4,9 @@ using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.Infrastructure.Data;
 
-public class EfUserStreetAddressRepository : IReadOnlyUserStreetAddressRepository
+public class EfUserStreetAddressRepository(UsersDbContext _dbContext) : IReadOnlyUserStreetAddressRepository
 {
-    private readonly UsersDbContext _dbContext;
-
-    public EfUserStreetAddressRepository(UsersDbContext _dbContext)
-    {
-        this._dbContext = _dbContext;
-    }
+    private readonly UsersDbContext _dbContext = _dbContext;
 
     public Task<UserStreetAddress?> GetById(Guid userStreetAddressId)
     {

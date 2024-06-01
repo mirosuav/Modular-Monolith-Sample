@@ -5,10 +5,10 @@ using System.Text.Json.Serialization;
 namespace RiverBooks.SharedKernel.Helpers;
 
 /// <summary>
-/// Optional ResultOr of type T. Is either sucessfull 'Value' object of type T or 'Error'
+/// Optional <see cref="Resultable"/> of type T. Is either sucessfull 'Value' object of type T or 'Error'
 /// </summary>
 /// <typeparam name="TResult"></typeparam>
-public record ResultOr<TResult> : ResultOr
+public record Resultable<TResult> : Resultable
 {
     [JsonInclude]
     public readonly TResult? Value;
@@ -16,16 +16,16 @@ public record ResultOr<TResult> : ResultOr
     [MemberNotNullWhen(true, nameof(Value))]
     public override bool IsSuccess => base.IsSuccess;
 
-    public ResultOr(TResult value) : base() =>
+    public Resultable(TResult value) : base() =>
         Value = value;
 
-    public ResultOr(Error error) : base(error) =>
+    public Resultable(Error error) : base(error) =>
         Value = default;
 
-    public ResultOr(IEnumerable<Error> errors) : base(errors) =>
+    public Resultable(IEnumerable<Error> errors) : base(errors) =>
         Value = default;
 
-    public ResultOr<TMppedResult> Map<TMppedResult>(Func<TResult, TMppedResult> successMapper) =>
+    public Resultable<TMppedResult> Map<TMppedResult>(Func<TResult, TMppedResult> successMapper) =>
         IsSuccess ? successMapper(Value) : Errors;
 
     public TMatchedResult Match<TMatchedResult>(
@@ -43,13 +43,13 @@ public record ResultOr<TResult> : ResultOr
         ? Value?.ToString() ?? string.Empty
         : Error!.ToString();
 
-    public static implicit operator ResultOr<TResult>(TResult value) =>
+    public static implicit operator Resultable<TResult>(TResult value) =>
         new(value);
 
-    public static implicit operator ResultOr<TResult>(Error error) =>
+    public static implicit operator Resultable<TResult>(Error error) =>
         new(error);
 
-    public static implicit operator ResultOr<TResult>(List<Error> errors) =>
+    public static implicit operator Resultable<TResult>(List<Error> errors) =>
         Failure<TResult>(errors);
 
     public string AsJson()

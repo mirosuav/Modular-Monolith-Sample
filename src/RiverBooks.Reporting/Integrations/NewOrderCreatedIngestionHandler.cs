@@ -4,21 +4,14 @@ using OrderProcessing.Contracts;
 using RiverBooks.Books.Contracts;
 
 namespace RiverBooks.Reporting.Integrations;
-internal class NewOrderCreatedIngestionHandler :
+internal class NewOrderCreatedIngestionHandler(ILogger<NewOrderCreatedIngestionHandler> logger,
+  OrderIngestionService orderIngestionService,
+  IMediator mediator) :
   INotificationHandler<OrderCreatedIntegrationEvent>
 {
-    private readonly ILogger<NewOrderCreatedIngestionHandler> _logger;
-    private readonly OrderIngestionService _orderIngestionService;
-    private readonly IMediator _mediator;
-
-    public NewOrderCreatedIngestionHandler(ILogger<NewOrderCreatedIngestionHandler> logger,
-      OrderIngestionService orderIngestionService,
-      IMediator mediator)
-    {
-        _logger = logger;
-        _orderIngestionService = orderIngestionService;
-        _mediator = mediator;
-    }
+    private readonly ILogger<NewOrderCreatedIngestionHandler> _logger = logger;
+    private readonly OrderIngestionService _orderIngestionService = orderIngestionService;
+    private readonly IMediator _mediator = mediator;
 
     public async Task Handle(OrderCreatedIntegrationEvent notification,
       CancellationToken ct)
@@ -34,7 +27,7 @@ internal class NewOrderCreatedIngestionHandler :
             // look up book details to get author and title
             // TODO: Implement Materialized View or other cache
             var bookDetailsQuery = new BookDetailsQuery(item.BookId);
-            var result = await _mediator.Send(bookDetailsQuery);
+            var result = await _mediator.Send(bookDetailsQuery, ct);
 
             if (!result.IsSuccess)
             {

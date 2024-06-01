@@ -3,7 +3,7 @@
 namespace RiverBooks.SharedKernel.Helpers;
 
 /// <summary>
-/// Error struct
+/// <see cref="Error"/> struct
 /// </summary>
 /// <param name="Code">Short error code</param>
 /// <param name="Description">Error human readable description</param>

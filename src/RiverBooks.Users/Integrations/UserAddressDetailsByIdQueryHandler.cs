@@ -4,17 +4,12 @@ using RiverBooks.Users.Contracts;
 using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.Integrations;
-public class UserAddressDetailsByIdQueryHandler :
-  IRequestHandler<UserAddressDetailsByIdQuery, ResultOr<UserAddressDetails>>
+public class UserAddressDetailsByIdQueryHandler(IReadOnlyUserStreetAddressRepository addressRepo) :
+  IRequestHandler<UserAddressDetailsByIdQuery, Resultable<UserAddressDetails>>
 {
-    private readonly IReadOnlyUserStreetAddressRepository _addressRepo;
+    private readonly IReadOnlyUserStreetAddressRepository _addressRepo = addressRepo;
 
-    public UserAddressDetailsByIdQueryHandler(IReadOnlyUserStreetAddressRepository addressRepo)
-    {
-        _addressRepo = addressRepo;
-    }
-
-    public async Task<ResultOr<UserAddressDetails>> Handle(
+    public async Task<Resultable<UserAddressDetails>> Handle(
       UserAddressDetailsByIdQuery request,
       CancellationToken ct)
     {

@@ -6,23 +6,16 @@ using RiverBooks.OrderProcessing.Interfaces;
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.OrderProcessing.Integrations;
-internal class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand,
-  ResultOr<OrderDetailsResponse>>
+internal class CreateOrderCommandHandler(IOrderRepository orderRepository,
+  ILogger<CreateOrderCommandHandler> logger,
+  IOrderAddressCache addressCache) : IRequestHandler<CreateOrderCommand,
+  Resultable<OrderDetailsResponse>>
 {
-    private readonly IOrderRepository _orderRepository;
-    private readonly ILogger<CreateOrderCommandHandler> _logger;
-    private readonly IOrderAddressCache _addressCache;
+    private readonly IOrderRepository _orderRepository = orderRepository;
+    private readonly ILogger<CreateOrderCommandHandler> _logger = logger;
+    private readonly IOrderAddressCache _addressCache = addressCache;
 
-    public CreateOrderCommandHandler(IOrderRepository orderRepository,
-      ILogger<CreateOrderCommandHandler> logger,
-      IOrderAddressCache addressCache)
-    {
-        _orderRepository = orderRepository;
-        _logger = logger;
-        _addressCache = addressCache;
-    }
-
-    public async Task<ResultOr<OrderDetailsResponse>> Handle(CreateOrderCommand request,
+    public async Task<Resultable<OrderDetailsResponse>> Handle(CreateOrderCommand request,
       CancellationToken cancellationToken)
     {
         var items = request.OrderItems.Select(oi => new OrderItem(

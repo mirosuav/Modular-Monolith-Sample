@@ -9,10 +9,11 @@ internal class Order : IHaveDomainEvents
     public Guid UserId { get; private set; }
     public Address ShippingAddress { get; private set; } = default!;
     public Address BillingAddress { get; private set; } = default!;
-    private readonly List<OrderItem> _orderItems = new();
+    private readonly List<OrderItem> _orderItems = [];
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
-    private List<DomainEventBase> _domainEvents = new();
+    private readonly List<DomainEventBase> _domainEvents = [];
+
     [NotMapped]
     public IEnumerable<DomainEventBase> DomainEvents => _domainEvents.AsReadOnly();
 
@@ -33,10 +34,12 @@ internal class Order : IHaveDomainEvents
           Address billingAddress,
           IEnumerable<OrderItem> orderItems)
         {
-            var order = new Order();
-            order.UserId = userId;
-            order.ShippingAddress = shippingAddress;
-            order.BillingAddress = billingAddress;
+            var order = new Order
+            {
+                UserId = userId,
+                ShippingAddress = shippingAddress,
+                BillingAddress = billingAddress
+            };
             foreach (var item in orderItems)
             {
                 order.AddOrderItem(item);

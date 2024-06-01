@@ -5,19 +5,13 @@ using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.UseCases.Cart.Checkout;
 
-public class CheckoutCartHandler : IRequestHandler<CheckoutCartCommand, ResultOr<Guid>>
+public class CheckoutCartHandler(IApplicationUserRepository userRepository,
+  IMediator mediator) : IRequestHandler<CheckoutCartCommand, Resultable<Guid>>
 {
-    private readonly IApplicationUserRepository _userRepository;
-    private readonly IMediator _mediator;
+    private readonly IApplicationUserRepository _userRepository = userRepository;
+    private readonly IMediator _mediator = mediator;
 
-    public CheckoutCartHandler(IApplicationUserRepository userRepository,
-      IMediator mediator)
-    {
-        _userRepository = userRepository;
-        _mediator = mediator;
-    }
-
-    public async Task<ResultOr<Guid>> Handle(CheckoutCartCommand request, CancellationToken cancellationToken)
+    public async Task<Resultable<Guid>> Handle(CheckoutCartCommand request, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetUserWithCartByEmailAsync(request.EmailAddress);
 
@@ -34,21 +28,21 @@ public class CheckoutCartHandler : IRequestHandler<CheckoutCartCommand, ResultOr
           .ToList();
 
         var createOrderCommand = new CreateOrderCommand(Guid.Parse(user.Id),
-          request.shippingAddressId,
-          request.billingAddressId,
+          request.ShippingAddressId,
+          request.BillingAddressId,
           items);
 
         // TODO: Consider replacing with a message-based approach for perf reasons
-        var result = await _mediator.Send(createOrderCommand); // synchronous
+        var result = await _mediator.Send(createOrderCommand, cancellationToken); // synchronous
 
         if (!result.IsSuccess)
         {
-            return ResultOr.Failure<Guid>(result.Errors);
+            return Resultable.Failure<Guid>(result.Errors);
         }
 
         user.ClearCart();
         await _userRepository.SaveChangesAsync();
 
-        return ResultOr.Success(result.Value.OrderId);
+        return Resultable.Success(result.Value.OrderId);
     }
 }

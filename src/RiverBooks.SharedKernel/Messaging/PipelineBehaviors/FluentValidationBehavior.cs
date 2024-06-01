@@ -5,16 +5,11 @@ using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.SharedKernel.Messaging.PipelineBehaviors;
 
-public class FluentValidationBehavior<TRequest, TResponse> :
+public class FluentValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators) :
   IPipelineBehavior<TRequest, TResponse>
   where TRequest : IRequest<TResponse>
 {
-    private readonly IEnumerable<IValidator<TRequest>> _validators;
-
-    public FluentValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
-    {
-        _validators = validators;
-    }
+    private readonly IEnumerable<IValidator<TRequest>> _validators = validators;
 
     public async Task<TResponse> Handle(TRequest request,
       RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
@@ -30,21 +25,21 @@ public class FluentValidationBehavior<TRequest, TResponse> :
 #nullable disable
             if (failures.Count != 0)
             {
-                if (typeof(TResponse).IsGenericType && typeof(TResponse).GetGenericTypeDefinition() == typeof(ResultOr<>))
+                if (typeof(TResponse).IsGenericType && typeof(TResponse).GetGenericTypeDefinition() == typeof(Resultable<>))
                 {
                     var resultType = typeof(TResponse).GetGenericArguments()[0];
-                    var invalidMethod = typeof(ResultOr<>)
+                    var invalidMethod = typeof(Resultable<>)
                         .MakeGenericType(resultType)
-                        .GetMethod(nameof(ResultOr<int>.Failure), new[] { typeof(IEnumerable<Error>) });
+                        .GetMethod(nameof(Resultable<int>.Failure), [typeof(IEnumerable<Error>)]);
 
                     if (invalidMethod != null)
                     {
                         return (TResponse)invalidMethod.Invoke(null, new object[] { resultErrors });
                     }
                 }
-                else if (typeof(TResponse) == typeof(ResultOr))
+                else if (typeof(TResponse) == typeof(Resultable))
                 {
-                    return (TResponse)(object)ResultOr.Failure(resultErrors);
+                    return (TResponse)(object)Resultable.Failure(resultErrors);
                 }
                 else
                 {
