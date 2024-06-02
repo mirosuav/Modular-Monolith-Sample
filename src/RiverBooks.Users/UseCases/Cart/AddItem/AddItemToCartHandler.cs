@@ -19,7 +19,7 @@ public class AddItemToCartHandler(
 
         if (user is null)
         {
-            return Error.Unauthorized;
+            return Error.NotAuthorized;
         }
 
         var query = new BookDetailsQuery(request.BookId);

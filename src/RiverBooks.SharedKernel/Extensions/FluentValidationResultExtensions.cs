@@ -7,7 +7,7 @@ public static class FluentValidationResultExtensions
 {
     public static List<Error> AsErrors(this ValidationResult valResult) =>
         valResult.Errors.Select(error =>
-        Error.CreateValidation(error.ErrorCode, error.ErrorMessage + $" Property={error.PropertyName}"))
+        Error.Validation(error.ErrorCode, error.ErrorMessage + $" Property={error.PropertyName}"))
         .ToList();
 }
 

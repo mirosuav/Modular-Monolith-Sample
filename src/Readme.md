@@ -24,4 +24,5 @@ TODO:
 
 `dotnet ef database update -p RiverBooks.Users -c UsersDbContext -s RiverBooks.Web`
 `dotnet ef database update -p RiverBooks.OrderProcessing -c OrderProcessingDbContext -s RiverBooks.Web`
+`dotnet sql-cache create "Server=(localdb)\\mssqllocaldb;Integrated Security=true;Initial Catalog=RiverBooks;" OrderProcessing UserAdressesCache`
 `dotnet ef database update -p RiverBooks.Books -c BookDbContext -s RiverBooks.Web`

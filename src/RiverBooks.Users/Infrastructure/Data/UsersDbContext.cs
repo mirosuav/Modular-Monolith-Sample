@@ -6,7 +6,8 @@ using System.Reflection;
 
 namespace RiverBooks.Users.Infrastructure.Data;
 
-public class UsersDbContext(DbContextOptions<UsersDbContext> options, IDomainEventDispatcher? dispatcher) : IdentityDbContext(options)
+public class UsersDbContext(DbContextOptions<UsersDbContext> options, IDomainEventDispatcher? dispatcher) 
+    : IdentityDbContext(options)
 {
     private readonly IDomainEventDispatcher? _dispatcher = dispatcher;
 

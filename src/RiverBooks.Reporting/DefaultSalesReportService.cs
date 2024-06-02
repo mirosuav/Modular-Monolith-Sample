@@ -12,18 +12,18 @@ internal class DefaultSalesReportService(IConfiguration config,
 {
     private readonly ILogger<DefaultSalesReportService> _logger = logger;
     private readonly string _connString = config.GetConnectionString("ReportingConnectionString")!;
+    private const string getTopBooksByMonthReportSql = @"
+            SELECT BookId, Title, Author, UnitsSold AS Units, TotalSales AS Sales
+            FROM Reporting.MonthlyBookSales
+            WHERE Month = @month AND Year = @year
+            ORDER BY TotalSales DESC
+            ";
 
     public async Task<TopBooksByMonthReport> GetTopBooksByMonthReportAsync(int month, int year)
     {
-        string sql = @"
-select BookId, Title, Author, UnitsSold as Units, TotalSales as Sales
-from Reporting.MonthlyBookSales
-where Month = @month and Year = @year
-ORDER BY TotalSales DESC
-";
         using var conn = new SqlConnection(_connString);
-        _logger.LogInformation("Executing query: {sql}", sql);
-        var results = (await conn.QueryAsync<BookSalesResult>(sql, new { month, year }))
+        _logger.LogInformation("Executing query: {sql}", getTopBooksByMonthReportSql);
+        var results = (await conn.QueryAsync<BookSalesResult>(getTopBooksByMonthReportSql, new { month, year }))
           .ToList();
 
         var report = new TopBooksByMonthReport

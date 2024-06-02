@@ -16,7 +16,7 @@ public class UserAddressDetailsByIdQueryHandler(IReadOnlyUserStreetAddressReposi
         var address = await _addressRepo.GetById(request.AddressId);
 
         if (address is null)
-            return Error.CreateNotFound("No user address found");
+            return Error.NotFound("No user address found");
 
         Guid userId = Guid.Parse(address.UserId);
 

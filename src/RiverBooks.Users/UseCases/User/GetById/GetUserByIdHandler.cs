@@ -14,7 +14,7 @@ public class GetUserByIdHandler(IApplicationUserRepository userRepository) : IRe
 
         if (user is null)
         {
-            return Error.CreateNotFound("No such user");
+            return Error.NotFound("No such user");
         }
 
         return new UserDTO(Guid.Parse(user!.Id), user.Email!);

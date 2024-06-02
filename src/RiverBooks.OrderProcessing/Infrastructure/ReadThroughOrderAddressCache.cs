@@ -1,27 +1,36 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using Nito.AsyncEx;
 using RiverBooks.OrderProcessing.Domain;
 using RiverBooks.OrderProcessing.Interfaces;
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.OrderProcessing.Infrastructure;
 
-internal class ReadThroughOrderAddressCache(RedisOrderAddressCache redisCache,
-  IMediator mediator,
-  ILogger<ReadThroughOrderAddressCache> logger) : IOrderAddressCache
+internal class ReadThroughOrderAddressCache(
+    SqlServerOrderAddressCache addressCache,
+    IMediator mediator,
+    ILogger<ReadThroughOrderAddressCache> logger) : IOrderAddressCache
 {
-    private readonly RedisOrderAddressCache _redisCache = redisCache;
+    private readonly SqlServerOrderAddressCache _addressCache = addressCache;
     private readonly IMediator _mediator = mediator;
     private readonly ILogger<ReadThroughOrderAddressCache> _logger = logger;
+    private readonly AsyncLock cacheAccessMonitor = new();
 
-    public async Task<Resultable<OrderAddress>> GetByIdAsync(Guid id)
+    public async Task<Resultable<OrderAddress>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        var result = await _redisCache.GetByIdAsync(id);
-        if (result.IsSuccess) return result;
+        // Read user address from cache
+        var result = await _addressCache.GetByIdAsync(id, cancellationToken);
+        if (result.IsSuccess)
+            return result;
 
-        if (result.Error.ErrorType == ErrorType.NotFound)
+        using (await cacheAccessMonitor.LockAsync(cancellationToken))
         {
-            // fetch data from source
+            result = await _addressCache.GetByIdAsync(id, cancellationToken);
+            if (result.IsSuccess)
+                return result;
+
+            // read user address from User module and store in cache
             _logger.LogInformation("Address {id} not found; fetching from source.", id);
             var query = new Users.Contracts.UserAddressDetailsByIdQuery(id);
 
@@ -36,16 +45,19 @@ internal class ReadThroughOrderAddressCache(RedisOrderAddressCache redisCache,
                                           dto.State,
                                           dto.PostalCode,
                                           dto.Country);
+
                 var orderAddress = new OrderAddress(dto.AddressId, address);
-                await StoreAsync(orderAddress);
+                await StoreAsync(orderAddress, cancellationToken);
                 return orderAddress;
             }
         }
-        return Error.CreateNotFound("Could not retreive user address");
+
+        return Error.NotFound("Could not retreive user address");
     }
 
-    public Task<Resultable> StoreAsync(OrderAddress orderAddress)
+    public async Task<Resultable> StoreAsync(OrderAddress orderAddress, CancellationToken cancellationToken)
     {
-        return _redisCache.StoreAsync(orderAddress);
+        using var _ = await cacheAccessMonitor.LockAsync(cancellationToken);
+        return await _addressCache.StoreAsync(orderAddress, cancellationToken);
     }
 }

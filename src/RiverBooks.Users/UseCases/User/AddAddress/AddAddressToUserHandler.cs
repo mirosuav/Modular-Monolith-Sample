@@ -18,7 +18,7 @@ public class AddAddressToUserHandler(IApplicationUserRepository userRepository,
 
         if (user is null)
         {
-            return Error.Unauthorized;
+            return Error.NotAuthorized;
         }
 
         var addressToAdd = new Address(request.Street1,

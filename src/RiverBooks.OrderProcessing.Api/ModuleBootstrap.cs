@@ -7,6 +7,7 @@ using RiverBooks.OrderProcessing.Infrastructure;
 using RiverBooks.OrderProcessing.Infrastructure.Data;
 using RiverBooks.OrderProcessing.Interfaces;
 using Serilog;
+using System.Reflection;
 
 namespace RiverBooks.OrderProcessing.Api;
 
@@ -23,14 +24,22 @@ public static class ModuleBootstrap
         this IServiceCollection services,
         ConfigurationManager config,
         ILogger logger,
-        List<System.Reflection.Assembly> mediatRAssemblies)
+        List<Assembly> mediatRAssemblies)
     {
         string? connectionString = config.GetConnectionString("OrderProcessingConnectionString");
         services.AddDbContext<OrderProcessingDbContext>(config => config.UseSqlServer(connectionString));
 
+        // Materialized view for user addresses fetched from User module
+        services.AddDistributedSqlServerCache(options =>
+        {
+            options.ConnectionString = connectionString;
+            options.SchemaName = "OrderProcessing";
+            options.TableName = "UserAdressesCache";
+        });
+
         // Add Services
         services.AddScoped<IOrderRepository, EfOrderRepository>();
-        services.AddScoped<RedisOrderAddressCache>();
+        services.AddScoped<SqlServerOrderAddressCache>();
         services.AddScoped<IOrderAddressCache, ReadThroughOrderAddressCache>();
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list

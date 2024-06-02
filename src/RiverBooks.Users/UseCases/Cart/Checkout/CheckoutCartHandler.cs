@@ -17,7 +17,7 @@ public class CheckoutCartHandler(IApplicationUserRepository userRepository,
 
         if (user is null)
         {
-            return Error.Unauthorized;
+            return Error.NotAuthorized;
         }
 
         var items = user.CartItems.Select(item =>

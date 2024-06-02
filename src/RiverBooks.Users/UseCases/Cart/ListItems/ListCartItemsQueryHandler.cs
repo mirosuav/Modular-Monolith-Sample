@@ -15,7 +15,7 @@ public class ListCartItemsQueryHandler(IApplicationUserRepository userRepository
 
         if (user is null)
         {
-            return Error.Unauthorized;
+            return Error.NotAuthorized;
         }
 
         return user.CartItems

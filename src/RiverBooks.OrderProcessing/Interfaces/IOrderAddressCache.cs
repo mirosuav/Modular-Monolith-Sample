@@ -5,6 +5,7 @@ namespace RiverBooks.OrderProcessing.Interfaces;
 
 internal interface IOrderAddressCache
 {
-    Task<Resultable<OrderAddress>> GetByIdAsync(Guid addressId);
-    Task<Resultable> StoreAsync(OrderAddress orderAddress);
+    Task<Resultable<OrderAddress>> GetByIdAsync(Guid addressId, CancellationToken cancellationToken);
+
+    Task<Resultable> StoreAsync(OrderAddress orderAddress, CancellationToken cancellationToken);
 }

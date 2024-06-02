@@ -10,14 +10,14 @@ internal class Book
 
     internal Book(Guid id, string title, string author, decimal price)
     {
-        Id = Throwable.IfEmpty(id);
-        Title = Throwable.IfNullOrWhitespace(title);
-        Author = Throwable.IfNullOrWhitespace(author);
-        Price = Throwable.IfNegative(price);
+        Id = PassOrThrow.IfEmpty(id);
+        Title = PassOrThrow.IfNullOrWhitespace(title);
+        Author = PassOrThrow.IfNullOrWhitespace(author);
+        Price = PassOrThrow.IfNegative(price);
     }
 
     internal void UpdatePrice(decimal newPrice)
     {
-        Price = Throwable.IfNegative(newPrice);
+        Price = PassOrThrow.IfNegative(newPrice);
     }
 }

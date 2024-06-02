@@ -21,11 +21,11 @@ internal class CreateOrderCommandHandler(IOrderRepository orderRepository,
         var items = request.OrderItems.Select(oi => new OrderItem(
           oi.BookId, oi.Quantity, oi.UnitPrice, oi.Description));
 
-        var shippingAddress = await _addressCache.GetByIdAsync(request.ShippingAddressId);
+        var shippingAddress = await _addressCache.GetByIdAsync(request.ShippingAddressId, cancellationToken);
         if (!shippingAddress.IsSuccess)
             return shippingAddress.Errors;
 
-        var billingAddress = await _addressCache.GetByIdAsync(request.BillingAddressId);
+        var billingAddress = await _addressCache.GetByIdAsync(request.BillingAddressId, cancellationToken);
         if (!billingAddress.IsSuccess)
             return billingAddress.Errors;
 

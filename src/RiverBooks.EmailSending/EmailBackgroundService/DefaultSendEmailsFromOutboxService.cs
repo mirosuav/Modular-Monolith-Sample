@@ -1,23 +1,25 @@
 ﻿using Microsoft.Extensions.Logging;
-using MongoDB.Driver;
+using RiverBooks.EmailSending.Domain;
 
 namespace RiverBooks.EmailSending.EmailBackgroundService;
 
-internal class DefaultSendEmailsFromOutboxService(IGetEmailsFromOutboxService outboxService,
-  ISendEmail emailSender,
-  IMongoCollection<EmailOutboxEntity> emailCollection,
-  ILogger<DefaultSendEmailsFromOutboxService> logger) : ISendEmailsFromOutboxService
+internal class DefaultSendEmailsFromOutboxService(
+        IGetEmailsFromOutboxService outboxService,
+        IMarkEmailProcessed outboxProcessedService,
+        ISendEmail emailSender,
+        ILogger<DefaultSendEmailsFromOutboxService> logger) 
+    : ISendEmailsFromOutboxService
 {
     private readonly IGetEmailsFromOutboxService _outboxService = outboxService;
+    private readonly IMarkEmailProcessed outboxProcessedService = outboxProcessedService;
     private readonly ISendEmail _emailSender = emailSender;
-    private readonly IMongoCollection<EmailOutboxEntity> _emailCollection = emailCollection;
     private readonly ILogger<DefaultSendEmailsFromOutboxService> _logger = logger;
 
-    public async Task CheckForAndSendEmails()
+    public async Task CheckForAndSendEmails(CancellationToken cancellationToken)
     {
         try
         {
-            var result = await _outboxService.GetUnprocessedEmailEntity();
+            var result = await _outboxService.GetUnprocessedEmailEntity(cancellationToken);
 
             if (!result.IsSuccess) return;
 
@@ -26,17 +28,12 @@ internal class DefaultSendEmailsFromOutboxService(IGetEmailsFromOutboxService ou
             await _emailSender.SendEmailAsync(emailEntity.To,
               emailEntity.From,
               emailEntity.Subject,
-              emailEntity.Body);
+              emailEntity.Body,
+              cancellationToken);
 
-            var updateFilter = Builders<EmailOutboxEntity>
-              .Filter.Eq(x => x.Id, emailEntity.Id);
-            var update = Builders<EmailOutboxEntity>
-              .Update.Set("DateTimeUtcProcessed", DateTime.UtcNow);
-            var updateResult = await _emailCollection
-              .UpdateOneAsync(updateFilter, update);
+            await outboxProcessedService.MarkEmailSend(emailEntity.Id, cancellationToken);
 
-            _logger.LogInformation("Processed {result} email records.",
-              updateResult.ModifiedCount);
+            _logger.LogInformation("Processed email [{id}].", emailEntity.Id);
         }
         finally
         {

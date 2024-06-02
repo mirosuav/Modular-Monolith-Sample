@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace RiverBooks.SharedKernel.Helpers;
 
-public static class Throwable
+public static class PassOrThrow
 {
     public static T IfNull<T>([NotNull] T? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
         where T : class

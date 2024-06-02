@@ -12,23 +12,23 @@ internal class TopSellingBooksReportService(IConfiguration config,
 {
     private readonly ILogger<TopSellingBooksReportService> _logger = logger;
     private readonly string _connString = config.GetConnectionString("OrderProcessingConnectionString")!;
+    private const string topBooksByMonthSql = @"
+            SELECT b.Id, b.Title, b.Author, sum(oi.Quantity) AS Units, sum(oi.UnitPrice * oi.Quantity) AS Sales
+            FROM Books.Books b 
+	            INNER JOIN OrderProcessing.OrderItem oi ON b.Id = oi.BookId
+	            INNER JOIN OrderProcessing.Orders o ON o.Id = oi.OrderId
+            WHERE MONTH(o.DateCreated) = @month AND YEAR(o.DateCreated) = @year
+            GROUP BY b.Id, b.Title, b.Author
+            ORDER BY Sales DESC
+            ";
 
     public TopBooksByMonthReport ReachInSqlQuery(int month, int year)
     {
-        string sql = @"
-            select b.Id, b.Title, b.Author, sum(oi.Quantity) as Units, sum(oi.UnitPrice * oi.Quantity) as Sales
-            from Books.Books b 
-	            inner join OrderProcessing.OrderItem oi on b.Id = oi.BookId
-	            inner join OrderProcessing.Orders o on o.Id = oi.OrderId
-            where MONTH(o.DateCreated) = @month and YEAR(o.DateCreated) = @year
-            group by b.Id, b.Title, b.Author
-            ORDER BY Sales DESC
-            ";
         using var conn = new SqlConnection(_connString);
 
-        _logger.LogInformation("Executing query: {sql}", sql);
+        _logger.LogInformation("Executing query: {sql}", topBooksByMonthSql);
 
-        var results = conn.Query<BookSalesResult>(sql, new { month, year }).ToList();
+        var results = conn.Query<BookSalesResult>(topBooksByMonthSql, new { month, year }).ToList();
 
         var report = new TopBooksByMonthReport
         {

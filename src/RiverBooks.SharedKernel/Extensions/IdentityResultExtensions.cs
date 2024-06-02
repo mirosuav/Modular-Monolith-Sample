@@ -7,7 +7,7 @@ public static class IdentityResultExtensions
 {
     public static List<Error> AsErrors(this IdentityResult identityResult) =>
         identityResult.Errors
-        .Select(error => Error.CreateFailure(error.Code, error.Description))
+        .Select(error => Error.Failure(error.Code, error.Description))
         .ToList();
 }
 

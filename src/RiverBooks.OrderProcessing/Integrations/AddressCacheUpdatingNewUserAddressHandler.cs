@@ -15,7 +15,7 @@ internal class AddressCacheUpdatingNewUserAddressHandler(IOrderAddressCache addr
     private readonly ILogger<AddressCacheUpdatingNewUserAddressHandler> _logger = logger;
 
     public async Task Handle(NewUserAddressAddedIntegrationEvent notification,
-      CancellationToken ct)
+      CancellationToken cancellationToken)
     {
         var orderAddress = new OrderAddress(notification.Details.AddressId,
           new Address(notification.Details.Street1,
@@ -25,7 +25,7 @@ internal class AddressCacheUpdatingNewUserAddressHandler(IOrderAddressCache addr
             notification.Details.PostalCode,
             notification.Details.Country));
 
-        await _addressCache.StoreAsync(orderAddress);
+        await _addressCache.StoreAsync(orderAddress, cancellationToken);
 
         _logger.LogInformation("Cache updated with new address {address}", orderAddress);
     }

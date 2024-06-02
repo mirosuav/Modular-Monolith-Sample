@@ -11,39 +11,42 @@ namespace RiverBooks.SharedKernel.Helpers;
 public readonly record struct Error(string Code, string Description, ErrorType ErrorType)
 {
     public static readonly Error None =
-        CreateFailure(string.Empty, string.Empty);
+        Failure(string.Empty, string.Empty);
 
     public static readonly Error NullOrEmpty =
-        CreateFailure("Error.NullOrEmptyValue", "Null or empty value provided.");
+        Failure("Error.NullOrEmptyValue", "Null or empty value provided.");
 
     public static readonly Error ServerError =
-        CreateFailure("Error.ServerError", "Internal server error");
+        Failure("Error.ServerError", "Internal server error");
 
     public static readonly Error OperationCancelled =
-        CreateFailure("Error.OperationCancelled", "Operation cancelled");
+        Failure("Error.OperationCancelled", "Operation cancelled");
 
-    public static readonly Error Unauthorized =
-        CreateUnauthorized("Unauthorized");
+    public static readonly Error NotAuthorized =
+        Unauthorized("Unauthorized");
 
-    public static Error CreateFailure(string code, string description) =>
+    public static Error Failure(string code, string description) =>
         new(code, description, ErrorType.Failure);
 
-    public static Error CreateValidation(string code, string description) =>
+    public static Error Validation(string code, string description) =>
         new(code, description, ErrorType.Validation);
 
-    public static Error CreateNotFound(string code, string description) =>
+    public static Error NotFound(string code, string description) =>
         new(code, description, ErrorType.NotFound);
 
-    public static Error CreateNotFound(string description) =>
+    public static Error NotFound(string description) =>
         new("Error.NotFound", description, ErrorType.NotFound);
 
-    public static Error CreateConflict(string code, string description) =>
+    public static Error NotFound() =>
+        new("Error.NotFound", "Requested resource not found.", ErrorType.NotFound);
+
+    public static Error Conflict(string code, string description) =>
         new(code, description, ErrorType.Conflict);
 
-    public static Error CreateConflict(string description) =>
+    public static Error Conflict(string description) =>
         new("Error.Conflict", description, ErrorType.Conflict);
 
-    public static Error CreateUnauthorized(string description) =>
+    public static Error Unauthorized(string description) =>
         new("Error.Unauthorized", description, ErrorType.Unauthorized);
 }
 

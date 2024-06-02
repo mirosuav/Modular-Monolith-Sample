@@ -16,7 +16,7 @@ internal class BookDetailsQueryHandler(IBookService bookService) :
 
         if (book is null)
         {
-            return Error.CreateNotFound("Book not found");
+            return Error.NotFound("Book not found");
         }
 
         var response = new BookDetailsResponse(book.Id, book.Title, book.Author,

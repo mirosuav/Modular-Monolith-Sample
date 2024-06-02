@@ -1,10 +1,12 @@
 ﻿using MediatR;
 using RiverBooks.EmailSending.Contracts;
+using RiverBooks.EmailSending.Domain;
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.EmailSending.Integrations;
 
-internal class QueueEmailInOutboxSendEmailCommandHandler(IQueueEmailsInOutboxService outboxService) : IRequestHandler<SendEmailCommand, Resultable<Guid>>
+internal class QueueEmailInOutboxSendEmailCommandHandler(IQueueEmailsInOutboxService outboxService) 
+    : IRequestHandler<SendEmailCommand, Resultable<Guid>>
 {
     private readonly IQueueEmailsInOutboxService _outboxService = outboxService;
 
@@ -18,7 +20,7 @@ internal class QueueEmailInOutboxSendEmailCommandHandler(IQueueEmailsInOutboxSer
             From = request.From
         };
 
-        await _outboxService.QueueEmailForSending(newEntity);
+        await _outboxService.QueueEmailForSending(newEntity, ct);
 
         return newEntity.Id;
     }

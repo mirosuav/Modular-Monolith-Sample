@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MongoDB.Driver;
+using RiverBooks.EmailSending.Data;
+using RiverBooks.EmailSending.Domain;
 using RiverBooks.EmailSending.EmailBackgroundService;
-using RiverBooks.EmailSending.Integrations;
 using Serilog;
+using System.Reflection;
 
 namespace RiverBooks.EmailSending.Api;
 
@@ -22,16 +24,18 @@ public static class ModuleBootstrap
       this IServiceCollection services,
       ConfigurationManager config,
       ILogger logger,
-      List<System.Reflection.Assembly> mediatRAssemblies)
+      List<Assembly> mediatRAssemblies)
     {
-        // configure MongoDB
-        services.Configure<MongoDBSettings>(config.GetSection("MongoDB"));
-        services.AddMongoDB(config);
+
+        // configure EF db context
+        string? connectionString = config.GetConnectionString("EmailSendingConnectionString");
+        services.AddDbContext<EmailSendingDbContext>(options => options.UseSqlServer(connectionString));
 
         // Add module services
-        services.AddTransient<ISendEmail, MimeKitEmailSender>();
-        services.AddTransient<IQueueEmailsInOutboxService, MongoDbQueueEmailOutboxService>();
-        services.AddTransient<IGetEmailsFromOutboxService, MongoDbGetEmailsFromOutboxService>();
+        services.AddTransient<ISendEmail, LoggingEmailSender>();
+        services.AddTransient<IQueueEmailsInOutboxService, EmailOutboxRepository>();
+        services.AddTransient<IGetEmailsFromOutboxService, EmailOutboxRepository>();
+        services.AddTransient<IMarkEmailProcessed, EmailOutboxRepository>();
         services.AddTransient<ISendEmailsFromOutboxService, DefaultSendEmailsFromOutboxService>();
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list
@@ -41,35 +45,6 @@ public static class ModuleBootstrap
         services.AddHostedService<EmailSendingBackgroundService>();
 
         logger.Information("{Module} module services registered", "Email Sending");
-        return services;
-    }
-
-    public static IServiceCollection AddMongoDB(this IServiceCollection services,
-      IConfiguration configuration)
-    {
-        // Register the MongoDB client as a singleton
-        services.AddSingleton<IMongoClient>(serviceProvider =>
-        {
-            var settings = configuration.GetSection("MongoDB").Get<MongoDBSettings>();
-            return new MongoClient(settings!.ConnectionString);
-        });
-
-        // Register the MongoDB database as a singleton
-        services.AddSingleton(serviceProvider =>
-        {
-            var settings = configuration.GetSection("MongoDB").Get<MongoDBSettings>();
-            var client = serviceProvider.GetService<IMongoClient>();
-            return client!.GetDatabase(settings!.DatabaseName);
-        });
-
-        //// Optionally, register specific collections here as scoped or singleton services
-        //// Example for a 'EmailOutboxEntity' collection
-        services.AddTransient(serviceProvider =>
-        {
-            var database = serviceProvider.GetService<IMongoDatabase>();
-            return database!.GetCollection<EmailOutboxEntity>("EmailOutboxEntityCollection");
-        });
-
         return services;
     }
 }
