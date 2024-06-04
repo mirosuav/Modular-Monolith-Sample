@@ -6,8 +6,10 @@ using System.Reflection;
 
 namespace RiverBooks.OrderProcessing.Infrastructure.Data;
 
-internal class OrderProcessingDbContext(DbContextOptions<OrderProcessingDbContext> options,
-  IDomainEventDispatcher? dispatcher) : IdentityDbContext(options)
+internal class OrderProcessingDbContext(
+    DbContextOptions<OrderProcessingDbContext> options,
+    IDomainEventDispatcher? dispatcher) 
+    : DbContext(options)
 {
     private readonly IDomainEventDispatcher? _dispatcher = dispatcher;
 

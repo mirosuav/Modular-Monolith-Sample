@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using RiverBooks.OrderProcessing.Endpoints;
 using RiverBooks.OrderProcessing.ListOrdersForUser;
-using RiverBooks.SharedKernel;
+using RiverBooks.SharedKernel.Authentication;
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.OrderProcessing.Api;
@@ -22,8 +23,8 @@ internal static class OrderProcessingEndpoints
     }
 
     internal static async Task<IResult> ListOrdersForUserAsync(
-        ISender sender,
-        IUserClaimsProvider userClaimsProvider,
+        [FromServices] ISender sender,
+        [FromServices] IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken)
     {
         var emailAddress = userClaimsProvider.GetClaim("EmailAddress");

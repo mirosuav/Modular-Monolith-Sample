@@ -3,14 +3,17 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
-using RiverBooks.SharedKernel;
+using RiverBooks.OrderProcessing.Contracts;
+using RiverBooks.SharedKernel.Authentication;
 using RiverBooks.SharedKernel.Helpers;
 using RiverBooks.Users.Contracts;
 using RiverBooks.Users.Domain;
 using RiverBooks.Users.UseCases.User.AddAddress;
 using RiverBooks.Users.UseCases.User.Create;
+using RiverBooks.Users.UseCases.User.Delete;
 using RiverBooks.Users.UseCases.User.ListAddresses;
 
 namespace RiverBooks.Users.Api;
@@ -38,12 +41,16 @@ internal static class UserEndpoints
             .Produces<Ok>()
             .Produces<BadRequest>();
 
+        group.MapDelete("", DeleteUserAsync)
+            .Produces<Ok>()
+            .Produces<NotFound>();
+
         return group;
     }
 
     internal static async Task<IResult> CreateUserAsync(
         CreateUserRequest request,
-        ISender sender,
+        [FromServices] ISender sender,
         CancellationToken cancellationToken = default)
     {
         var command = new CreateUserCommand(request.Email, request.Password);
@@ -55,8 +62,8 @@ internal static class UserEndpoints
 
     internal static async Task<IResult> LoginUserAsync(
         UserLoginRequest request,
-        UserManager<ApplicationUser> userManager,
-        IConfiguration configuration,
+        [FromServices] UserManager<ApplicationUser> userManager,
+        [FromServices] IJwtTokenHandler jwtTokenHAndler,
         CancellationToken cancellationToken = default)
     {
         var user = await userManager.FindByEmailAsync(request.Email!);
@@ -72,19 +79,17 @@ internal static class UserEndpoints
             return TypedResults.Unauthorized();
         }
 
-        //var jwtSecret = configuration["Auth:JwtSecret"]!; //TODO move it to separate handler
-        //var token = JWTBearer.CreateToken(jwtSecret,
-        //  p => p["EmailAddress"] = user.Email!);
-       // TODO Implement JWT auth
-        return TypedResults.Ok(Guid.NewGuid());
+        var token = jwtTokenHAndler.CreateToken(user.Id, user.UserName!, user.Email!);
+
+        return TypedResults.Ok(token);
     }
 
     internal static async Task<IResult> ListUserAdressesAsync(
-        ISender sender,
-        IUserClaimsProvider userClaimsProvider,
+        [FromServices] ISender sender,
+        [FromServices] IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken = default)
     {
-        var emailAddress = userClaimsProvider.GetClaim("EmailAddress");
+        var emailAddress = userClaimsProvider.GetEmailAddress();
 
         if (emailAddress is null)
             return TypedResults.Unauthorized();
@@ -98,11 +103,11 @@ internal static class UserEndpoints
 
     internal static async Task<IResult> AddUserAdressesAsync(
         AddAddressRequest request,
-        ISender sender,
-        IUserClaimsProvider userClaimsProvider,
+        [FromServices] ISender sender,
+        [FromServices] IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken = default)
     {
-        var emailAddress = userClaimsProvider.GetClaim("EmailAddress");
+        var emailAddress = userClaimsProvider.GetEmailAddress();
 
         if (emailAddress is null)
             return TypedResults.Unauthorized();
@@ -119,4 +124,23 @@ internal static class UserEndpoints
 
         return result.ToHttpOk();
     }
+
+
+    internal static async Task<IResult> DeleteUserAsync(
+        [FromServices] IUserClaimsProvider userClaimsProvider,
+        [FromServices] ISender sender,
+        CancellationToken cancellationToken = default)
+    {
+        var userId = userClaimsProvider.GetId();
+
+        if (userId is null)
+            return TypedResults.Unauthorized();
+
+        var command = new DeleteUserCommand(userId.Value);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        return result.ToHttpOk();
+    }
+
 }

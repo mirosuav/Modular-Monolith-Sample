@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RiverBooks.Reporting.Integrations;
 using Serilog;
+using System.Reflection;
 
 namespace RiverBooks.Reporting.Api;
 
@@ -19,12 +20,8 @@ public static class ModuleBootstrap
           this IServiceCollection services,
           ConfigurationManager config,
           ILogger logger,
-          List<System.Reflection.Assembly> mediatRAssemblies)
+          List<Assembly> mediatRAssemblies)
     {
-        //var connectionString = config.GetConnectionString("OrderProcessingConnectionString");
-        //services.AddDbContext<OrderProcessingDbContext>(config =>
-        //  config.UseSqlServer(connectionString));
-
         // configure module services
         services.AddScoped<ITopSellingBooksReportService, TopSellingBooksReportService>();
         services.AddScoped<ISalesReportService, DefaultSalesReportService>();

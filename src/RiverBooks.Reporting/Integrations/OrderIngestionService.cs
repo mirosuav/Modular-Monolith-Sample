@@ -5,8 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace RiverBooks.Reporting.Integrations;
 
-public class OrderIngestionService(IConfiguration config,
-  ILogger<OrderIngestionService> logger)
+public class OrderIngestionService(IConfiguration config, ILogger<OrderIngestionService> logger)
 {
     private readonly ILogger<OrderIngestionService> _logger = logger;
     private readonly string _connString = config.GetConnectionString("ReportingConnectionString")!;

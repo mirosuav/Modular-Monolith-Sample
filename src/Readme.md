@@ -3,7 +3,7 @@
 
 Inspired by 
 Steven Ardalis Smith 
-Modular Monoliths course on domtrain
+Modular Monoliths course on Domtrain.com
 
 ### Modifications
 
@@ -14,6 +14,7 @@ Modular Monoliths course on domtrain
 - Replace Ardalis.Guard with custom guard helper class
 - Use MediatR
 - Uses Registration/Login with JWT Bearer authentication scheme
+- Replaced MongoDB based outbox pattern with SqlServer based
 
 TODO:
 - Use client generate incrementa UUIDv7 as guids
@@ -24,5 +25,10 @@ TODO:
 
 `dotnet ef database update -p RiverBooks.Users -c UsersDbContext -s RiverBooks.Web`
 `dotnet ef database update -p RiverBooks.OrderProcessing -c OrderProcessingDbContext -s RiverBooks.Web`
-`dotnet sql-cache create "Server=(localdb)\\mssqllocaldb;Integrated Security=true;Initial Catalog=RiverBooks;" OrderProcessing UserAdressesCache`
+`dotnet ef database update -p RiverBooks.EmailSending -c EmailSendingDbContext -s RiverBooks.Web`
+`dotnet sql-cache create "Server=(local);Integrated Security=true;Initial Catalog=RiverBooks;" OrderProcessing UserAdressesCache`
 `dotnet ef database update -p RiverBooks.Books -c BookDbContext -s RiverBooks.Web`
+
+### Generate EF migrations
+
+`dotnet ef migrations add Initial -p RiverBooks.EmailSending -c EmailSendingDbContext -s RiverBooks.Web -o Data\Migrations`

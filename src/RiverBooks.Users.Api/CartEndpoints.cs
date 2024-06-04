@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using RiverBooks.SharedKernel;
+using RiverBooks.SharedKernel.Authentication;
 using RiverBooks.SharedKernel.Helpers;
 using RiverBooks.Users.CartEndpoints;
 using RiverBooks.Users.UseCases.Cart.AddItem;
@@ -33,8 +34,8 @@ internal static class CartEndpoints
 
     internal static async Task<IResult> AddItemToCartAsync(
         AddCartItemRequest request,
-        ISender sender,
-        IUserClaimsProvider userClaimsProvider,
+        [FromServices] ISender sender,
+        [FromServices] IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken = default)
     {
         var emailAddress = userClaimsProvider.GetClaim("EmailAddress");
@@ -51,8 +52,8 @@ internal static class CartEndpoints
 
     internal static async Task<IResult> CheckoutCartAsync(
         CheckoutRequest request,
-        ISender sender,
-        IUserClaimsProvider userClaimsProvider,
+        [FromServices] ISender sender,
+        [FromServices] IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken = default)
     {
         var emailAddress = userClaimsProvider.GetClaim("EmailAddress");
@@ -70,8 +71,8 @@ internal static class CartEndpoints
     }
 
     internal static async Task<IResult> ListCartItemsAsync(
-        ISender sender,
-        IUserClaimsProvider userClaimsProvider,
+        [FromServices] ISender sender,
+        [FromServices] IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken = default)
     {
         var emailAddress = userClaimsProvider.GetClaim("EmailAddress");

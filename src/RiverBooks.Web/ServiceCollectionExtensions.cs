@@ -3,7 +3,6 @@ using RiverBooks.Books.Api;
 using RiverBooks.EmailSending.Api;
 using RiverBooks.OrderProcessing.Api;
 using RiverBooks.Reporting.Api;
-using RiverBooks.SharedKernel;
 using RiverBooks.SharedKernel.Authentication;
 using RiverBooks.SharedKernel.DomainEvents;
 using RiverBooks.SharedKernel.Messaging.PipelineBehaviors;
@@ -48,8 +47,7 @@ internal static class ServiceCollectionExtensions
         services.AddSerilog((services, lc) => lc
             .ReadFrom.Configuration(configuration, options)
             .ReadFrom.Services(services)
-            .Enrich.FromLogContext()
-            .WriteTo.Console());
+            .Enrich.FromLogContext());
 
         return services;
     }
@@ -62,6 +60,7 @@ internal static class ServiceCollectionExtensions
         services.AddAuthenticatedUsersOnlyFallbackPolicy();
 
         services.AddScoped<IUserClaimsProvider, UserClaimsProvider>();
+        services.AddScoped<IJwtTokenHandler, JwtTokenHandler>();
         return services;
     }
 
@@ -89,6 +88,7 @@ internal static class ServiceCollectionExtensions
 
         return services;
     }
+
     internal static IServiceCollection AddEvents(this IServiceCollection services)
     {
         // Add MediatR Domain Event Dispatcher

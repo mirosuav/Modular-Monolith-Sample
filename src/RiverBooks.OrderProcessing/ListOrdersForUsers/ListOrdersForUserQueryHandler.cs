@@ -16,7 +16,7 @@ internal class ListOrdersForUserQueryHandler(IOrderRepository orderRepository) :
         // look up UserId for EmailAddress
 
         // TODO: Filter by User
-        var orders = await _orderRepository.ListAsync();
+        var orders = await _orderRepository.ListAsync(cancellationToken);
 
         var summaries = orders.Select(o => new OrderSummary
         {

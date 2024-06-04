@@ -7,7 +7,7 @@ using System.Text;
 
 namespace RiverBooks.SharedKernel.Authentication;
 
-public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProvider)
+public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProvider) : IJwtTokenHandler
 {
     private readonly TimeProvider _timeProvider = timeProvider;
     private readonly IConfiguration _configuration = configuration;
@@ -18,12 +18,12 @@ public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProv
         {
             ValidateIssuerSigningKey = true,
             ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero,
+            ClockSkew = TimeSpan.FromMinutes(1),
             IssuerSigningKey = CreateSecurityKey(configuration["Auth:JwtSecret"])
         };
     }
 
-    public string CreateToken(Guid userId, string userName, string userEmailAddress)
+    public string CreateToken(string userId, string userName, string userEmailAddress)
     {
         SymmetricSecurityKey securityKey = CreateSecurityKey(_configuration["Auth:JwtSecret"]);
         int tokenExpiration = _configuration.GetValue("Auth:TokenExpirationMin", 120);
@@ -32,7 +32,7 @@ public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProv
         {
             [ClaimTypes.Name] = userName,
             [ClaimTypes.Email] = userEmailAddress,
-            [ClaimTypes.NameIdentifier] = userId.ToString(),
+            [ClaimTypes.NameIdentifier] = userId,
             [ClaimTypes.Sid] = Guid.NewGuid().ToString()
         };
 

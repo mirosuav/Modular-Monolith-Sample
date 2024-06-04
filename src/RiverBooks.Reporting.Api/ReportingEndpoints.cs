@@ -5,37 +5,39 @@ using Microsoft.AspNetCore.Routing;
 using RiverBooks.Reporting.Contracts;
 
 namespace RiverBooks.Reporting.Api;
+
 internal static class ReportingEndpoints
 {
     internal static IEndpointRouteBuilder MapReportingEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/topsales", GetTopSalesAsync)
-            .Produces<Ok<TopSalesByMonthResponse>>()
+        app.MapGet("/topsales/{year}/{month}", GetTopSalesAsync)
+            .Produces<Ok<TopBooksByMonthReport>>()
             .AllowAnonymous();
 
-        app.MapGet("/topsales2", GetTopSales2Async)
-            .Produces<Ok<TopSalesByMonthResponse>>()
+        app.MapGet("/topsales2/{year}/{month}", GetTopSales2Async)
+            .Produces<Ok<TopBooksByMonthReport>>()
             .AllowAnonymous();
 
         return app;
     }
 
-    internal static IResult GetTopSalesAsync(
-        TopSalesByMonthRequest request,
+    internal static Task<IResult> GetTopSalesAsync(
+        int year,
+        int month,
         ITopSellingBooksReportService reportService,
-        CancellationToken ct = default)
+        CancellationToken cancellationToken)
     {
-        var report = reportService.ReachInSqlQuery(request.Month, request.Year);
-        var response = new TopSalesByMonthResponse { Report = report };
-        return TypedResults.Ok(response);
+        var report = reportService.ReachInSqlQuery(month, year);
+        return Task.FromResult<IResult>(TypedResults.Ok(report));
     }
 
-    internal static async Task<IResult> GetTopSales2Async(TopSalesByMonthRequest request,
+    internal static async Task<IResult> GetTopSales2Async(
+        int year,
+        int month,
         ISalesReportService reportService,
-        CancellationToken ct = default)
+        CancellationToken cancellationToken)
     {
-        var report = await reportService.GetTopBooksByMonthReportAsync(request.Month, request.Year);
-        var response = new TopSalesByMonthResponse { Report = report };
-        return TypedResults.Ok(response);
+        var report = await reportService.GetTopBooksByMonthReportAsync(month, year);
+        return TypedResults.Ok(report);
     }
 }

@@ -34,8 +34,8 @@ internal class CreateOrderCommandHandler(IOrderRepository orderRepository,
           billingAddress.Value.Address,
           items);
 
-        await _orderRepository.AddAsync(newOrder);
-        await _orderRepository.SaveChangesAsync();
+        _orderRepository.Add(newOrder);
+        await _orderRepository.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("New Order Created! {orderId}", newOrder.Id);
 

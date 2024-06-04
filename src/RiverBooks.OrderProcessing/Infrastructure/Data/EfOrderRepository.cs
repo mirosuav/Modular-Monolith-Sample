@@ -8,20 +8,33 @@ internal class EfOrderRepository(OrderProcessingDbContext dbContext) : IOrderRep
 {
     private readonly OrderProcessingDbContext _dbContext = dbContext;
 
-    public async Task AddAsync(Order order)
+    public void Add(Order order)
     {
-        await _dbContext.Orders.AddAsync(order);
+        _dbContext.Orders.Add(order);
     }
 
-    public async Task<List<Order>> ListAsync()
+    public async Task<List<Order>> ListAsync(CancellationToken cancellationToken)
     {
         return await _dbContext.Orders
           .Include(o => o.OrderItems)
-          .ToListAsync();
+          .ToListAsync(cancellationToken);
     }
 
-    public async Task SaveChangesAsync()
+    public async Task<List<Order>> ListForUserAsync(Guid userId, CancellationToken cancellationToken)
     {
-        await _dbContext.SaveChangesAsync();
+        return await _dbContext.Orders
+          .Include(o => o.OrderItems)
+          .Where(o => o.UserId == userId)
+          .ToListAsync(cancellationToken);
+    }
+
+    public void Remove(params Order[] orders)
+    {
+        _dbContext.Orders.RemoveRange(orders);
+    }
+
+    public async Task SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

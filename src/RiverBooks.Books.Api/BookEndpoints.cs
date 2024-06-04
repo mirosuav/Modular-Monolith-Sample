@@ -35,7 +35,7 @@ internal static class BookEndpoints
     }
 
     internal static async Task<IResult> ListBooksAsync(
-        IBookService bookService,
+        [FromServices] IBookService bookService,
         CancellationToken cancellationToken)
     {
         var books = await bookService.ListBooksAsync();
@@ -44,7 +44,8 @@ internal static class BookEndpoints
 
     internal static async Task<IResult> CreateBookAsync(
         CreateBookRequest request,
-        IBookService bookService)
+        [FromServices] IBookService bookService,
+        CancellationToken cancellationToken)
     {
         var newBookDto = new BookDto(request.Id ?? Guid.NewGuid(), //TODO don't create Guid in code
         request.Title,
@@ -57,7 +58,8 @@ internal static class BookEndpoints
 
     internal static async Task<Results<Ok<BookDto>, NotFound>> GetBookAsync(
         Guid bookId,
-        IBookService bookService)
+        [FromServices] IBookService bookService,
+        CancellationToken cancellationToken)
     {
         return await bookService.GetBookByIdAsync(bookId) is BookDto book
            ? TypedResults.Ok(book)
@@ -67,7 +69,8 @@ internal static class BookEndpoints
     internal static async Task<IResult> UpdateBookPriceAsync(
             Guid bookId,
             [FromBody] decimal newPrice,
-            IBookService _bookService)
+            [FromServices] IBookService _bookService,
+            CancellationToken cancellationToken)
     {
         // Todo: check if exists
         await _bookService.UpdateBookPriceAsync(bookId, newPrice);
@@ -76,7 +79,8 @@ internal static class BookEndpoints
 
     internal static async Task<IResult> DeleteBookAsync(
             Guid bookId,
-            IBookService _bookService)
+            [FromServices] IBookService _bookService,
+            CancellationToken cancellationToken)
     {
         // Todo: check if exists
         await _bookService.DeleteBookAsync(bookId);
