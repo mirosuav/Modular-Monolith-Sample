@@ -17,7 +17,6 @@ public static class AuthenticationExtensions
         })
         .AddJwtBearer(o =>
          {
-             o.TimeProvider = TimeProvider.System;
              o.RequireHttpsMetadata = false;
              o.SaveToken = false;
              o.TokenValidationParameters = JwtTokenHandler.CreateValidationParameters(configuration);

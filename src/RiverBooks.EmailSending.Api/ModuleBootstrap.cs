@@ -39,7 +39,7 @@ public static class ModuleBootstrap
         services.AddTransient<ISendEmailsFromOutboxService, DefaultSendEmailsFromOutboxService>();
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list
-        mediatRAssemblies.Add(typeof(Marker).Assembly);
+        mediatRAssemblies.Add(typeof(IMarker).Assembly);
 
         // Add BackgroundWorker
         services.AddHostedService<EmailSendingBackgroundService>();

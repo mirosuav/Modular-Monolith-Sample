@@ -38,10 +38,10 @@ public static class ModuleBootstrap
         services.AddScoped<IApplicationUserRepository, EfApplicationUserRepository>();
         services.AddScoped<IReadOnlyUserStreetAddressRepository, EfUserStreetAddressRepository>();
 
-        services.AddValidatorsFromAssemblyContaining<Marker>();
+        services.AddValidatorsFromAssemblyContaining<IMarker>();
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list
-        mediatRAssemblies.Add(typeof(Marker).Assembly);
+        mediatRAssemblies.Add(typeof(IMarker).Assembly);
 
         logger.Information("{Module} module services registered", "Users");
 

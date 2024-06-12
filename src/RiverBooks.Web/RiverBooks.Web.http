@@ -1,10 +1,11 @@
-@RiverBooks.Web_HostAddress = https://localhost:7179
+
+@RootAddress=https://localhost:7179
 
 ###
 
 # CREATE USER
 
-POST {{RiverBooks.Web_HostAddress}}/users
+POST {{RootAddress}}/users
 Accept: application/json
 Content-Type: application/json
 
@@ -17,7 +18,7 @@ Content-Type: application/json
 
 # LOGIN
 
-POST {{RiverBooks.Web_HostAddress}}/users/login
+POST {{RootAddress}}/users/login
 Accept: application/json
 Content-Type: application/json
 
@@ -28,22 +29,22 @@ Content-Type: application/json
 
 ###
 
-@token=eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibWlyZWtAdGVzdC5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJtaXJla0B0ZXN0LmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiOGRmYzZkM2UtMzQ2Mi00NWZhLTljNmYtZGI4ZWQ2MWI3ZDBmIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvc2lkIjoiNDZiOTU3YjctMzhhZi00MzNmLWEzMzItMjNkMGY4NmM0NjBlIiwiZXhwIjoxNzE3NTM1NDI3LCJuYmYiOjE3MTc1MjgyMjd9.MYNtv-wc2BHk9DF0IPnEVq2dTcqZtoRQb13DLBmgqNQ
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHRlc3QuY29tIiwiSWQiOiI4ZGZjNmQzZS0zNDYyLTQ1ZmEtOWM2Zi1kYjhlZDYxYjdkMGYiLCJzaWQiOiI2ZjBhYmE2MS1kNDE1LTQ0ZWQtYmM0My0xYWZlOWNiMDJjZWQiLCJleHAiOjE3MTgyMzIzMzMsImlhdCI6MTcxODIyNTEzMywibmJmIjoxNzE4MjI1MTMzfQ.L1E-c9LCmMfdq7kIFJc42TO6_VA4wDqXhdj7Do4gHE0
 
-GET {{RiverBooks.Web_HostAddress}}/books
+GET {{RootAddress}}/books
 Accept: application/json
 Authorization: Bearer {{token}}
 
 ###
 
-@BookID=a89f6cd7-4693-457b-9009-02205dbbfe45
-GET {{RiverBooks.Web_HostAddress}}/books/{{BookID}}
+@BookID=e4fa19bf-6981-4e50-a542-7c9b26e9ec31
+GET {{RootAddress}}/books/{{BookID}}
 Accept: application/json
 Authorization: Bearer {{token}}
 
 ###
 
-POST {{RiverBooks.Web_HostAddress}}/books
+POST {{RootAddress}}/books
 Accept: application/json
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -58,29 +59,31 @@ Content-Type: application/json
 ###
 
 # Test the location header
-GET {{RiverBooks.Web_HostAddress}}/books/b89f6cd7-4693-457b-9009-02205dbbfe45
+GET {{RootAddress}}/books/b89f6cd7-4693-457b-9009-02205dbbfe45
 Accept: application/json
+Authorization: Bearer {{token}}
 
 ###
 
-DELETE {{RiverBooks.Web_HostAddress}}/books/b89f6cd7-4693-457b-9009-02205dbbfe45
+DELETE {{RootAddress}}/books/b89f6cd7-4693-457b-9009-02205dbbfe45
 Accept: application/json
+Authorization: Bearer {{token}}
 
 ###
 
-POST {{RiverBooks.Web_HostAddress}}/books/b89f6cd7-4693-457b-9009-02205dbbfe45/pricehistory
+POST {{RootAddress}}/books/b89f6cd7-4693-457b-9009-02205dbbfe45/pricehistory
 Accept: application/json
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
-{
-  "newPrice": 19.99
-}
+ 19.99
+
 
 ### Add item to cart
-POST {{RiverBooks.Web_HostAddress}}/cart
+POST {{RootAddress}}/cart
 Accept: text/plain
-Authorization: Bearer {{token}}
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "bookId":"a89f6cd7-4693-457b-9009-02205dbbfe45",
@@ -90,21 +93,21 @@ Content-Type: application/json
 ###
 
 # List items in cart
-GET {{RiverBooks.Web_HostAddress}}/cart
+GET {{RootAddress}}/cart
 Accept: application/json
 Authorization: Bearer {{token}}
 
 ###
 
 # List All Orders
-GET {{RiverBooks.Web_HostAddress}}/orders
+GET {{RootAddress}}/orders
 Accept: application/json
 Authorization: Bearer {{token}}
 
 ###
 
 # Checkout Cart
-POST {{RiverBooks.Web_HostAddress}}/cart/checkout
+POST {{RootAddress}}/cart/checkout
 Accept: application/json
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -118,14 +121,14 @@ Content-Type: application/json
 
 # List Addresses
 
-GET {{RiverBooks.Web_HostAddress}}/users/addresses
+GET {{RootAddress}}/users/addresses
 Accept: application/json
 Authorization: Bearer {{token}}
 
 ###
 
 # Add Address to User
-POST {{RiverBooks.Web_HostAddress}}/users/addresses
+POST {{RootAddress}}/users/addresses
 Accept: application/json
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -143,7 +146,7 @@ Content-Type: application/json
 
 # FLUSH CACHE
 
-POST {{RiverBooks.Web_HostAddress}}/flushcache
+POST {{RootAddress}}/flushcache
 Accept: application/json
 Content-Type: application/json
 
@@ -154,7 +157,7 @@ Content-Type: application/json
 
 # LIST EMAILS
 
-GET {{RiverBooks.Web_HostAddress}}/emails
+GET {{RootAddress}}/emails
 Accept: application/json
 Authorization: Bearer {{token}}
 
@@ -162,14 +165,14 @@ Authorization: Bearer {{token}}
 
 # TOP SALES 1 - REACH IN REPORTING
 
-GET {{RiverBooks.Web_HostAddress}}/topsales?month=2&year=2024
+GET {{RootAddress}}/topsales?month=2&year=2024
 Accept: application/json
 
 ###
 
 # TOP SALES 2 - EVENT INGESTION CUSTOM DB
 
-GET {{RiverBooks.Web_HostAddress}}/topsales2?month=2&year=2024
+GET {{RootAddress}}/topsales2?month=2&year=2024
 Accept: application/json
 
 ###

@@ -63,7 +63,7 @@ internal static class UserEndpoints
     internal static async Task<IResult> LoginUserAsync(
         UserLoginRequest request,
         [FromServices] UserManager<ApplicationUser> userManager,
-        [FromServices] IJwtTokenHandler jwtTokenHAndler,
+        [FromServices] IJwtTokenHandler jwtTokenHandler,
         CancellationToken cancellationToken = default)
     {
         var user = await userManager.FindByEmailAsync(request.Email!);
@@ -79,7 +79,7 @@ internal static class UserEndpoints
             return TypedResults.Unauthorized();
         }
 
-        var token = jwtTokenHAndler.CreateToken(user.Id, user.UserName!, user.Email!);
+        var token = jwtTokenHandler.CreateToken(user.Id, user.Email!);
 
         return TypedResults.Ok(token);
     }

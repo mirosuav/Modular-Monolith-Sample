@@ -38,7 +38,7 @@ internal static class CartEndpoints
         [FromServices] IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken = default)
     {
-        var emailAddress = userClaimsProvider.GetClaim("EmailAddress");
+        var emailAddress = userClaimsProvider.GetEmailAddress();
 
         if (emailAddress is null)
             return TypedResults.Unauthorized();
@@ -56,7 +56,7 @@ internal static class CartEndpoints
         [FromServices] IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken = default)
     {
-        var emailAddress = userClaimsProvider.GetClaim("EmailAddress");
+        var emailAddress = userClaimsProvider.GetEmailAddress();
 
         if (emailAddress is null)
             return TypedResults.Unauthorized();
@@ -75,7 +75,7 @@ internal static class CartEndpoints
         [FromServices] IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken = default)
     {
-        var emailAddress = userClaimsProvider.GetClaim("EmailAddress");
+        var emailAddress = userClaimsProvider.GetEmailAddress();
 
         if (emailAddress is null)
             return TypedResults.Unauthorized();

@@ -16,39 +16,37 @@ public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProv
     {
         return new TokenValidationParameters
         {
-            ValidateIssuerSigningKey = true,
             ValidateLifetime = true,
-            ClockSkew = TimeSpan.FromMinutes(1),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero,
             IssuerSigningKey = CreateSecurityKey(configuration["Auth:JwtSecret"])
         };
     }
 
-    public string CreateToken(string userId, string userName, string userEmailAddress)
+    public string CreateToken(string userId, string userEmailAddress)
     {
         SymmetricSecurityKey securityKey = CreateSecurityKey(_configuration["Auth:JwtSecret"]);
         int tokenExpiration = _configuration.GetValue("Auth:TokenExpirationMin", 120);
+        var utcNow = _timeProvider.GetUtcNow().UtcDateTime;
 
         var claims = new Dictionary<string, object>
         {
-            [ClaimTypes.Name] = userName,
-            [ClaimTypes.Email] = userEmailAddress,
-            [ClaimTypes.NameIdentifier] = userId,
-            [ClaimTypes.Sid] = Guid.NewGuid().ToString()
+            [UserClaims.Email] = userEmailAddress,
+            [UserClaims.Id] = userId,
+            [UserClaims.TokenId] = Guid.NewGuid().ToString()
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Claims = claims,
-            IssuedAt = null,
-            NotBefore = _timeProvider.GetUtcNow().DateTime,
-            Expires = _timeProvider.GetUtcNow().AddMinutes(tokenExpiration).DateTime,
-            SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature)
+            IssuedAt = utcNow,
+            NotBefore = utcNow,
+            Expires = utcNow.AddMinutes(tokenExpiration),
+            SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256)
         };
 
-        var tokenHandler = new JsonWebTokenHandler
-        {
-            SetDefaultTimesOnTokenCreation = false
-        };
+        var tokenHandler = new JsonWebTokenHandler();
         return tokenHandler.CreateToken(tokenDescriptor);
     }
 

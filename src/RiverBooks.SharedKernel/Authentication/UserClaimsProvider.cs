@@ -13,8 +13,8 @@ public class UserClaimsProvider(IHttpContextAccessor httpContextAccessor) : IUse
     }
 
     public string? GetEmailAddress() =>
-        GetClaim(ClaimTypes.Email);
+        GetClaim(UserClaims.Email);
 
     public Guid? GetId() =>
-        Guid.TryParse(GetClaim(ClaimTypes.NameIdentifier), out var id) ? id : null;
+        Guid.TryParse(GetClaim(UserClaims.Id), out var id) ? id : null;
 }

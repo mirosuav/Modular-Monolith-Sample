@@ -28,7 +28,7 @@ public static class ModuleBootstrap
         services.AddScoped<OrderIngestionService>();
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list
-        mediatRAssemblies.Add(typeof(Marker).Assembly);
+        mediatRAssemblies.Add(typeof(IMarker).Assembly);
 
         logger.Information("{Module} module services registered", "Reporting");
         return services;

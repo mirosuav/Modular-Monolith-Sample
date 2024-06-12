@@ -1,3 +1,3 @@
 ﻿namespace RiverBooks.Books;
-internal class Marker { }
+internal interface IMarker;
 
