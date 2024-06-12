@@ -1,9 +1,10 @@
-﻿using RiverBooks.SharedKernel.Helpers;
+﻿using RiverBooks.SharedKernel;
+using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.Books;
 internal class Book
 {
-    public Guid Id { get; private set; } = Guid.NewGuid();
+    public Guid Id { get; private set; }
     public string Title { get; private set; } = string.Empty;
     public string Author { get; private set; } = string.Empty;
     public decimal Price { get; private set; }

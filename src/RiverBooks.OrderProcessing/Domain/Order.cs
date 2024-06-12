@@ -1,11 +1,12 @@
-﻿using RiverBooks.SharedKernel.DomainEvents;
+﻿using RiverBooks.SharedKernel;
+using RiverBooks.SharedKernel.DomainEvents;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RiverBooks.OrderProcessing.Domain;
 
 internal class Order : IHaveDomainEvents
 {
-    public Guid Id { get; private set; } = Guid.NewGuid();
+    public Guid Id { get; private set; }
     public Guid UserId { get; private set; }
     public Address ShippingAddress { get; private set; } = default!;
     public Address BillingAddress { get; private set; } = default!;
@@ -19,8 +20,6 @@ internal class Order : IHaveDomainEvents
 
     protected void RegisterDomainEvent(DomainEventBase domainEvent) => _domainEvents.Add(domainEvent);
     void IHaveDomainEvents.ClearDomainEvents() => _domainEvents.Clear();
-
-
 
     public DateTimeOffset DateCreated { get; private set; } = DateTimeOffset.Now;
 
@@ -36,6 +35,7 @@ internal class Order : IHaveDomainEvents
         {
             var order = new Order
             {
+                Id = SequentialGuid.NewGuid(),
                 UserId = userId,
                 ShippingAddress = shippingAddress,
                 BillingAddress = billingAddress

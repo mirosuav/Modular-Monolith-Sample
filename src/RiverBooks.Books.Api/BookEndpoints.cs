@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using RiverBooks.Books.Contracts;
+using RiverBooks.SharedKernel;
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.Books.Api;
@@ -48,10 +49,7 @@ internal static class BookEndpoints
         [FromServices] IBookService bookService,
         CancellationToken cancellationToken)
     {
-        var newBookDto = new BookDto(request.Id ?? Guid.NewGuid(), //TODO don't create Guid in code
-        request.Title,
-        request.Author,
-        request.Price);
+        var newBookDto = new BookDto(SequentialGuid.NewGuid(), request.Title, request.Author, request.Price);
 
         await bookService.CreateBookAsync(newBookDto);
         return TypedResults.Created($"{newBookDto.Id}", newBookDto);

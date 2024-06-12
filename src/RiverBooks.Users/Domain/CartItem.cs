@@ -1,7 +1,7 @@
-﻿using RiverBooks.SharedKernel.Helpers;
+﻿using RiverBooks.SharedKernel;
+using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.Users.Domain;
-
 public class CartItem
 {
     public CartItem(Guid bookId, string description, int quantity, decimal unitPrice)
@@ -16,7 +16,8 @@ public class CartItem
     {
         // EF 
     }
-    public Guid Id { get; private set; } = Guid.NewGuid();
+
+    public Guid Id { get; private set; } = SequentialGuid.NewGuid();
     public Guid BookId { get; private set; }
     public string Description { get; private set; } = string.Empty;
     public int Quantity { get; private set; }

@@ -79,7 +79,7 @@ internal static class UserEndpoints
             return TypedResults.Unauthorized();
         }
 
-        var token = jwtTokenHandler.CreateToken(user.Id, user.Email!);
+        var token = jwtTokenHandler.CreateToken(user.Id.ToString(), user.Email!);
 
         return TypedResults.Ok(token);
     }

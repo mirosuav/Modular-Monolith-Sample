@@ -11,15 +11,3 @@ public static class FluentValidationResultExtensions
         .ToList();
 }
 
-// TODO map error severity
-//public static ValidationSeverity FromSeverity(Severity severity)
-//{
-//    return severity switch
-//    {
-//        Severity.Error => ValidationSeverity.Error,
-//        Severity.Warning => ValidationSeverity.Warning,
-//        Severity.Info => ValidationSeverity.Info,
-//        _ => throw new ArgumentOutOfRangeException("severity", "Unexpected Severity"),
-//    };
-//}
-

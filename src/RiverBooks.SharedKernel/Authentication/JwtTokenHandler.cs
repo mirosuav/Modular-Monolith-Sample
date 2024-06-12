@@ -34,7 +34,7 @@ public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProv
         {
             [UserClaims.Email] = userEmailAddress,
             [UserClaims.Id] = userId,
-            [UserClaims.TokenId] = Guid.NewGuid().ToString()
+            [UserClaims.TokenId] = SequentialGuid.NewGuid().ToString()
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor

@@ -4,30 +4,27 @@ using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.Infrastructure.Data;
 
-
 public class EfApplicationUserRepository(UsersDbContext dbContext) : IApplicationUserRepository
 {
     private readonly UsersDbContext _dbContext = dbContext;
 
-    public Task<ApplicationUser> GetUserByIdAsync(Guid userId)
+    public Task<ApplicationUser?> GetUserByIdAsync(Guid userId)
     {
-        return _dbContext.ApplicationUsers
-          .SingleAsync(user => user.Id == userId.ToString());
+        return _dbContext.ApplicationUsers.FindAsync(userId).AsTask();
     }
 
-    public Task<ApplicationUser> GetUserWithAddressesByEmailAsync(string email)
+    public Task<ApplicationUser?> GetUserWithAddressesByEmailAsync(string email)
     {
         return _dbContext.ApplicationUsers
           .Include(user => user.Addresses)
-          .SingleAsync(user => user.Email == email);
-
+          .SingleOrDefaultAsync(user => user.Email == email);
     }
 
-    public Task<ApplicationUser> GetUserWithCartByEmailAsync(string email)
+    public Task<ApplicationUser?> GetUserWithCartByEmailAsync(string email)
     {
         return _dbContext.ApplicationUsers
           .Include(user => user.CartItems)
-          .SingleAsync(user => user.Email == email);
+          .SingleOrDefaultAsync(user => user.Email == email);
     }
 
     public Task SaveChangesAsync()

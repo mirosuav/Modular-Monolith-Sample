@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RiverBooks.Users.Domain;
 
-public class ApplicationUser : IdentityUser, IHaveDomainEvents
+public class ApplicationUser : IdentityUser<Guid>, IHaveDomainEvents
 {
     public string FullName { get; set; } = string.Empty;
 
@@ -20,8 +20,6 @@ public class ApplicationUser : IdentityUser, IHaveDomainEvents
 
     protected void RegisterDomainEvent(DomainEventBase domainEvent) => _domainEvents.Add(domainEvent);
     void IHaveDomainEvents.ClearDomainEvents() => _domainEvents.Clear();
-
-
 
     public void AddItemToCart(CartItem cartItem)
     {

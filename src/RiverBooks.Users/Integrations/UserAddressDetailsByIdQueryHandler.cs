@@ -18,16 +18,15 @@ public class UserAddressDetailsByIdQueryHandler(IReadOnlyUserStreetAddressReposi
         if (address is null)
             return Error.NotFound("No user address found");
 
-        Guid userId = Guid.Parse(address.UserId);
-
-        var details = new UserAddressDetails(userId,
-          address.Id,
-          address.StreetAddress.Street1,
-          address.StreetAddress.Street2,
-          address.StreetAddress.City,
-          address.StreetAddress.State,
-          address.StreetAddress.PostalCode,
-          address.StreetAddress.Country);
+        var details = new UserAddressDetails(
+                address.UserId,
+                address.Id,
+                address.StreetAddress.Street1,
+                address.StreetAddress.Street2,
+                address.StreetAddress.City,
+                address.StreetAddress.State,
+                address.StreetAddress.PostalCode,
+                address.StreetAddress.Country);
 
         return details;
     }

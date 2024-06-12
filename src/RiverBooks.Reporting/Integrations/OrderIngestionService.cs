@@ -44,6 +44,7 @@ END
 
     // TODO Reporting module currenlty uses Dapper to create table and store incoming events about
     // Books sales Refactor it to Use EfCore ReadModel approach
+    // Implement using IntegrationEvents and ReportingDB as read model
     public async Task AddOrUpdateMonthlyBookSalesAsync(BookSale sale)
     {
         if (!_ensureTableCreated) await CreateTableAsync();

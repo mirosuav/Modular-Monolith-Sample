@@ -13,12 +13,9 @@ internal class UserAddressIntegrationEventDispatcherHandler(
     private readonly IMediator _mediator = mediator;
     private readonly ILogger<UserAddressIntegrationEventDispatcherHandler> _logger = logger;
 
-    public async Task Handle(AddressAddedEvent notification,
-      CancellationToken ct)
+    public async Task Handle(AddressAddedEvent notification,  CancellationToken ct)
     {
-        Guid userId = Guid.Parse(notification.NewAddress.UserId);
-
-        var addressDetails = new UserAddressDetails(userId,
+        var addressDetails = new UserAddressDetails(notification.NewAddress.UserId,
           notification.NewAddress.Id,
           notification.NewAddress.StreetAddress.Street1,
           notification.NewAddress.StreetAddress.Street2,

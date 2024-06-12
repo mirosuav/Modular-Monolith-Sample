@@ -27,7 +27,7 @@ public class CheckoutCartHandler(IApplicationUserRepository userRepository,
                                item.Description))
           .ToList();
 
-        var createOrderCommand = new CreateOrderCommand(Guid.Parse(user.Id),
+        var createOrderCommand = new CreateOrderCommand(user.Id,
           request.ShippingAddressId,
           request.BillingAddressId,
           items);
@@ -37,7 +37,7 @@ public class CheckoutCartHandler(IApplicationUserRepository userRepository,
 
         if (!result.IsSuccess)
         {
-            return Resultable.Failure<Guid>(result.Errors);
+            return result.Errors;
         }
 
         user.ClearCart();
