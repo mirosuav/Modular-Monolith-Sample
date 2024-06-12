@@ -12,16 +12,8 @@ internal class BookDetailsQueryHandler(IBookService bookService) :
     public async Task<Resultable<BookDetailsResponse>> Handle(BookDetailsQuery request,
       CancellationToken cancellationToken)
     {
-        var book = await _bookService.GetBookByIdAsync(request.BookId);
+        var result = await _bookService.GetBookByIdAsync(request.BookId);
 
-        if (book is null)
-        {
-            return Error.NotFound("Book not found");
-        }
-
-        var response = new BookDetailsResponse(book.Id, book.Title, book.Author,
-                                  book.Price);
-
-        return response;
+        return result.Map(book => new BookDetailsResponse(book.Id, book.Title, book.Author, book.Price));
     }
 }

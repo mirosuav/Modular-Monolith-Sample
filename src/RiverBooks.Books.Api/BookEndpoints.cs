@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using RiverBooks.Books.Contracts;
+using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.Books.Api;
 
@@ -56,14 +57,13 @@ internal static class BookEndpoints
         return TypedResults.Created($"{newBookDto.Id}", newBookDto);
     }
 
-    internal static async Task<Results<Ok<BookDto>, NotFound>> GetBookAsync(
+    internal static async Task<IResult> GetBookAsync(
         Guid bookId,
         [FromServices] IBookService bookService,
         CancellationToken cancellationToken)
     {
-        return await bookService.GetBookByIdAsync(bookId) is BookDto book
-           ? TypedResults.Ok(book)
-           : TypedResults.NotFound();
+        return (await bookService.GetBookByIdAsync(bookId))
+            .ToHttpOk();
     }
 
     internal static async Task<IResult> UpdateBookPriceAsync(
@@ -72,9 +72,8 @@ internal static class BookEndpoints
             [FromServices] IBookService _bookService,
             CancellationToken cancellationToken)
     {
-        // Todo: check if exists
-        await _bookService.UpdateBookPriceAsync(bookId, newPrice);
-        return TypedResults.NoContent();
+        return (await _bookService.UpdateBookPriceAsync(bookId, newPrice))
+            .ToHttpNoContent();
     }
 
     internal static async Task<IResult> DeleteBookAsync(
@@ -82,8 +81,7 @@ internal static class BookEndpoints
             [FromServices] IBookService _bookService,
             CancellationToken cancellationToken)
     {
-        // Todo: check if exists
-        await _bookService.DeleteBookAsync(bookId);
-        return TypedResults.NoContent();
+        return (await _bookService.DeleteBookAsync(bookId))
+            .ToHttpNoContent();
     }
 }

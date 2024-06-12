@@ -1,34 +1,41 @@
 ﻿
+using RiverBooks.SharedKernel.Helpers;
+
 namespace RiverBooks.Books;
 
 internal class BookService(IBookRepository bookRepository) : IBookService
 {
     private readonly IBookRepository _bookRepository = bookRepository;
 
-    public async Task CreateBookAsync(BookDto newBook)
+    public async Task<Resultable> CreateBookAsync(BookDto newBook)
     {
         var book = new Book(newBook.Id, newBook.Title, newBook.Author, newBook.Price);
 
         await _bookRepository.AddAsync(book);
         await _bookRepository.SaveChangesAsync();
+
+        return Resultable.Success();
     }
 
-    public async Task DeleteBookAsync(Guid id)
+    public async Task<Resultable> DeleteBookAsync(Guid id)
     {
         var bookToDelete = await _bookRepository.GetByIdAsync(id);
 
-        if (bookToDelete is not null)
-        {
-            await _bookRepository.DeleteAsync(bookToDelete);
-            await _bookRepository.SaveChangesAsync();
-        }
+        if (bookToDelete is null)
+            return Error.NotFound();
+
+        await _bookRepository.DeleteAsync(bookToDelete);
+        await _bookRepository.SaveChangesAsync();
+
+        return Resultable.Success();
     }
 
-    public async Task<BookDto> GetBookByIdAsync(Guid id)
+    public async Task<Resultable<BookDto>> GetBookByIdAsync(Guid id)
     {
         var book = await _bookRepository.GetByIdAsync(id);
 
-        // TODO: handle not found case
+        if (book is null)
+            return Error.NotFound();
 
         return new BookDto(book!.Id, book.Title, book.Author, book.Price);
     }
@@ -42,15 +49,19 @@ internal class BookService(IBookRepository bookRepository) : IBookService
         return books;
     }
 
-    public async Task UpdateBookPriceAsync(Guid bookId, decimal newPrice)
+    public async Task<Resultable> UpdateBookPriceAsync(Guid bookId, decimal newPrice)
     {
-        // validate the price
+        if (newPrice <= decimal.Zero)
+            return Error.Validation("Invalid price", "Price must be positive number");
 
         var book = await _bookRepository.GetByIdAsync(bookId);
 
-        // handle not found case
+        if (book is null)
+            return Error.NotFound();
 
-        book!.UpdatePrice(newPrice);
+        book.UpdatePrice(newPrice);
         await _bookRepository.SaveChangesAsync();
+
+        return Resultable.Success();
     }
 }

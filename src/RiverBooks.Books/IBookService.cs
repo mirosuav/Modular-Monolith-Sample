@@ -1,9 +1,11 @@
-﻿namespace RiverBooks.Books;
+﻿using RiverBooks.SharedKernel.Helpers;
+
+namespace RiverBooks.Books;
 internal interface IBookService
 {
     Task<List<BookDto>> ListBooksAsync();
-    Task<BookDto> GetBookByIdAsync(Guid id);
-    Task CreateBookAsync(BookDto newBook);
-    Task DeleteBookAsync(Guid id);
-    Task UpdateBookPriceAsync(Guid bookId, decimal newPrice);
+    Task<Resultable<BookDto>> GetBookByIdAsync(Guid id);
+    Task<Resultable> CreateBookAsync(BookDto newBook);
+    Task<Resultable> DeleteBookAsync(Guid id);
+    Task<Resultable> UpdateBookPriceAsync(Guid bookId, decimal newPrice);
 }
