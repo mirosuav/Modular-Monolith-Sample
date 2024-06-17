@@ -13,10 +13,8 @@ internal class ListOrdersForUserQueryHandler(IOrderRepository orderRepository) :
 
     public async Task<Resultable<List<OrderSummary>>> Handle(ListOrdersForUserQuery request, CancellationToken cancellationToken)
     {
-        // look up UserId for EmailAddress
-
-        // TODO: Filter by User
-        var orders = await _orderRepository.ListAsync(cancellationToken);
+        var orders = await _orderRepository
+            .ListForUserAsync(request.UserId, cancellationToken);
 
         var summaries = orders.Select(o => new OrderSummary
         {

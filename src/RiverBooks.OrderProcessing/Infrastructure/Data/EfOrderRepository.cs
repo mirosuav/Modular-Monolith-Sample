@@ -20,6 +20,14 @@ internal class EfOrderRepository(OrderProcessingDbContext dbContext) : IOrderRep
           .ToListAsync(cancellationToken);
     }
 
+    public async Task<int> DeleteForUserAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Orders
+          .Include(o => o.OrderItems)
+          .Where(o => o.UserId == userId)
+          .ExecuteDeleteAsync(cancellationToken);
+    }
+
     public async Task<List<Order>> ListForUserAsync(Guid userId, CancellationToken cancellationToken)
     {
         return await _dbContext.Orders

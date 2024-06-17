@@ -27,12 +27,12 @@ internal static class OrderProcessingEndpoints
         [FromServices] IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken)
     {
-        var emailAddress = userClaimsProvider.GetClaim("EmailAddress");
+        var userId = userClaimsProvider.GetId();
 
-        if (emailAddress is null)
+        if (userId is null)
             return TypedResults.Unauthorized();
 
-        var query = new ListOrdersForUserQuery(emailAddress!);
+        var query = new ListOrdersForUserQuery(userId.Value);
 
         var result = await sender.Send(query, cancellationToken);
 

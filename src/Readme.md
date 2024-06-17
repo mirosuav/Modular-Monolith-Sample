@@ -3,7 +3,7 @@
 
 Inspired by 
 Steven Ardalis Smith 
-Modular Monoliths course on Domtrain.com
+Modular Monoliths course
 
 ### Modifications
 
@@ -15,9 +15,9 @@ Modular Monoliths course on Domtrain.com
 - Use MediatR
 - Uses Registration/Login with JWT Bearer authentication scheme
 - Replaced MongoDB based outbox pattern with SqlServer based
+- Use client generate incrementa UUIDv7 as guids
 
 TODO:
-- Use client generate incrementa UUIDv7 as guids
 - Use strongly typed Ids
 
 

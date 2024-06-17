@@ -22,16 +22,10 @@ internal class DeleteUserOrdersCommandHandler(
 
     public async Task<Resultable> Handle(DeleteUserOrdersCommand request, CancellationToken cancellationToken)
     {
-        var userOrders = await orderRepository.ListForUserAsync(request.UserId, cancellationToken);
+        var deletedOrdersCount = await orderRepository.DeleteForUserAsync(request.UserId, cancellationToken);
 
-        if (userOrders.Count == 0)
-            return Resultable.Success();
-
-        orderRepository.Remove([..userOrders]);
-
-        await orderRepository.SaveChangesAsync(cancellationToken);
-
-        logger.LogInformation("Orders for user {userId} removed", request.UserId);
+        if (deletedOrdersCount > 0)
+            logger.LogInformation("Orders for user {userId} removed", request.UserId);
 
         return Resultable.Success();
     }

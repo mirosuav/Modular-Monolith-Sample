@@ -8,5 +8,6 @@ internal interface IOrderRepository
     void Add(Order order);
     void Remove(params Order[] orders);
     Task<List<Order>> ListForUserAsync(Guid userId, CancellationToken cancellationToken);
+    Task<int> DeleteForUserAsync(Guid userId, CancellationToken cancellationToken);
     Task SaveChangesAsync(CancellationToken cancellationToken);
 }

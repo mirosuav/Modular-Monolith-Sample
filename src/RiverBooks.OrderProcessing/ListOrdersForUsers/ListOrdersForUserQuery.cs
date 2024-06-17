@@ -4,7 +4,7 @@ using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.OrderProcessing.ListOrdersForUser;
 
-public record ListOrdersForUserQuery(string EmailAddress) :
+public record ListOrdersForUserQuery(Guid UserId) :
   IRequest<Resultable<List<OrderSummary>>>;
 
 

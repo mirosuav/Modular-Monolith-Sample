@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Retry;
 using RiverBooks.EmailSending.Domain;
 
 namespace RiverBooks.EmailSending.EmailBackgroundService;
@@ -7,7 +9,7 @@ internal class DefaultSendEmailsFromOutboxService(
         IGetEmailsFromOutboxService outboxService,
         IMarkEmailProcessed outboxProcessedService,
         ISendEmail emailSender,
-        ILogger<DefaultSendEmailsFromOutboxService> logger) 
+        ILogger<DefaultSendEmailsFromOutboxService> logger)
     : ISendEmailsFromOutboxService
 {
     private readonly IGetEmailsFromOutboxService _outboxService = outboxService;
@@ -17,28 +19,35 @@ internal class DefaultSendEmailsFromOutboxService(
 
     public async Task CheckForAndSendEmails(CancellationToken cancellationToken)
     {
-        try
-        {
-            var result = await _outboxService.GetUnprocessedEmailEntity(cancellationToken);
+        var result = await _outboxService.GetUnprocessedEmailEntity(cancellationToken);
 
-            if (!result.IsSuccess) return;
+        if (!result.IsSuccess) return;
 
-            var emailEntity = result.Value;
+        var emailEntity = result.Value;
 
+        // TODO configure it in bootsrtap
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddRetry(new RetryStrategyOptions
+            {
+                ShouldHandle = new PredicateBuilder().Handle<Exception>(),
+                Delay = TimeSpan.FromSeconds(2),
+                BackoffType = DelayBackoffType.Exponential,
+                UseJitter = true,
+                MaxRetryAttempts = 3
+            })
+            .AddTimeout(TimeSpan.FromSeconds(30))
+            .Build();
+
+        await pipeline.ExecuteAsync(async (ct) =>
             await _emailSender.SendEmailAsync(emailEntity.To,
               emailEntity.From,
               emailEntity.Subject,
               emailEntity.Body,
-              cancellationToken);
+              ct)
+            , cancellationToken);
 
-            await outboxProcessedService.MarkEmailSend(emailEntity.Id, cancellationToken);
+        await outboxProcessedService.MarkEmailSend(emailEntity.Id, cancellationToken);
 
-            _logger.LogInformation("Processed email [{id}].", emailEntity.Id);
-        }
-        finally
-        {
-            _logger.LogInformation("Sleeping...");
-        }
-
+        _logger.LogInformation("Processed email [{id}].", emailEntity.Id);
     }
 }

@@ -1,23 +1,27 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using RiverBooks.EmailSending.Contracts;
 using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.OrderProcessing.Domain;
 
-internal class SendConfirmationEmailOrderCreatedEventHandler(IMediator mediator) : 
+internal class SendConfirmationEmailOrderCreatedEventHandler(
+    ISender sender, 
+    ILogger<SendConfirmationEmailOrderCreatedEventHandler> logger) : 
     INotificationHandler<OrderCreatedEvent>
 {
-    private readonly IMediator _mediator = mediator;
+    private readonly ISender _sender = sender;
+    private readonly ILogger<SendConfirmationEmailOrderCreatedEventHandler> _logger = logger;
 
     public async Task Handle(OrderCreatedEvent notification, CancellationToken ct)
     {
         var userByIdQuery = new UserDetailsByIdQuery(notification.Order.UserId);
 
-        var result = await _mediator.Send(userByIdQuery, ct);
+        var result = await _sender.Send(userByIdQuery, ct);
 
         if (!result.IsSuccess)
         {
-            // TODO: Log the error
+            _logger.LogError("Could not retreive user details from User module.");
             return;
         }
         string userEmail = result.Value.EmailAddress;
@@ -30,9 +34,9 @@ internal class SendConfirmationEmailOrderCreatedEventHandler(IMediator mediator)
             Body = $"You bought {notification.Order.OrderItems.Count} items."
         };
 
-        var resultGuid = await _mediator.Send(command, ct);
+        var emailId = await _sender.Send(command, ct);
 
-        // TODO: Do something with emailId
+        _logger.LogInformation("Email with id {EmailId} was send to processing outbox.", emailId);
 
     }
 }
