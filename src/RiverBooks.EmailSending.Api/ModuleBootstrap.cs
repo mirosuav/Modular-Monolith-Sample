@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Polly;
+using Polly.Retry;
 using RiverBooks.EmailSending.Data;
 using RiverBooks.EmailSending.Domain;
 using RiverBooks.EmailSending.EmailBackgroundService;
@@ -32,7 +34,7 @@ public static class ModuleBootstrap
         services.AddDbContext<EmailSendingDbContext>(options => options.UseSqlServer(connectionString));
 
         // Add module services
-        services.AddTransient<ISendEmail, LoggingEmailSender>();
+        services.AddTransient<IEmailSender, LoggingEmailSender>();
         services.AddTransient<IQueueEmailsInOutboxService, EmailOutboxRepository>();
         services.AddTransient<IGetEmailsFromOutboxService, EmailOutboxRepository>();
         services.AddTransient<IMarkEmailProcessed, EmailOutboxRepository>();
@@ -40,6 +42,20 @@ public static class ModuleBootstrap
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list
         mediatRAssemblies.Add(typeof(IMarker).Assembly);
+
+        services.AddResiliencePipeline(typeof(IEmailSender), static builder =>
+        {
+            builder.AddRetry(new RetryStrategyOptions
+            {
+                ShouldHandle = new PredicateBuilder().Handle<Exception>(),
+                Delay = TimeSpan.FromSeconds(1.5),
+                BackoffType = DelayBackoffType.Exponential,
+                UseJitter = true,
+                MaxRetryAttempts = 3
+            });
+
+            builder.AddTimeout(TimeSpan.FromSeconds(5));
+        });
 
         // Add BackgroundWorker
         services.AddHostedService<EmailSendingBackgroundService>();

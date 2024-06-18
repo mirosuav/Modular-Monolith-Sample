@@ -2,7 +2,10 @@
 
 namespace RiverBooks.EmailSending.EmailBackgroundService;
 
-public class LoggingEmailSender(ILogger<LoggingEmailSender> logger) : ISendEmail
+/// <summary>
+/// Some testing email sender - sends emails to log
+/// </summary>
+public class LoggingEmailSender(ILogger<LoggingEmailSender> logger) : IEmailSender
 {
     private readonly ILogger<LoggingEmailSender> _logger = logger;
 
