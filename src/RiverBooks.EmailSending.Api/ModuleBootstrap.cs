@@ -54,7 +54,7 @@ public static class ModuleBootstrap
                 MaxRetryAttempts = 3
             });
 
-            builder.AddTimeout(TimeSpan.FromSeconds(5));
+            builder.AddTimeout(TimeSpan.FromSeconds(15));
         });
 
         // Add BackgroundWorker

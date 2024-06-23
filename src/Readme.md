@@ -22,13 +22,26 @@ TODO:
 
 
 ### Update databases in each module
-
-`dotnet ef database update -p RiverBooks.Users -c UsersDbContext -s RiverBooks.Web`
-`dotnet ef database update -p RiverBooks.OrderProcessing -c OrderProcessingDbContext -s RiverBooks.Web`
-`dotnet ef database update -p RiverBooks.EmailSending -c EmailSendingDbContext -s RiverBooks.Web`
-`dotnet sql-cache create "Server=(local);Integrated Security=true;Initial Catalog=RiverBooks;" OrderProcessing UserAdressesCache`
-`dotnet ef database update -p RiverBooks.Books -c BookDbContext -s RiverBooks.Web`
+```
+dotnet ef database update -p RiverBooks.Users -c UsersDbContext -s RiverBooks.Web
+dotnet ef database update -p RiverBooks.OrderProcessing -c OrderProcessingDbContext -s RiverBooks.Web
+dotnet ef database update -p RiverBooks.EmailSending -c EmailSendingDbContext -s RiverBooks.Web
+dotnet sql-cache create "Server=(local);Integrated Security=true;Initial Catalog=RiverBooks;Trust Server Certificate=True" OrderProcessing UserAdressesCache
+dotnet ef database update -p RiverBooks.Books -c BookDbContext -s RiverBooks.Web`
+```
 
 ### Generate EF migrations
 
-`dotnet ef migrations add Initial -p RiverBooks.EmailSending -c EmailSendingDbContext -s RiverBooks.Web -o Data\Migrations`
+```
+dotnet ef migrations add Initial -p RiverBooks.EmailSending -c EmailSendingDbContext -s RiverBooks.Web -o Infrastructure\Migrations
+dotnet ef migrations add Initial -p RiverBooks.Users -c UsersDbContext -s RiverBooks.Web -o Infrastructure\Migrations
+dotnet ef migrations add Initial -p RiverBooks.OrderProcessing -c OrderProcessingDbContext -s RiverBooks.Web -o Infrastructure\Migrations
+dotnet ef migrations add Initial -p RiverBooks.Books -c BookDbContext -s RiverBooks.Web -o Infrastructure\Migrations
+```
+
+
+
+
+
+
+

@@ -125,7 +125,6 @@ internal static class UserEndpoints
         return result.ToHttpOk();
     }
 
-
     internal static async Task<IResult> DeleteUserAsync(
         [FromServices] IUserClaimsProvider userClaimsProvider,
         [FromServices] ISender sender,
@@ -133,10 +132,10 @@ internal static class UserEndpoints
     {
         var userId = userClaimsProvider.GetId();
 
-        if (userId is null)
+        if (userId is null or [])
             return TypedResults.Unauthorized();
 
-        var command = new DeleteUserCommand(userId.Value);
+        var command = new DeleteUserCommand(userId);
 
         var result = await sender.Send(command, cancellationToken);
 

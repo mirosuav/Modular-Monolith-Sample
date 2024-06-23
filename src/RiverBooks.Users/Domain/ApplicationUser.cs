@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RiverBooks.Users.Domain;
 
-public class ApplicationUser : IdentityUser<Guid>, IHaveDomainEvents
+public class ApplicationUser : IdentityUser<string>, IHaveDomainEvents
 {
     public string FullName { get; set; } = string.Empty;
 

@@ -4,9 +4,9 @@ using System.Reflection;
 
 namespace RiverBooks.EmailSending.Data;
 
-internal class EmailSendingDbContext(DbContextOptions<EmailSendingDbContext> options) : DbContext(options)
+public class EmailSendingDbContext(DbContextOptions<EmailSendingDbContext> options) : DbContext(options)
 {
-    internal DbSet<EmailOutboxEntity> EmailOutboxItems { get; set; }
+    public DbSet<EmailOutboxEntity> EmailOutboxItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

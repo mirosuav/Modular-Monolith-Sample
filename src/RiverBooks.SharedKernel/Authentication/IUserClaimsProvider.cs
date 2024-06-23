@@ -4,5 +4,5 @@ public interface IUserClaimsProvider
 {
     string? GetClaim(string claimType);
     string? GetEmailAddress();
-    Guid? GetId();
+    string? GetId();
 }

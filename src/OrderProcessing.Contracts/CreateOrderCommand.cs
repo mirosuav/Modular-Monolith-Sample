@@ -4,7 +4,7 @@ using RiverBooks.SharedKernel.Helpers;
 
 namespace OrderProcessing.Contracts;
 
-public record CreateOrderCommand(Guid UserId,
+public record CreateOrderCommand(string UserId,
                                  Guid ShippingAddressId,
                                  Guid BillingAddressId,
                                  List<OrderItemDetails> OrderItems) :

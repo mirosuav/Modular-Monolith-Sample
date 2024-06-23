@@ -22,5 +22,8 @@
 		<ProjectReference Include="..\RiverBooks.EmailSending.Contracts\RiverBooks.EmailSending.Contracts.csproj" />
 		<ProjectReference Include="..\RiverBooks.Users.Contracts\RiverBooks.Users.Contracts.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Infrastructure\Data\Migrations\" />
+	</ItemGroup>
 
 </Project>

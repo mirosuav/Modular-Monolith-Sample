@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using RiverBooks.EmailSending.Contracts;
+using RiverBooks.SharedKernel;
 using RiverBooks.SharedKernel.Extensions;
 using RiverBooks.SharedKernel.Helpers;
 using RiverBooks.Users.Domain;
@@ -17,6 +18,7 @@ public class CreateUserCommandHandler(UserManager<ApplicationUser> userManager,
     {
         var newUser = new ApplicationUser
         {
+            Id = SequentialGuid.NewHumanReadableId(),
             Email = command.Email,
             UserName = command.Email
         };

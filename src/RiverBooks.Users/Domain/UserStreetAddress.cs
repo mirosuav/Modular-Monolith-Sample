@@ -5,16 +5,16 @@ namespace RiverBooks.Users.Domain;
 
 public class UserStreetAddress
 {
-    public UserStreetAddress(Guid userId, Address streetAddress)
+    public UserStreetAddress(string userId, Address streetAddress)
     {
-        UserId = PassOrThrow.IfEmpty(userId);
+        UserId = PassOrThrow.IfNullOrWhitespace(userId);
         StreetAddress = PassOrThrow.IfNull(streetAddress);
     }
 
     private UserStreetAddress() { } // EF
 
     public Guid Id { get; private set; } = SequentialGuid.NewGuid();
-    public Guid UserId { get; private set; } = SequentialGuid.Empty;
+    public string UserId { get; private set; } = string.Empty;
     public Address StreetAddress { get; private set; } = default!;
 }
 

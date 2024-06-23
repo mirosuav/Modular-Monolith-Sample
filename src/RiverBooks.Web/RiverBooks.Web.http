@@ -1,6 +1,7 @@
 
 @RootAddress=https://localhost:7179
 
+
 ###
 
 # CREATE USER
@@ -29,7 +30,9 @@ Content-Type: application/json
 
 ###
 
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHRlc3QuY29tIiwiSWQiOiI4ZGZjNmQzZS0zNDYyLTQ1ZmEtOWM2Zi1kYjhlZDYxYjdkMGYiLCJzaWQiOiI2ZjBhYmE2MS1kNDE1LTQ0ZWQtYmM0My0xYWZlOWNiMDJjZWQiLCJleHAiOjE3MTgyMzIzMzMsImlhdCI6MTcxODIyNTEzMywibmJmIjoxNzE4MjI1MTMzfQ.L1E-c9LCmMfdq7kIFJc42TO6_VA4wDqXhdj7Do4gHE0
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHRlc3QuY29tIiwiSWQiOiIwcjM4YjlveWFhNno2eHZ4cm5ndG5wdGNvIiwic2lkIjoiMDY2Nzg5OTUtMmU2My03NDI1LTgwMDAtZGI1ODhmYzg2Y2I4IiwiZXhwIjoxNzE5MTg2ODAyLCJpYXQiOjE3MTkxNzk2MDIsIm5iZiI6MTcxOTE3OTYwMn0.Z8zxYv5G6w8RS6gzf4_4StQYBHrJDisWseCDtnIvgSI
+
+# GET ALL BOOKS
 
 GET {{RootAddress}}/books
 Accept: application/json
@@ -50,7 +53,6 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "id": "b89f6cd7-4693-457b-9009-02205dbbfe45",
   "title": "Modular Monoliths - Getting Started",
   "author": "Steve Smith",
   "price": 29.99
@@ -65,13 +67,13 @@ Authorization: Bearer {{token}}
 
 ###
 
-DELETE {{RootAddress}}/books/b89f6cd7-4693-457b-9009-02205dbbfe45
+DELETE {{RootAddress}}/books/0667899b-1c4b-72eb-8000-d6b033eb8703
 Accept: application/json
 Authorization: Bearer {{token}}
 
 ###
 
-POST {{RootAddress}}/books/b89f6cd7-4693-457b-9009-02205dbbfe45/pricehistory
+POST {{RootAddress}}/books/066789a2-919f-7a94-8000-07218a775351/pricehistory
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -86,8 +88,8 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "bookId":"a89f6cd7-4693-457b-9009-02205dbbfe45",
-  "quantity":10
+  "bookId":"e4fa19bf-6981-4e50-a542-7c9b26e9ec31",
+  "quantity":5
 }
 
 ###
@@ -113,8 +115,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "shippingAddressId":"1184ecab-f236-43e9-a48c-a5b9bc59ad11",
-  "billingAddressId":"1184ecab-f236-43e9-a48c-a5b9bc59ad11"
+  "shippingAddressId":"066789ba-6d0b-7b84-8000-3d0cdf035b5b",
+  "billingAddressId":"066789ba-6d0b-7b84-8000-3d0cdf035b5b"
 }
 
 ###

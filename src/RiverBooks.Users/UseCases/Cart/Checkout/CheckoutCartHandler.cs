@@ -33,6 +33,7 @@ public class CheckoutCartHandler(IApplicationUserRepository userRepository,
           items);
 
         // TODO: Consider replacing with a message-based approach for perf reasons
+#warning This is not working
         var result = await _mediator.Send(createOrderCommand, cancellationToken); // synchronous
 
         if (!result.IsSuccess)

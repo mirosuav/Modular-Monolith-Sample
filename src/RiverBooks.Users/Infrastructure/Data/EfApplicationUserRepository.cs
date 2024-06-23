@@ -8,7 +8,7 @@ public class EfApplicationUserRepository(UsersDbContext dbContext) : IApplicatio
 {
     private readonly UsersDbContext _dbContext = dbContext;
 
-    public Task<ApplicationUser?> GetUserByIdAsync(Guid userId)
+    public Task<ApplicationUser?> GetUserByIdAsync(string userId)
     {
         return _dbContext.ApplicationUsers.FindAsync(userId).AsTask();
     }

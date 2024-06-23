@@ -2,6 +2,8 @@
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.Users.UseCases.User.AddAddress;
+
+// TODO Use UserId instead of EmailAddress
 public record AddAddressToUserCommand(string EmailAddress,
                       string Street1,
                       string Street2,

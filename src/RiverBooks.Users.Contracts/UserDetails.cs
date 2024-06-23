@@ -1,3 +1,3 @@
 ﻿namespace RiverBooks.Users.Contracts;
 
-public record UserDetails(Guid UserId, string EmailAddress);
+public record UserDetails(string UserId, string EmailAddress);

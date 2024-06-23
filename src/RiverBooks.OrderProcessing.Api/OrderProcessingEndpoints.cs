@@ -29,10 +29,10 @@ internal static class OrderProcessingEndpoints
     {
         var userId = userClaimsProvider.GetId();
 
-        if (userId is null)
+        if (userId is null or [])
             return TypedResults.Unauthorized();
 
-        var query = new ListOrdersForUserQuery(userId.Value);
+        var query = new ListOrdersForUserQuery(userId);
 
         var result = await sender.Send(query, cancellationToken);
 

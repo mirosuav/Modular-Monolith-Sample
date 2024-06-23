@@ -14,5 +14,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\RiverBooks.Books.Contracts\RiverBooks.Books.Contracts.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Infrastructure\Migrations\" />
+	</ItemGroup>
 
 </Project>

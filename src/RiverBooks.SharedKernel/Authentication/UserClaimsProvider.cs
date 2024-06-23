@@ -15,6 +15,6 @@ public class UserClaimsProvider(IHttpContextAccessor httpContextAccessor) : IUse
     public string? GetEmailAddress() =>
         GetClaim(UserClaims.Email);
 
-    public Guid? GetId() =>
-        Guid.TryParse(GetClaim(UserClaims.Id), out var id) ? id : null;
+    public string? GetId() =>
+        GetClaim(UserClaims.Id);
 }

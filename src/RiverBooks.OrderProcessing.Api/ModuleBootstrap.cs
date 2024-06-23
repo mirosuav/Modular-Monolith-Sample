@@ -43,7 +43,7 @@ public static class ModuleBootstrap
         services.AddScoped<IOrderAddressCache, ReadThroughOrderAddressCache>();
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list
-        mediatRAssemblies.Add(typeof(ModuleBootstrap).Assembly);
+        mediatRAssemblies.Add(typeof(IMarker).Assembly);
 
         logger.Information("{Module} module services registered", "OrderProcessing");
 

@@ -10,11 +10,11 @@ using RiverBooks.Users.Infrastructure.Data;
 
 #nullable disable
 
-namespace RiverBooks.Users.Data.Migrations
+namespace RiverBooks.Users.Infrastructure.Migrations
 {
-  [DbContext(typeof(UsersDbContext))]
-    [Migration("20240218185916_UserAddresses")]
-    partial class UserAddresses
+    [DbContext(typeof(UsersDbContext))]
+    [Migration("20240623214158_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,7 +22,7 @@ namespace RiverBooks.Users.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("Users")
-                .HasAnnotation("ProductVersion", "8.0.1")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -91,11 +91,6 @@ namespace RiverBooks.Users.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("nvarchar(21)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -147,10 +142,6 @@ namespace RiverBooks.Users.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", "Users");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -234,7 +225,63 @@ namespace RiverBooks.Users.Data.Migrations
                     b.ToTable("AspNetUserTokens", "Users");
                 });
 
-            modelBuilder.Entity("RiverBooks.Users.CartItem", b =>
+            modelBuilder.Entity("RiverBooks.Users.Domain.ApplicationUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ApplicationUsers", "Users");
+                });
+
+            modelBuilder.Entity("RiverBooks.Users.Domain.CartItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -263,7 +310,7 @@ namespace RiverBooks.Users.Data.Migrations
                     b.ToTable("CartItem", "Users");
                 });
 
-            modelBuilder.Entity("RiverBooks.Users.UserStreetAddress", b =>
+            modelBuilder.Entity("RiverBooks.Users.Domain.UserStreetAddress", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -275,7 +322,7 @@ namespace RiverBooks.Users.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.ComplexProperty<Dictionary<string, object>>("StreetAddress", "RiverBooks.Users.UserStreetAddress.StreetAddress#Address", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("StreetAddress", "RiverBooks.Users.Domain.UserStreetAddress.StreetAddress#Address", b1 =>
                         {
                             b1.IsRequired();
 
@@ -309,17 +356,6 @@ namespace RiverBooks.Users.Data.Migrations
                     b.HasIndex("ApplicationUserId");
 
                     b.ToTable("UserStreetAddress", "Users");
-                });
-
-            modelBuilder.Entity("RiverBooks.Users.ApplicationUser", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -373,21 +409,21 @@ namespace RiverBooks.Users.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RiverBooks.Users.CartItem", b =>
+            modelBuilder.Entity("RiverBooks.Users.Domain.CartItem", b =>
                 {
-                    b.HasOne("RiverBooks.Users.ApplicationUser", null)
+                    b.HasOne("RiverBooks.Users.Domain.ApplicationUser", null)
                         .WithMany("CartItems")
                         .HasForeignKey("ApplicationUserId");
                 });
 
-            modelBuilder.Entity("RiverBooks.Users.UserStreetAddress", b =>
+            modelBuilder.Entity("RiverBooks.Users.Domain.UserStreetAddress", b =>
                 {
-                    b.HasOne("RiverBooks.Users.ApplicationUser", null)
+                    b.HasOne("RiverBooks.Users.Domain.ApplicationUser", null)
                         .WithMany("Addresses")
                         .HasForeignKey("ApplicationUserId");
                 });
 
-            modelBuilder.Entity("RiverBooks.Users.ApplicationUser", b =>
+            modelBuilder.Entity("RiverBooks.Users.Domain.ApplicationUser", b =>
                 {
                     b.Navigation("Addresses");
 

@@ -4,17 +4,20 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RiverBooks.OrderProcessing.Infrastructure.Data;
 
 #nullable disable
 
-namespace RiverBooks.OrderProcessing.Infrastructure.Data.Migrations
+namespace RiverBooks.OrderProcessing.Infrastructure.Migrations
 {
     [DbContext(typeof(OrderProcessingDbContext))]
-    partial class OrderProcessingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240623214108_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,8 +35,9 @@ namespace RiverBooks.OrderProcessing.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("DateCreated")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.ComplexProperty<Dictionary<string, object>>("BillingAddress", "RiverBooks.OrderProcessing.Domain.Order.BillingAddress#Address", b1 =>
                         {

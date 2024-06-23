@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace RiverBooks.EmailSending.Data.Migrations
+namespace RiverBooks.EmailSending.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
