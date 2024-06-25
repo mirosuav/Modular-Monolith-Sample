@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using Nito.AsyncEx;
 using RiverBooks.OrderProcessing.Domain;
 using RiverBooks.OrderProcessing.Interfaces;
 using RiverBooks.SharedKernel.Helpers;
@@ -15,18 +14,16 @@ internal class ReadThroughOrderAddressCache(
     private readonly SqlServerOrderAddressCache _addressCache = addressCache;
     private readonly IMediator _mediator = mediator;
     private readonly ILogger<ReadThroughOrderAddressCache> _logger = logger;
-    private readonly AsyncLock cacheAccessMonitor = new();
+    private static readonly SemaphoreSlim cacheAccessMonitor = new(1, 1);
 
     public async Task<Resultable<OrderAddress>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         // Read user address from cache
-        var result = await _addressCache.GetByIdAsync(id, cancellationToken);
-        if (result.IsSuccess)
-            return result;
+        await cacheAccessMonitor.WaitAsync(cancellationToken);
 
-        using (await cacheAccessMonitor.LockAsync(cancellationToken))
+        try
         {
-            result = await _addressCache.GetByIdAsync(id, cancellationToken);
+            var result = await _addressCache.GetByIdAsync(id, cancellationToken);
             if (result.IsSuccess)
                 return result;
 
@@ -47,17 +44,28 @@ internal class ReadThroughOrderAddressCache(
                                           dto.Country);
 
                 var orderAddress = new OrderAddress(dto.AddressId, address);
-                await StoreAsync(orderAddress, cancellationToken);
+                await _addressCache.StoreAsync(orderAddress, cancellationToken);
                 return orderAddress;
             }
-        }
 
-        return Error.NotFound("Could not retreive user address");
+            return Error.NotFound("Could not retreive user address");
+        }
+        finally
+        {
+            cacheAccessMonitor.Release();
+        }
     }
 
     public async Task<Resultable> StoreAsync(OrderAddress orderAddress, CancellationToken cancellationToken)
     {
-        using var _ = await cacheAccessMonitor.LockAsync(cancellationToken);
-        return await _addressCache.StoreAsync(orderAddress, cancellationToken);
+        await cacheAccessMonitor.WaitAsync(cancellationToken);
+        try
+        {
+            return await _addressCache.StoreAsync(orderAddress, cancellationToken);
+        }
+        finally
+        {
+            cacheAccessMonitor.Release();
+        }
     }
 }

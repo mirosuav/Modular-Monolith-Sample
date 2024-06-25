@@ -11,8 +11,8 @@ public class UsersDbContext(DbContextOptions<UsersDbContext> options, IDomainEve
 {
     private readonly IDomainEventDispatcher? _dispatcher = dispatcher;
 
-    public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-    public DbSet<UserStreetAddress> UserStreetAddresses { get; set; }
+    public DbSet<ApplicationUser> ApplicationUsers { get; set; } = null!;
+    public DbSet<UserStreetAddress> UserStreetAddresses { get; set; } = null!;
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

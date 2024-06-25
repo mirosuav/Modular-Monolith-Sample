@@ -19,4 +19,8 @@
     <ProjectReference Include="..\RiverBooks.Users.Api\RiverBooks.Users.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="MediatR" Version="12.3.0" />
+  </ItemGroup>
+
 </Project>

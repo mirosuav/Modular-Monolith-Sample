@@ -5,7 +5,7 @@ namespace RiverBooks.Books.Data;
 
 internal class BookDbContext(DbContextOptions<BookDbContext> options) : DbContext(options)
 {
-    internal DbSet<Book> Books { get; set; }
+    internal DbSet<Book> Books { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

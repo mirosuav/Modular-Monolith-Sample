@@ -30,7 +30,7 @@ internal static class ServiceCollectionExtensions
             opt.DefaultApiVersion = defaultApiVersion;
             opt.AssumeDefaultVersionWhenUnspecified = true;
             opt.ReportApiVersions = true;
-            opt.ApiVersionReader = new UrlSegmentApiVersionReader(); // new QueryStringApiVersionReader();
+            opt.ApiVersionReader = new UrlSegmentApiVersionReader();
         });
 
         return services;

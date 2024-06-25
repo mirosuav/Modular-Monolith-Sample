@@ -6,7 +6,7 @@ namespace RiverBooks.EmailSending.Data;
 
 public class EmailSendingDbContext(DbContextOptions<EmailSendingDbContext> options) : DbContext(options)
 {
-    public DbSet<EmailOutboxEntity> EmailOutboxItems { get; set; }
+    public DbSet<EmailOutboxEntity> EmailOutboxItems { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

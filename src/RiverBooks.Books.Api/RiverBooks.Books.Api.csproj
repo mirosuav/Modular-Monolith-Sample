@@ -13,5 +13,9 @@
     <ProjectReference Include="..\RiverBooks.Books.Contracts\RiverBooks.Books.Contracts.csproj" />
     <ProjectReference Include="..\RiverBooks.Books\RiverBooks.Books.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Update="MediatR" Version="12.3.0" />
+  </ItemGroup>
 
 </Project>

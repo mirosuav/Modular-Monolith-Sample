@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RiverBooks.Users.Domain;
 
+// TODO Remove IndentityUser dependency - create custom class
 public class ApplicationUser : IdentityUser<string>, IHaveDomainEvents
 {
     public string FullName { get; set; } = string.Empty;
@@ -15,6 +16,7 @@ public class ApplicationUser : IdentityUser<string>, IHaveDomainEvents
     public IReadOnlyCollection<UserStreetAddress> Addresses => _addresses.AsReadOnly();
 
     private readonly List<DomainEventBase> _domainEvents = [];
+
     [NotMapped]
     public IEnumerable<DomainEventBase> DomainEvents => _domainEvents.AsReadOnly();
 

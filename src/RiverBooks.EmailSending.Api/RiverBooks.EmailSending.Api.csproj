@@ -11,4 +11,8 @@
     <ProjectReference Include="..\RiverBooks.EmailSending\RiverBooks.EmailSending.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="MediatR" Version="12.3.0" />
+  </ItemGroup>
+
 </Project>

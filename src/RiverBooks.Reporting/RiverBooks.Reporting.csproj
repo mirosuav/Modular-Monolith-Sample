@@ -5,7 +5,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Dapper" Version="2.1.35" />
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.1" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
 	</ItemGroup>
@@ -14,6 +14,10 @@
 		<ProjectReference Include="..\OrderProcessing.Contracts\RiverBooks.OrderProcessing.Contracts.csproj" />
 		<ProjectReference Include="..\RiverBooks.Books.Contracts\RiverBooks.Books.Contracts.csproj" />
 		<ProjectReference Include="..\RiverBooks.Reporting.Contracts\RiverBooks.Reporting.Contracts.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="MediatR" Version="12.3.0" />
 	</ItemGroup>
 
 </Project>

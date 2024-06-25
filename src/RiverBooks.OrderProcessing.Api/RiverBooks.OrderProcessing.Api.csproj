@@ -8,5 +8,8 @@
 	  <ProjectReference Include="..\OrderProcessing.Contracts\RiverBooks.OrderProcessing.Contracts.csproj" />
 	  <ProjectReference Include="..\RiverBooks.OrderProcessing\RiverBooks.OrderProcessing.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Update="MediatR" Version="12.3.0" />
+	</ItemGroup>
 
 </Project>

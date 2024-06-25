@@ -30,7 +30,7 @@ Content-Type: application/json
 
 ###
 
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHRlc3QuY29tIiwiSWQiOiIwcjM4YjlveWFhNno2eHZ4cm5ndG5wdGNvIiwic2lkIjoiMDY2Nzg5OTUtMmU2My03NDI1LTgwMDAtZGI1ODhmYzg2Y2I4IiwiZXhwIjoxNzE5MTg2ODAyLCJpYXQiOjE3MTkxNzk2MDIsIm5iZiI6MTcxOTE3OTYwMn0.Z8zxYv5G6w8RS6gzf4_4StQYBHrJDisWseCDtnIvgSI
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHRlc3QuY29tIiwiSWQiOiIwcjM4YjlveWFhNno2eHZ4cm5ndG5wdGNvIiwic2lkIjoiMDY2N2IyOTctN2I1NC03M2EyLTgwMDAtYTYzYjgyMzMwZjU4IiwiZXhwIjoxNzE5MzU0Nzc1LCJpYXQiOjE3MTkzNDc1NzUsIm5iZiI6MTcxOTM0NzU3NX0.p9KV8kUUEL1g32GkaWGGajYClOW5CcOEduABVAqcxL8
 
 # GET ALL BOOKS
 
@@ -167,14 +167,16 @@ Authorization: Bearer {{token}}
 
 # TOP SALES 1 - REACH IN REPORTING
 
-GET {{RootAddress}}/topsales?month=2&year=2024
+GET {{RootAddress}}/topsales?month=6&year=2024
 Accept: application/json
+Authorization: Bearer {{token}}
 
 ###
 
 # TOP SALES 2 - EVENT INGESTION CUSTOM DB
 
-GET {{RootAddress}}/topsales2?month=2&year=2024
+GET {{RootAddress}}/topsales2?month=6&year=2024
 Accept: application/json
+Authorization: Bearer {{token}}
 
 ###

@@ -23,7 +23,7 @@
 		<ProjectReference Include="..\RiverBooks.Users.Contracts\RiverBooks.Users.Contracts.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Infrastructure\Data\Migrations\" />
+	  <PackageReference Update="MediatR" Version="12.3.0" />
 	</ItemGroup>
 
 </Project>

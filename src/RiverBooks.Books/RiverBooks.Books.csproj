@@ -17,5 +17,8 @@
 	<ItemGroup>
 	  <Folder Include="Infrastructure\Migrations\" />
 	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Update="MediatR" Version="12.3.0" />
+	</ItemGroup>
 
 </Project>
