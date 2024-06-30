@@ -30,7 +30,7 @@ Content-Type: application/json
 
 ###
 
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHRlc3QuY29tIiwiSWQiOiIwcjM4YjlveWFhNno2eHZ4cm5ndG5wdGNvIiwic2lkIjoiMDY2N2IyOTctN2I1NC03M2EyLTgwMDAtYTYzYjgyMzMwZjU4IiwiZXhwIjoxNzE5MzU0Nzc1LCJpYXQiOjE3MTkzNDc1NzUsIm5iZiI6MTcxOTM0NzU3NX0.p9KV8kUUEL1g32GkaWGGajYClOW5CcOEduABVAqcxL8
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHRlc3QuY29tIiwiSWQiOiIwcjM4YjlveWFhNno2eHZ4cm5ndG5wdGNvIiwic2lkIjoiMDY2ODFiYmEtNWY5ZC03YzlhLTgwMDAtYTE0NTAwZDQxOWY5IiwiZXhwIjoxNzE5Nzg1NDEzLCJpYXQiOjE3MTk3NzgyMTMsIm5iZiI6MTcxOTc3ODIxM30.sHei8EWV1nqThpxWIS223MzCMonSve3DsxCzbtyT51w
 
 # GET ALL BOOKS
 
@@ -61,7 +61,7 @@ Content-Type: application/json
 ###
 
 # Test the location header
-GET {{RootAddress}}/books/b89f6cd7-4693-457b-9009-02205dbbfe45
+GET {{RootAddress}}/books/066789a1-d0b8-7708-8000-a37d01d02e36
 Accept: application/json
 Authorization: Bearer {{token}}
 
@@ -73,12 +73,12 @@ Authorization: Bearer {{token}}
 
 ###
 
-POST {{RootAddress}}/books/066789a2-919f-7a94-8000-07218a775351/pricehistory
+POST {{RootAddress}}/books/066789a1-d0b8-7708-8000-a37d01d02e36/pricehistory
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
- 19.99
+ 39.20
 
 
 ### Add item to cart
@@ -88,7 +88,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "bookId":"e4fa19bf-6981-4e50-a542-7c9b26e9ec31",
+  "bookId":"066789a2-c10a-70ac-8000-7e1d5ac78aad",
   "quantity":5
 }
 
@@ -116,7 +116,7 @@ Content-Type: application/json
 
 {
   "shippingAddressId":"066789ba-6d0b-7b84-8000-3d0cdf035b5b",
-  "billingAddressId":"066789ba-6d0b-7b84-8000-3d0cdf035b5b"
+  "billingAddressId":"0667b3e4-2a57-738c-8000-db3fa21a9ad8"
 }
 
 ###
@@ -136,23 +136,12 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "street1": "2 Main St.",
-  "street2": "Number 722",
-  "city":"Anytown",
-  "state":"OH",
-  "postalCode":"12345-6789",
-  "country":"USA"
-}
-
-###
-
-# FLUSH CACHE
-
-POST {{RootAddress}}/flushcache
-Accept: application/json
-Content-Type: application/json
-
-{
+  "street1": "Rybitwy 22",
+  "street2": "",
+  "city":"Gdañsk",
+  "state":"Pomorze",
+  "postalCode":"12-942",
+  "country":"Poland"
 }
 
 ###

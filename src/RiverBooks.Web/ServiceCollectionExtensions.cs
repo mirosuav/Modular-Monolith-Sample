@@ -5,6 +5,7 @@ using RiverBooks.OrderProcessing.Api;
 using RiverBooks.Reporting.Api;
 using RiverBooks.SharedKernel.Authentication;
 using RiverBooks.SharedKernel.DomainEvents;
+using RiverBooks.SharedKernel.Extensions;
 using RiverBooks.SharedKernel.Messaging.PipelineBehaviors;
 using RiverBooks.Users.Api;
 using Serilog;
@@ -47,7 +48,9 @@ internal static class ServiceCollectionExtensions
         services.AddSerilog((services, lc) => lc
             .ReadFrom.Configuration(configuration, options)
             .ReadFrom.Services(services)
-            .Enrich.FromLogContext());
+            .Enrich.FromLogContext()
+            .Enrich.With(new LogModuleNameEnricher())
+            .WriteTo.Console());
 
         return services;
     }

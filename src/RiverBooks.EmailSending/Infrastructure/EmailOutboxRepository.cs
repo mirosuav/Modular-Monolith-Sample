@@ -12,7 +12,16 @@ internal class EmailOutboxRepository(EmailSendingDbContext dbContext, TimeProvid
     private readonly EmailSendingDbContext _dbContext = dbContext;
     private readonly TimeProvider _timeProvider = timeProvider;
 
-    public async Task<Resultable<EmailOutboxEntity>> GetUnprocessedEmailEntity(CancellationToken cancellationToken)
+    public async Task<Resultable<List<EmailOutboxEntity>>> GetAllUnprocessedEmailsEntities(CancellationToken cancellationToken)
+    {
+        return await _dbContext.EmailOutboxItems
+           .AsNoTracking()
+           .Where(x => x.DateTimeUtcProcessed == null)
+           .OrderBy(x => x.Id)
+           .ToListAsync(cancellationToken);
+    }
+
+    public async Task<Resultable<EmailOutboxEntity>> GetNextUnprocessedEmailEntity(CancellationToken cancellationToken)
     {
         var result = await _dbContext.EmailOutboxItems
             .AsNoTracking()

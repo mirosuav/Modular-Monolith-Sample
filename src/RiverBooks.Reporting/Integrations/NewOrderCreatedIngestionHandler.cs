@@ -4,6 +4,7 @@ using OrderProcessing.Contracts;
 using RiverBooks.Books.Contracts;
 
 namespace RiverBooks.Reporting.Integrations;
+
 internal class NewOrderCreatedIngestionHandler(ILogger<NewOrderCreatedIngestionHandler> logger,
   OrderIngestionService orderIngestionService,
   IMediator mediator) :

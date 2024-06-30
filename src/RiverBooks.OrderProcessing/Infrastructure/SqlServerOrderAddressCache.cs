@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using RiverBooks.OrderProcessing.Interfaces;
 using RiverBooks.SharedKernel.Extensions;
 using RiverBooks.SharedKernel.Helpers;
-using System.Text.Json;
 
 namespace RiverBooks.OrderProcessing.Infrastructure;
 

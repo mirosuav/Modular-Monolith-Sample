@@ -22,7 +22,7 @@ internal class DefaultSendEmailsFromOutboxService(
 
     public async Task CheckForAndSendEmails(CancellationToken cancellationToken)
     {
-        var result = await _outboxService.GetUnprocessedEmailEntity(cancellationToken);
+        var result = await _outboxService.GetNextUnprocessedEmailEntity(cancellationToken);
 
         if (!result.IsSuccess) return;
 

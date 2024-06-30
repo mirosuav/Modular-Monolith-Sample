@@ -13,20 +13,7 @@ public class LoggingBehavior<TRequest, TResponse>(ILogger<LoggingBehavior<TReque
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken ct)
     {
         ArgumentNullException.ThrowIfNull(request);
-
-        if (_logger.IsEnabled(LogLevel.Information))
-        {
-            _logger.LogInformation("Handling {RequestName}", typeof(TRequest).Name);
-
-            // Reflection! Could be a performance concern
-            Type myType = request.GetType();
-            IList<PropertyInfo> props = new List<PropertyInfo>(myType.GetProperties());
-            foreach (PropertyInfo prop in props)
-            {
-                object? propValue = prop?.GetValue(request, null);
-                _logger.LogInformation("Property {Property} : {@Value}", prop?.Name, propValue);
-            }
-        }
+        _logger.LogInformation("Handling {RequestName}", typeof(TRequest).Name);
 
         var sw = Stopwatch.StartNew();
 

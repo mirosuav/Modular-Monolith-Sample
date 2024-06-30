@@ -1,12 +1,15 @@
 ﻿using Asp.Versioning;
 using RiverBooks.Web;
 using Serilog;
+using Serilog.Events;
 using System.Reflection;
 
+// BootstrapLogger
 Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
     .Enrich.FromLogContext()
     .WriteTo.Console()
-    .CreateBootstrapLogger();
+    .CreateBootstrapLogger(); 
 
 Log.Logger.Information("Starting web host");
 
@@ -29,6 +32,7 @@ var app = builder.Build();
 {
     app.UseAuthentication();
     app.UseAuthorization();
+    app.MapVersionPrompt("/").AllowAnonymous();
     app.MapModulesEndpoints();
     app.Run();
 }

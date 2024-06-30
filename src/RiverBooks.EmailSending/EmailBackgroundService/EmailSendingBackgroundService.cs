@@ -33,7 +33,7 @@ internal class EmailSendingBackgroundService(
             }
             finally
             {
-                _logger.LogInformation("Sleeping {checkEmailsInterval}ms...", checkEmailsInterval);
+                _logger.LogDebug("Sleeping {checkEmailsInterval}ms...", checkEmailsInterval);
                 await Task.Delay(checkEmailsInterval, stoppingToken);
             }
         }
