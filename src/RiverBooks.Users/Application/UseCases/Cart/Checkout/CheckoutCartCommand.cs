@@ -1,11 +1,9 @@
-﻿
-using MediatR;
+﻿using MediatR;
 using RiverBooks.SharedKernel.Helpers;
 
-namespace RiverBooks.Users.UseCases.Cart.Checkout;
+namespace RiverBooks.Users.Application.UseCases.Cart.Checkout;
 
-// TODO Use UserId instead of Email
-public record CheckoutCartCommand(string EmailAddress,
+public record CheckoutCartCommand(Guid UserId,
                                   Guid ShippingAddressId,
                                   Guid BillingAddressId)
     : IRequest<Resultable<Guid>>;

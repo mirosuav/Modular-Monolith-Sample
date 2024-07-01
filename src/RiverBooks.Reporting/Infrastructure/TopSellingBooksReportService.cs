@@ -13,7 +13,7 @@ internal class TopSellingBooksReportService(IConfiguration config,
 {
     private readonly string _connString = config.GetConnectionString("OrderProcessingConnectionString")!;
     private const string topBooksByMonthSql = @"
-            SELECT b.Id, b.Title, b.Author, sum(oi.Quantity) AS Units, sum(oi.UnitPrice * oi.Quantity) AS Sales
+            SELECT b.Id as BookId, b.Title, b.Author, sum(oi.Quantity) AS Units, sum(oi.UnitPrice * oi.Quantity) AS Sales
             FROM Books.Books b 
 	            INNER JOIN OrderProcessing.OrderItem oi ON b.Id = oi.BookId
 	            INNER JOIN OrderProcessing.Orders o ON o.Id = oi.OrderId

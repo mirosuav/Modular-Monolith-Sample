@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace OrderProcessing.Contracts;
+namespace RiverBooks.OrderProcessing.Contracts;
 
 public class OrderCreatedIntegrationEvent(OrderDetailsDto orderDetailsDto) : INotification
 {

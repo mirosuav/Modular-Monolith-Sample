@@ -1,5 +1,3 @@
-﻿using RiverBooks.OrderProcessing.Contracts;
-
-namespace RiverBooks.OrderProcessing.Endpoints;
+﻿namespace RiverBooks.OrderProcessing.Contracts;
 
 public record ListOrdersForUserResponse(List<OrderSummary> Orders);

@@ -1,15 +1,15 @@
 ﻿using MediatR;
 using RiverBooks.SharedKernel.Helpers;
-using RiverBooks.Users.CartEndpoints;
-using RiverBooks.Users.Interfaces;
+using RiverBooks.Users.Application.Interfaces;
+using RiverBooks.Users.Contracts;
 
-namespace RiverBooks.Users.UseCases.Cart.ListItems;
+namespace RiverBooks.Users.Application.UseCases.Cart.ListItems;
 
 public class ListCartItemsQueryHandler(IApplicationUserRepository userRepository) : IRequestHandler<ListCartItemsQuery, Resultable<List<CartItemDto>>>
 {
     public async Task<Resultable<List<CartItemDto>>> Handle(ListCartItemsQuery request, CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetUserWithCartByEmailAsync(request.EmailAddress);
+        var user = await userRepository.GetUserWithCartAsync(request.UserId);
 
         if (user is null)
         {

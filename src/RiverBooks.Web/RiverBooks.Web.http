@@ -30,7 +30,7 @@ Content-Type: application/json
 
 ###
 
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHRlc3QuY29tIiwiSWQiOiIwcjM4YjlveWFhNno2eHZ4cm5ndG5wdGNvIiwic2lkIjoiMDY2ODFiYmEtNWY5ZC03YzlhLTgwMDAtYTE0NTAwZDQxOWY5IiwiZXhwIjoxNzE5Nzg1NDEzLCJpYXQiOjE3MTk3NzgyMTMsIm5iZiI6MTcxOTc3ODIxM30.sHei8EWV1nqThpxWIS223MzCMonSve3DsxCzbtyT51w
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHRlc3QuY29tIiwiSWQiOiIwNjY4MmZiYS0xOTg4LTdlYWEtODAwMC0wMzZmY2I2Mjc2MGYiLCJzaWQiOiIwNjY4MmZiYy04YzI5LTcwNTktODAwMC04YjJlZWIwMjY2M2QiLCJleHAiOjE3MTk4NjczNjgsImlhdCI6MTcxOTg2MDE2OCwibmJmIjoxNzE5ODYwMTY4fQ.DazKTVBP1WvpwJxCDSA2f0Ee3udHMjg1gfbMl5vUea8
 
 # GET ALL BOOKS
 
@@ -40,7 +40,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-@BookID=e4fa19bf-6981-4e50-a542-7c9b26e9ec31
+@BookID=a89f6cd7-4693-457b-9009-02205dbbfe45
 GET {{RootAddress}}/books/{{BookID}}
 Accept: application/json
 Authorization: Bearer {{token}}
@@ -53,15 +53,15 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "title": "Modular Monoliths - Getting Started",
-  "author": "Steve Smith",
-  "price": 29.99
+  "title": "Clean Coder",
+  "author": "Robert C. Martin",
+  "price": 19.99
 }
 
 ###
 
 # Test the location header
-GET {{RootAddress}}/books/066789a1-d0b8-7708-8000-a37d01d02e36
+GET {{RootAddress}}/books/06682fc2-89a8-730b-8000-9698a79fcb01
 Accept: application/json
 Authorization: Bearer {{token}}
 
@@ -73,12 +73,12 @@ Authorization: Bearer {{token}}
 
 ###
 
-POST {{RootAddress}}/books/066789a1-d0b8-7708-8000-a37d01d02e36/pricehistory
+POST {{RootAddress}}/books/06682fc2-89a8-730b-8000-9698a79fcb01/pricehistory
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
- 39.20
+ 9.99
 
 
 ### Add item to cart
@@ -88,8 +88,8 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "bookId":"066789a2-c10a-70ac-8000-7e1d5ac78aad",
-  "quantity":5
+  "bookId":"06682fbf-0cf2-7353-8000-17e68740046f",
+  "quantity":1
 }
 
 ###
@@ -115,8 +115,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "shippingAddressId":"066789ba-6d0b-7b84-8000-3d0cdf035b5b",
-  "billingAddressId":"0667b3e4-2a57-738c-8000-db3fa21a9ad8"
+  "shippingAddressId":"06682fc9-2bce-7205-8000-efc8a47a19eb",
+  "billingAddressId":"06682fc9-2bce-7205-8000-efc8a47a19eb"
 }
 
 ###
@@ -156,16 +156,14 @@ Authorization: Bearer {{token}}
 
 # TOP SALES 1 - REACH IN REPORTING
 
-GET {{RootAddress}}/topsales?month=6&year=2024
+GET {{RootAddress}}/reports/topsales/2024/7
 Accept: application/json
-Authorization: Bearer {{token}}
 
 ###
 
 # TOP SALES 2 - EVENT INGESTION CUSTOM DB
 
-GET {{RootAddress}}/topsales2?month=6&year=2024
+GET {{RootAddress}}/reports/topsales2/2024/7
 Accept: application/json
-Authorization: Bearer {{token}}
 
 ###

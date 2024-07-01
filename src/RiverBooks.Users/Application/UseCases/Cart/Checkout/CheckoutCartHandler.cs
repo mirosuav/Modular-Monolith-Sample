@@ -1,17 +1,16 @@
 ﻿using MediatR;
-using OrderProcessing.Contracts;
 using RiverBooks.OrderProcessing.Contracts;
 using RiverBooks.SharedKernel.Helpers;
-using RiverBooks.Users.Interfaces;
+using RiverBooks.Users.Application.Interfaces;
 
-namespace RiverBooks.Users.UseCases.Cart.Checkout;
+namespace RiverBooks.Users.Application.UseCases.Cart.Checkout;
 
 public class CheckoutCartHandler(IApplicationUserRepository userRepository,
   IMediator mediator) : IRequestHandler<CheckoutCartCommand, Resultable<Guid>>
 {
     public async Task<Resultable<Guid>> Handle(CheckoutCartCommand request, CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetUserWithCartByEmailAsync(request.EmailAddress);
+        var user = await userRepository.GetUserWithCartAsync(request.UserId);
 
         if (user is null)
         {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RiverBooks.Reporting.Application;
@@ -12,7 +13,8 @@ public static class ModuleBootstrap
 {
     public static IEndpointRouteBuilder MapReportingModuleEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapReportingEndpoints();
+        app.MapGroup("/reports")
+            .MapReportingEndpoints();
 
         return app;
     }

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using OrderProcessing.Contracts;
 using RiverBooks.Books.Contracts;
+using RiverBooks.OrderProcessing.Contracts;
 using RiverBooks.Reporting.Domain;
 using RiverBooks.Reporting.Infrastructure;
 

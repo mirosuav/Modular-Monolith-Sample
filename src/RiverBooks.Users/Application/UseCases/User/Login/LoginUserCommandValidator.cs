@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace RiverBooks.Users.UseCases.User.Login;
+namespace RiverBooks.Users.Application.UseCases.User.Login;
 
 public sealed class LoginUserCommandValidator : AbstractValidator<LoginUserCommand>
 {

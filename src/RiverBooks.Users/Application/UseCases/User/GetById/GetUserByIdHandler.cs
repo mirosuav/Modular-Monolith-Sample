@@ -1,14 +1,14 @@
 ﻿using MediatR;
 using RiverBooks.SharedKernel.Helpers;
-using RiverBooks.Users.Interfaces;
+using RiverBooks.Users.Application.Interfaces;
 
-namespace RiverBooks.Users.UseCases.User.GetById;
+namespace RiverBooks.Users.Application.UseCases.User.GetById;
 
 public class GetUserByIdHandler(IApplicationUserRepository userRepository) : IRequestHandler<GetUserByIdQuery, Resultable<UserDto>>
 {
     public async Task<Resultable<UserDto>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetUserByIdAsync(request.UserId);
+        var user = await userRepository.GetUserAsync(request.UserId);
 
         if (user is null)
         {

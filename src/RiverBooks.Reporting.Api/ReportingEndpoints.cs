@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using RiverBooks.Reporting.Application;
 using RiverBooks.Reporting.Contracts;
@@ -11,11 +12,11 @@ internal static class ReportingEndpoints
 {
     internal static IEndpointRouteBuilder MapReportingEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/topsales/{year}/{month}", GetTopSalesAsync)
+        app.MapGet("/topsales/{year:int}/{month:int}", GetTopSalesAsync)
             .Produces<Ok<TopBooksByMonthReport>>()
             .AllowAnonymous();
 
-        app.MapGet("/topsales2/{year}/{month}", GetTopSales2Async)
+        app.MapGet("/topsales2/{year:int}/{month:int}", GetTopSales2Async)
             .Produces<Ok<TopBooksByMonthReport>>()
             .AllowAnonymous();
 

@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using RiverBooks.SharedKernel.Authentication;
 using RiverBooks.SharedKernel.Helpers;
-using RiverBooks.Users.CartEndpoints;
-using RiverBooks.Users.UseCases.Cart.AddItem;
-using RiverBooks.Users.UseCases.Cart.Checkout;
-using RiverBooks.Users.UseCases.Cart.ListItems;
+using RiverBooks.Users.Application.UseCases.Cart.AddItem;
+using RiverBooks.Users.Application.UseCases.Cart.Checkout;
+using RiverBooks.Users.Application.UseCases.Cart.ListItems;
+using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.Users.Api;
 
@@ -38,12 +38,12 @@ internal static class CartEndpoints
         [FromServices] IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken = default)
     {
-        var emailAddress = userClaimsProvider.GetEmailAddress();
+        var userId = userClaimsProvider.GetId();
 
-        if (emailAddress is null)
+        if (userId is null)
             return TypedResults.Unauthorized();
 
-        var command = new AddItemToCartCommand(request.BookId, request.Quantity, emailAddress!);
+        var command = new AddItemToCartCommand(request.BookId, request.Quantity, userId.Value);
 
         var result = await sender.Send(command, cancellationToken);
 
@@ -56,12 +56,12 @@ internal static class CartEndpoints
         [FromServices] IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken = default)
     {
-        var emailAddress = userClaimsProvider.GetEmailAddress();
+        var userId = userClaimsProvider.GetId();
 
-        if (emailAddress is null)
+        if (userId is null)
             return TypedResults.Unauthorized();
 
-        var command = new CheckoutCartCommand(emailAddress!,
+        var command = new CheckoutCartCommand(userId.Value,
                                               request.ShippingAddressId,
                                               request.BillingAddressId);
 
@@ -75,12 +75,12 @@ internal static class CartEndpoints
         [FromServices] IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken = default)
     {
-        var emailAddress = userClaimsProvider.GetEmailAddress();
+        var userId = userClaimsProvider.GetId();
 
-        if (emailAddress is null)
+        if (userId is null)
             return TypedResults.Unauthorized();
 
-        var query = new ListCartItemsQuery(emailAddress!);
+        var query = new ListCartItemsQuery(userId.Value);
 
         var result = await sender.Send(query, cancellationToken);
 

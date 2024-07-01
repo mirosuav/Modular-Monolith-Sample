@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using RiverBooks.OrderProcessing.Application.ListOrdersForUsers;
-using RiverBooks.OrderProcessing.Endpoints;
+using RiverBooks.OrderProcessing.Contracts;
 using RiverBooks.SharedKernel.Authentication;
 using RiverBooks.SharedKernel.Helpers;
 

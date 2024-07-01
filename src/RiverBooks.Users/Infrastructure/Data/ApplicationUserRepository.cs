@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RiverBooks.Users.Application.Interfaces;
 using RiverBooks.Users.Domain;
-using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.Infrastructure.Data;
 
-public class EfApplicationUserRepository(UsersDbContext dbContext) : IApplicationUserRepository
+public class ApplicationUserRepository(UsersDbContext dbContext) : IApplicationUserRepository
 {
     public void Add(ApplicationUser user)
     {
@@ -18,23 +18,35 @@ public class EfApplicationUserRepository(UsersDbContext dbContext) : IApplicatio
             .SingleOrDefaultAsync();
     }
 
-    public Task<ApplicationUser?> GetUserByIdAsync(Guid userId)
+    public Task<ApplicationUser?> GetUserAsync(Guid userId)
     {
         return dbContext.ApplicationUsers.FindAsync(userId).AsTask();
     }
 
-    public Task<ApplicationUser?> GetUserWithAddressesByEmailAsync(string email)
+    public Task<ApplicationUser?> GetUserWithAddressesAsync(Guid userId)
     {
         return dbContext.ApplicationUsers
           .Include(user => user.Addresses)
-          .SingleOrDefaultAsync(user => user.Email == email);
+          .SingleOrDefaultAsync(user => user.Id == userId);
     }
 
-    public Task<ApplicationUser?> GetUserWithCartByEmailAsync(string email)
+    public Task<ApplicationUser?> GetUserWithCartAsync(Guid userId)
     {
         return dbContext.ApplicationUsers
           .Include(user => user.CartItems)
-          .SingleOrDefaultAsync(user => user.Email == email);
+          .SingleOrDefaultAsync(user => user.Id == userId);
+    }
+
+    public async Task<bool> DeleteUser(Guid userId)
+    {
+        var user = await dbContext.ApplicationUsers.FindAsync(userId);
+
+        if (user is null)
+            return false;
+
+        dbContext.ApplicationUsers.Remove(user);
+
+        return true;
     }
 
     public Task SaveChangesAsync(CancellationToken cancellationToken)

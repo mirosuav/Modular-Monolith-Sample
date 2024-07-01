@@ -1,14 +1,14 @@
 ﻿using FluentValidation;
 
-namespace RiverBooks.Users.UseCases.Cart.AddItem;
+namespace RiverBooks.Users.Application.UseCases.Cart.AddItem;
 
 public class AddItemToCartCommandValidator : AbstractValidator<AddItemToCartCommand>
 {
     public AddItemToCartCommandValidator()
     {
-        RuleFor(x => x.EmailAddress)
+        RuleFor(x => x.UserId)
           .NotEmpty()
-          .WithMessage("Email is required.");
+          .WithMessage("Not a valid UserId.");
 
         RuleFor(x => x.Quantity)
           .GreaterThan(0)

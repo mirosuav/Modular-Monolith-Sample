@@ -2,7 +2,7 @@
 using System.Numerics;
 using System.Security.Cryptography;
 
-namespace UuidExtensions;
+namespace RiverBooks.SharedKernel.Extensions;
 
 /// <summary>
 /// Source <see href="https://github.com/stevesimmons/uuid7-csharp"/>

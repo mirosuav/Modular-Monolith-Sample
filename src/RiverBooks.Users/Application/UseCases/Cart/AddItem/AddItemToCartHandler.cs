@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using RiverBooks.Books.Contracts;
 using RiverBooks.SharedKernel.Helpers;
+using RiverBooks.Users.Application.Interfaces;
 using RiverBooks.Users.Domain;
-using RiverBooks.Users.Interfaces;
 
-namespace RiverBooks.Users.UseCases.Cart.AddItem;
+namespace RiverBooks.Users.Application.UseCases.Cart.AddItem;
 
 public class AddItemToCartHandler(
     IApplicationUserRepository userRepository,
@@ -12,7 +12,7 @@ public class AddItemToCartHandler(
 {
     public async Task<Resultable> Handle(AddItemToCartCommand request, CancellationToken ct)
     {
-        var user = await userRepository.GetUserWithCartByEmailAsync(request.EmailAddress);
+        var user = await userRepository.GetUserWithCartAsync(request.UserId);
 
         if (user is null)
         {

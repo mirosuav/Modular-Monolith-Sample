@@ -2,6 +2,6 @@
 using RiverBooks.SharedKernel.Helpers;
 using RiverBooks.Users.Contracts;
 
-namespace RiverBooks.Users.UseCases.User.ListAddresses;
-public record ListAddressesQuery(string EmailAddress) :
+namespace RiverBooks.Users.Application.UseCases.User.ListAddresses;
+public record ListAddressesQuery(Guid UserId) :
   IRequest<Resultable<List<UserAddressDto>>>;

@@ -1,8 +1,7 @@
 ﻿using MediatR;
 using RiverBooks.SharedKernel.Helpers;
-using RiverBooks.Users.CartEndpoints;
+using RiverBooks.Users.Contracts;
 
-namespace RiverBooks.Users.UseCases.Cart.ListItems;
+namespace RiverBooks.Users.Application.UseCases.Cart.ListItems;
 
-// TODO Use UserId instead of Email
-public record ListCartItemsQuery(string EmailAddress) : IRequest<Resultable<List<CartItemDto>>>;
+public record ListCartItemsQuery(Guid UserId) : IRequest<Resultable<List<CartItemDto>>>;

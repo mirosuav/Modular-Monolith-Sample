@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RiverBooks.Users.Application.Interfaces;
 using RiverBooks.Users.Domain;
-using RiverBooks.Users.Interfaces;
 
 namespace RiverBooks.Users.Infrastructure.Data;
 
-public class EfUserStreetAddressRepository(UsersDbContext _dbContext) : IReadOnlyUserStreetAddressRepository
+public class UserStreetAddressRepository(UsersDbContext _dbContext) : IReadOnlyUserStreetAddressRepository
 {
     public Task<UserStreetAddress?> GetById(Guid userStreetAddressId)
     {

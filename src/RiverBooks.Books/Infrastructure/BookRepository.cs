@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RiverBooks.Books.Application;
-using RiverBooks.Books.Data;
 using RiverBooks.Books.Domain;
 
 namespace RiverBooks.Books.Infrastructure;

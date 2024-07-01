@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using RiverBooks.SharedKernel.Helpers;
+using RiverBooks.Users.Application.Interfaces;
 using RiverBooks.Users.Contracts;
-using RiverBooks.Users.Interfaces;
 
-namespace RiverBooks.Users.Integrations;
+namespace RiverBooks.Users.Application.Integrations;
 public class UserAddressDetailsByIdQueryHandler(IReadOnlyUserStreetAddressRepository addressRepo) :
   IRequestHandler<UserAddressDetailsByIdQuery, Resultable<UserAddressDetails>>
 {

@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RiverBooks.SharedKernel.Messaging.PipelineBehaviors;
+using RiverBooks.Users.Application.Interfaces;
 using RiverBooks.Users.Domain;
 using RiverBooks.Users.Infrastructure.Data;
-using RiverBooks.Users.Interfaces;
 using Serilog;
 
 namespace RiverBooks.Users.Api;
@@ -31,11 +31,9 @@ public static class ModuleBootstrap
 
         services.AddDbContext<UsersDbContext>(c => c.UseSqlServer(connectionString));
 
-        services.AddIdentityCore<ApplicationUser>().AddEntityFrameworkStores<UsersDbContext>();
-
         // Add User Services
-        services.AddScoped<IApplicationUserRepository, EfApplicationUserRepository>();
-        services.AddScoped<IReadOnlyUserStreetAddressRepository, EfUserStreetAddressRepository>();
+        services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
+        services.AddScoped<IReadOnlyUserStreetAddressRepository, UserStreetAddressRepository>();
 
         services.AddValidatorsFromAssemblyContaining<IMarker>();
 

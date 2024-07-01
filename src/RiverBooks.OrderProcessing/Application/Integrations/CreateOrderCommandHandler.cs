@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using OrderProcessing.Contracts;
 using RiverBooks.OrderProcessing.Application.Interfaces;
 using RiverBooks.OrderProcessing.Contracts;
 using RiverBooks.OrderProcessing.Domain;

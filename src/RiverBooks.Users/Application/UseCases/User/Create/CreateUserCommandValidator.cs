@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace RiverBooks.Users.UseCases.User.Create;
+namespace RiverBooks.Users.Application.UseCases.User.Create;
 
 public sealed class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 {

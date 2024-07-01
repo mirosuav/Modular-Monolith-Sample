@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using RiverBooks.SharedKernel.Helpers;
+using RiverBooks.Users.Application.UseCases.User.GetById;
 using RiverBooks.Users.Contracts;
-using RiverBooks.Users.UseCases.User.GetById;
 
-namespace RiverBooks.Users.Integrations;
+namespace RiverBooks.Users.Application.Integrations;
 
 public class UserDetailsByIdHandler(IMediator mediator) : IRequestHandler<UserDetailsByIdQuery, Resultable<UserDetailsDto>>
 {

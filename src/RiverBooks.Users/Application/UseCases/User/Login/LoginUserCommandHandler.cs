@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using RiverBooks.SharedKernel.Authentication;
 using RiverBooks.SharedKernel.Helpers;
-using RiverBooks.Users.Interfaces;
+using RiverBooks.Users.Application.Interfaces;
 
-namespace RiverBooks.Users.UseCases.User.Login;
+namespace RiverBooks.Users.Application.UseCases.User.Login;
 
 public class LoginUserCommandHandler(
     IApplicationUserRepository applicationUserRepository,

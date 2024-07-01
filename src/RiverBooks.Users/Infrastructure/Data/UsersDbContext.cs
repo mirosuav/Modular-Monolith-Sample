@@ -7,7 +7,7 @@ using System.Reflection;
 namespace RiverBooks.Users.Infrastructure.Data;
 
 public class UsersDbContext(DbContextOptions<UsersDbContext> options, IDomainEventDispatcher? dispatcher)
-    : IdentityDbContext(options)
+    : DbContext(options)
 {
     public DbSet<ApplicationUser> ApplicationUsers { get; set; } = null!;
     public DbSet<UserStreetAddress> UserStreetAddresses { get; set; } = null!;

@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using OrderProcessing.Contracts;
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.OrderProcessing.Contracts;

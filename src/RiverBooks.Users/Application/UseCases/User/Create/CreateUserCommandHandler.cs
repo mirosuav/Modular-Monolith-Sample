@@ -2,10 +2,10 @@
 using RiverBooks.EmailSending.Contracts;
 using RiverBooks.SharedKernel;
 using RiverBooks.SharedKernel.Helpers;
+using RiverBooks.Users.Application.Interfaces;
 using RiverBooks.Users.Domain;
-using RiverBooks.Users.Interfaces;
 
-namespace RiverBooks.Users.UseCases.User.Create;
+namespace RiverBooks.Users.Application.UseCases.User.Create;
 
 public class CreateUserCommandHandler(
     IPublisher notificationPublisher,

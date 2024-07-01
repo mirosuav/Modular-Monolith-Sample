@@ -1,6 +1,6 @@
 ﻿using RiverBooks.Users.Domain;
 
-namespace RiverBooks.Users.Interfaces;
+namespace RiverBooks.Users.Application.Interfaces;
 
 public interface IReadOnlyUserStreetAddressRepository
 {

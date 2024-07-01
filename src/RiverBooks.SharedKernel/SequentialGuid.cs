@@ -1,4 +1,4 @@
-﻿using UuidExtensions;
+﻿using RiverBooks.SharedKernel.Extensions;
 
 namespace RiverBooks.SharedKernel;
 

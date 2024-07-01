@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using RiverBooks.SharedKernel.Helpers;
+using RiverBooks.Users.Application.Interfaces;
 using RiverBooks.Users.Domain;
-using RiverBooks.Users.Interfaces;
 
-namespace RiverBooks.Users.UseCases.User.AddAddress;
+namespace RiverBooks.Users.Application.UseCases.User.AddAddress;
 
 public class AddAddressToUserHandler(
     IApplicationUserRepository userRepository,
@@ -13,7 +13,7 @@ public class AddAddressToUserHandler(
 {
     public async Task<Resultable> Handle(AddAddressToUserCommand request, CancellationToken ct)
     {
-        var user = await userRepository.GetUserWithAddressesByEmailAsync(request.EmailAddress);
+        var user = await userRepository.GetUserWithAddressesAsync(request.UserId);
 
         if (user is null)
         {
@@ -30,9 +30,9 @@ public class AddAddressToUserHandler(
 
         await userRepository.SaveChangesAsync(ct);
 
-        logger.LogInformation("[UseCase] Added address {address} to user {email} (Total: {total})",
+        logger.LogInformation("[UseCase] Added address {address} to user {eserId} (Total: {total})",
           userAddress.StreetAddress,
-          request.EmailAddress,
+          request.UserId,
           user.Addresses.Count);
 
         return Resultable.Success();

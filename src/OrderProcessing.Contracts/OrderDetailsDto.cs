@@ -1,4 +1,4 @@
-﻿namespace OrderProcessing.Contracts;
+﻿namespace RiverBooks.OrderProcessing.Contracts;
 
 public class OrderDetailsDto
 {

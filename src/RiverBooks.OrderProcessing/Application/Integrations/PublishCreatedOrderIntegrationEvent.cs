@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using OrderProcessing.Contracts;
+using RiverBooks.OrderProcessing.Contracts;
 using RiverBooks.OrderProcessing.Domain;
 
 namespace RiverBooks.OrderProcessing.Application.Integrations;
