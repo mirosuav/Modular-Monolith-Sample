@@ -4,8 +4,6 @@ namespace RiverBooks.SharedKernel.DomainEvents;
 
 public class MediatRDomainEventDispatcher(IPublisher publisher) : IDomainEventDispatcher
 {
-    private readonly IPublisher _publisher = publisher;
-
     public async Task DispatchAndClearEvents(IEnumerable<IHaveDomainEvents> entitiesWithEvents)
     {
         foreach (var entity in entitiesWithEvents)
@@ -14,7 +12,7 @@ public class MediatRDomainEventDispatcher(IPublisher publisher) : IDomainEventDi
             entity.ClearDomainEvents();
             foreach (var domainEvent in events)
             {
-                await _publisher.Publish(domainEvent).ConfigureAwait(false);
+                await publisher.Publish(domainEvent).ConfigureAwait(false);
             }
         }
     }

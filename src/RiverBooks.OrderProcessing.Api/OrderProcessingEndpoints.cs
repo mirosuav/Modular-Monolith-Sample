@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using RiverBooks.OrderProcessing.Application.ListOrdersForUsers;
 using RiverBooks.OrderProcessing.Endpoints;
-using RiverBooks.OrderProcessing.ListOrdersForUser;
 using RiverBooks.SharedKernel.Authentication;
 using RiverBooks.SharedKernel.Helpers;
 
@@ -29,13 +29,13 @@ internal static class OrderProcessingEndpoints
     {
         var userId = userClaimsProvider.GetId();
 
-        if (userId is null or [])
+        if (userId is null)
             return TypedResults.Unauthorized();
 
-        var query = new ListOrdersForUserQuery(userId);
+        var query = new ListOrdersForUserQuery(userId.Value);
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.MatchHttpOk(v => new ListOrdersForUserResponse(v));
+        return result.ToHttpOk(v => new ListOrdersForUserResponse(v));
     }
 }

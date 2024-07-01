@@ -6,11 +6,9 @@ using System.Reflection;
 
 namespace RiverBooks.Users.Infrastructure.Data;
 
-public class UsersDbContext(DbContextOptions<UsersDbContext> options, IDomainEventDispatcher? dispatcher) 
+public class UsersDbContext(DbContextOptions<UsersDbContext> options, IDomainEventDispatcher? dispatcher)
     : IdentityDbContext(options)
 {
-    private readonly IDomainEventDispatcher? _dispatcher = dispatcher;
-
     public DbSet<ApplicationUser> ApplicationUsers { get; set; } = null!;
     public DbSet<UserStreetAddress> UserStreetAddresses { get; set; } = null!;
 
@@ -41,7 +39,7 @@ public class UsersDbContext(DbContextOptions<UsersDbContext> options, IDomainEve
         var result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         // ignore events if no dispatcher provided
-        if (_dispatcher == null) return result;
+        if (dispatcher == null) return result;
 
         // dispatch events only if save was successful
         var entitiesWithEvents = ChangeTracker.Entries<IHaveDomainEvents>()
@@ -49,7 +47,7 @@ public class UsersDbContext(DbContextOptions<UsersDbContext> options, IDomainEve
             .Where(e => e.DomainEvents.Any())
         .ToArray();
 
-        await _dispatcher.DispatchAndClearEvents(entitiesWithEvents);
+        await dispatcher.DispatchAndClearEvents(entitiesWithEvents);
 
         return result;
     }

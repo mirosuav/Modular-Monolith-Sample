@@ -2,7 +2,7 @@
 using RiverBooks.EmailSending.Domain;
 using System.Reflection;
 
-namespace RiverBooks.EmailSending.Data;
+namespace RiverBooks.EmailSending.Infrastructure;
 
 public class EmailSendingDbContext(DbContextOptions<EmailSendingDbContext> options) : DbContext(options)
 {

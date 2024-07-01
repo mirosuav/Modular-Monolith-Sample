@@ -2,19 +2,16 @@
 using RiverBooks.EmailSending.Domain;
 using RiverBooks.SharedKernel.Helpers;
 
-namespace RiverBooks.EmailSending.Data;
+namespace RiverBooks.EmailSending.Infrastructure;
 
 internal class EmailOutboxRepository(EmailSendingDbContext dbContext, TimeProvider timeProvider) :
     IGetEmailsFromOutboxService,
     IQueueEmailsInOutboxService,
     IMarkEmailProcessed
 {
-    private readonly EmailSendingDbContext _dbContext = dbContext;
-    private readonly TimeProvider _timeProvider = timeProvider;
-
     public async Task<Resultable<List<EmailOutboxEntity>>> GetAllUnprocessedEmailsEntities(CancellationToken cancellationToken)
     {
-        return await _dbContext.EmailOutboxItems
+        return await dbContext.EmailOutboxItems
            .AsNoTracking()
            .Where(x => x.DateTimeUtcProcessed == null)
            .OrderBy(x => x.Id)
@@ -23,7 +20,7 @@ internal class EmailOutboxRepository(EmailSendingDbContext dbContext, TimeProvid
 
     public async Task<Resultable<EmailOutboxEntity>> GetNextUnprocessedEmailEntity(CancellationToken cancellationToken)
     {
-        var result = await _dbContext.EmailOutboxItems
+        var result = await dbContext.EmailOutboxItems
             .AsNoTracking()
             .Where(x => x.DateTimeUtcProcessed == null)
             .OrderBy(x => x.Id)
@@ -37,18 +34,18 @@ internal class EmailOutboxRepository(EmailSendingDbContext dbContext, TimeProvid
 
     public Task MarkEmailSend(Guid emailId, CancellationToken cancellationToken)
     {
-        return _dbContext.EmailOutboxItems
+        return dbContext.EmailOutboxItems
             .Where(x => x.Id == emailId)
             .ExecuteUpdateAsync(
-                x => x.SetProperty(e => e.DateTimeUtcProcessed, 
-                _timeProvider.GetUtcNow().DateTime), 
+                x => x.SetProperty(e => e.DateTimeUtcProcessed,
+                timeProvider.GetUtcNow().DateTime),
                 cancellationToken);
     }
 
     public async Task QueueEmailForSending(EmailOutboxEntity entity, CancellationToken cancellationToken)
     {
         PassOrThrow.IfNull(entity);
-        _dbContext.EmailOutboxItems.Add(entity);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        dbContext.EmailOutboxItems.Add(entity);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

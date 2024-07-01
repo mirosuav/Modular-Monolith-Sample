@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RiverBooks.Books.Application;
 using RiverBooks.Books.Data;
+using RiverBooks.Books.Infrastructure;
 
 namespace RiverBooks.Books.Api;
 
@@ -24,7 +26,7 @@ public static class ModuleBootstrap
         string? connectionString = config.GetConnectionString("BooksConnectionString");
         services.AddDbContext<BookDbContext>(options => options.UseSqlServer(connectionString));
 
-        services.AddScoped<IBookRepository, EfBookRepository>();
+        services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IBookService, BookService>();
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list

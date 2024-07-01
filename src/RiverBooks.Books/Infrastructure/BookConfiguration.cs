@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using RiverBooks.Books.Domain;
 
-namespace RiverBooks.Books.Data;
+namespace RiverBooks.Books.Infrastructure;
 
 internal class BookConfiguration : IEntityTypeConfiguration<Book>
 {
@@ -12,11 +13,11 @@ internal class BookConfiguration : IEntityTypeConfiguration<Book>
     public void Configure(EntityTypeBuilder<Book> builder)
     {
         builder.Property(p => p.Title)
-          .HasMaxLength(DataSchemaConstants.DEFAULT_NAME_LENGTH)
+          .HasMaxLength(100)
           .IsRequired();
 
         builder.Property(p => p.Author)
-          .HasMaxLength(DataSchemaConstants.DEFAULT_NAME_LENGTH)
+          .HasMaxLength(100)
           .IsRequired();
 
         builder.HasData(GetSampleBookData());

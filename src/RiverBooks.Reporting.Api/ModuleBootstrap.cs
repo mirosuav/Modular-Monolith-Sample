@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RiverBooks.Reporting.Integrations;
+using RiverBooks.Reporting.Application;
+using RiverBooks.Reporting.Infrastructure;
 using Serilog;
 using System.Reflection;
 

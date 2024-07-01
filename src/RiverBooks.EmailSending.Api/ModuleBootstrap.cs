@@ -5,9 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Retry;
-using RiverBooks.EmailSending.Data;
+using RiverBooks.EmailSending.Application;
 using RiverBooks.EmailSending.Domain;
-using RiverBooks.EmailSending.EmailBackgroundService;
+using RiverBooks.EmailSending.Infrastructure;
 using Serilog;
 using System.Reflection;
 

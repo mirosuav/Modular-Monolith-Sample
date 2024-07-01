@@ -67,7 +67,7 @@ internal static class CartEndpoints
 
         var result = await sender.Send(command, cancellationToken);
 
-        return result.MatchHttpOk(v => new CheckoutResponse(v));
+        return result.ToHttpOk(v => new CheckoutResponse(v));
     }
 
     internal static async Task<IResult> ListCartItemsAsync(
@@ -84,6 +84,6 @@ internal static class CartEndpoints
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.MatchHttpOk(v => new CartResponse(v));
+        return result.ToHttpOk(v => new CartResponse(v));
     }
 }

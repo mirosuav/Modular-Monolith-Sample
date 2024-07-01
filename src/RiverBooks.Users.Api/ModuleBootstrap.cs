@@ -7,7 +7,6 @@ using RiverBooks.SharedKernel.Messaging.PipelineBehaviors;
 using RiverBooks.Users.Domain;
 using RiverBooks.Users.Infrastructure.Data;
 using RiverBooks.Users.Interfaces;
-using RiverBooks.Users.UseCases.Cart.AddItem;
 using Serilog;
 
 namespace RiverBooks.Users.Api;
@@ -26,11 +25,11 @@ public static class ModuleBootstrap
       this IServiceCollection services,
       ConfigurationManager config,
       ILogger logger,
-      List<System.Reflection.Assembly> mediatRAssemblies)
+      List<System.Reflection.Assembly> modulesAssemblies)
     {
         string? connectionString = config.GetConnectionString("UsersConnectionString");
 
-        services.AddDbContext<UsersDbContext>(config => config.UseSqlServer(connectionString));
+        services.AddDbContext<UsersDbContext>(c => c.UseSqlServer(connectionString));
 
         services.AddIdentityCore<ApplicationUser>().AddEntityFrameworkStores<UsersDbContext>();
 
@@ -41,7 +40,7 @@ public static class ModuleBootstrap
         services.AddValidatorsFromAssemblyContaining<IMarker>();
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list
-        mediatRAssemblies.Add(typeof(IMarker).Assembly);
+        modulesAssemblies.Add(typeof(IMarker).Assembly);
 
         logger.Information("{Module} module services registered", "Users");
 

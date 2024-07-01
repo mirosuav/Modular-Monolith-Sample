@@ -14,10 +14,8 @@ public static class BehaviorExtensions
     }
 
     /// <summary>
-    /// Don't forget to register the validators!
+    /// Register all FluentValidators in MediatR Pipeline. Don't forget to register the validators!
     /// </summary>
-    /// <param name="services"></param>
-    /// <returns></returns>
     public static IServiceCollection AddValidationBehavior(this IServiceCollection services)
     {
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(FluentValidationBehavior<,>));

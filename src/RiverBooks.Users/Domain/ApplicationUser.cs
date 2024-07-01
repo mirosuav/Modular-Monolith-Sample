@@ -1,13 +1,23 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using RiverBooks.SharedKernel.DomainEvents;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RiverBooks.Users.Domain;
 
-// TODO Remove IndentityUser dependency - create custom class
-public class ApplicationUser : IdentityUser<string>, IHaveDomainEvents
+public class ApplicationUser : IHaveDomainEvents
 {
+    public required Guid Id { get; set; }
+
+    [EmailAddress]
+    [MaxLength(50)]
+    public string Email { get; set; } = string.Empty;
+
+    [MaxLength(50)]
     public string FullName { get; set; } = string.Empty;
+
+    [MaxLength(200)]
+    public string PasswordHash { get; set; } = string.Empty;
 
     private readonly List<CartItem> _cartItems = [];
     public IReadOnlyCollection<CartItem> CartItems => _cartItems.AsReadOnly();
@@ -21,7 +31,21 @@ public class ApplicationUser : IdentityUser<string>, IHaveDomainEvents
     public IEnumerable<DomainEventBase> DomainEvents => _domainEvents.AsReadOnly();
 
     protected void RegisterDomainEvent(DomainEventBase domainEvent) => _domainEvents.Add(domainEvent);
+
     void IHaveDomainEvents.ClearDomainEvents() => _domainEvents.Clear();
+
+    public void SetPassword(string newPassword)
+    {
+        var passwordHasher = new PasswordHasher<ApplicationUser>();
+        PasswordHash = passwordHasher.HashPassword(this, newPassword);
+    }
+
+    public bool CheckPassword(string password)
+    {
+        var passwordHasher = new PasswordHasher<ApplicationUser>();
+        var result = passwordHasher.VerifyHashedPassword(this, PasswordHash, password);
+        return result != PasswordVerificationResult.Failed;
+    }
 
     public void AddItemToCart(CartItem cartItem)
     {

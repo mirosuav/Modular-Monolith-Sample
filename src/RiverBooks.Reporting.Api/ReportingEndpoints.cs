@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
+using RiverBooks.Reporting.Application;
 using RiverBooks.Reporting.Contracts;
 
 namespace RiverBooks.Reporting.Api;

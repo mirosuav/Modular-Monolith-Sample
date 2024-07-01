@@ -9,7 +9,7 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
     .Enrich.FromLogContext()
     .WriteTo.Console()
-    .CreateBootstrapLogger(); 
+    .CreateBootstrapLogger();
 
 Log.Logger.Information("Starting web host");
 

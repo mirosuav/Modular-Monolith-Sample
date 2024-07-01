@@ -1,10 +1,10 @@
-﻿
-using MediatR;
+﻿using MediatR;
+using OrderProcessing.Contracts;
 using RiverBooks.SharedKernel.Helpers;
 
-namespace OrderProcessing.Contracts;
+namespace RiverBooks.OrderProcessing.Contracts;
 
-public record CreateOrderCommand(string UserId,
+public record CreateOrderCommand(Guid UserId,
                                  Guid ShippingAddressId,
                                  Guid BillingAddressId,
                                  List<OrderItemDetails> OrderItems) :

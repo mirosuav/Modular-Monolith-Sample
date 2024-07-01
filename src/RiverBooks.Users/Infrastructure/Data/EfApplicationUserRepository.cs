@@ -6,29 +6,39 @@ namespace RiverBooks.Users.Infrastructure.Data;
 
 public class EfApplicationUserRepository(UsersDbContext dbContext) : IApplicationUserRepository
 {
-    private readonly UsersDbContext _dbContext = dbContext;
-
-    public Task<ApplicationUser?> GetUserByIdAsync(string userId)
+    public void Add(ApplicationUser user)
     {
-        return _dbContext.ApplicationUsers.FindAsync(userId).AsTask();
+        dbContext.ApplicationUsers.Add(user);
+    }
+
+    public Task<ApplicationUser?> GetUserByEmailAsync(string emailAddress)
+    {
+        return dbContext.ApplicationUsers
+            .Where(u => u.Email.Equals(emailAddress))
+            .SingleOrDefaultAsync();
+    }
+
+    public Task<ApplicationUser?> GetUserByIdAsync(Guid userId)
+    {
+        return dbContext.ApplicationUsers.FindAsync(userId).AsTask();
     }
 
     public Task<ApplicationUser?> GetUserWithAddressesByEmailAsync(string email)
     {
-        return _dbContext.ApplicationUsers
+        return dbContext.ApplicationUsers
           .Include(user => user.Addresses)
           .SingleOrDefaultAsync(user => user.Email == email);
     }
 
     public Task<ApplicationUser?> GetUserWithCartByEmailAsync(string email)
     {
-        return _dbContext.ApplicationUsers
+        return dbContext.ApplicationUsers
           .Include(user => user.CartItems)
           .SingleOrDefaultAsync(user => user.Email == email);
     }
 
-    public Task SaveChangesAsync()
+    public Task SaveChangesAsync(CancellationToken cancellationToken)
     {
-        return _dbContext.SaveChangesAsync();
+        return dbContext.SaveChangesAsync(cancellationToken);
     }
 }

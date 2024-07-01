@@ -2,19 +2,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
-using RiverBooks.OrderProcessing.Contracts;
 using RiverBooks.SharedKernel.Authentication;
 using RiverBooks.SharedKernel.Helpers;
 using RiverBooks.Users.Contracts;
-using RiverBooks.Users.Domain;
 using RiverBooks.Users.UseCases.User.AddAddress;
 using RiverBooks.Users.UseCases.User.Create;
 using RiverBooks.Users.UseCases.User.Delete;
 using RiverBooks.Users.UseCases.User.ListAddresses;
+using RiverBooks.Users.UseCases.User.Login;
 
 namespace RiverBooks.Users.Api;
 
@@ -33,11 +29,11 @@ internal static class UserEndpoints
             .Produces<BadRequest>()
             .AllowAnonymous();
 
-        group.MapGet("/addresses", ListUserAdressesAsync)
+        group.MapGet("/addresses", ListUserAddressesAsync)
             .Produces<Ok<AddressListResponse>>()
             .Produces<BadRequest>();
 
-        group.MapPost("/addresses", AddUserAdressesAsync)
+        group.MapPost("/addresses", AddUserAddressesAsync)
             .Produces<Ok>()
             .Produces<BadRequest>();
 
@@ -50,43 +46,28 @@ internal static class UserEndpoints
 
     internal static async Task<IResult> CreateUserAsync(
         CreateUserRequest request,
-        [FromServices] ISender sender,
+        ISender sender,
         CancellationToken cancellationToken = default)
     {
-        var command = new CreateUserCommand(request.Email, request.Password);
-
-        var result = await sender.Send(command, cancellationToken);
-
-        return result.ToHttpOk();
+        return (await sender.Send(
+                new CreateUserCommand(request.Email, request.Password),
+                cancellationToken))
+            .ToHttpOk();
     }
 
     internal static async Task<IResult> LoginUserAsync(
         UserLoginRequest request,
-        [FromServices] UserManager<ApplicationUser> userManager,
-        [FromServices] IJwtTokenHandler jwtTokenHandler,
+        ISender sender,
         CancellationToken cancellationToken = default)
     {
-        var user = await userManager.FindByEmailAsync(request.Email!);
-        if (user == null)
-        {
-            return TypedResults.Unauthorized();
-        }
-
-        var loginSuccessful = await userManager.CheckPasswordAsync(user, request.Password);
-
-        if (!loginSuccessful)
-        {
-            return TypedResults.Unauthorized();
-        }
-
-        var token = jwtTokenHandler.CreateToken(user.Id.ToString(), user.Email!);
-
-        return TypedResults.Ok(token);
+        var command = new LoginUserCommand(request.Email, request.Password);
+        var result = await sender.Send(command, cancellationToken);
+        return result.ToHttpOk();
     }
 
-    internal static async Task<IResult> ListUserAdressesAsync(
-        [FromServices] ISender sender,
-        [FromServices] IUserClaimsProvider userClaimsProvider,
+    internal static async Task<IResult> ListUserAddressesAsync(
+        ISender sender,
+        IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken = default)
     {
         var emailAddress = userClaimsProvider.GetEmailAddress();
@@ -98,13 +79,13 @@ internal static class UserEndpoints
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.MatchHttpOk(r => new AddressListResponse(r));
+        return result.ToHttpOk(r => new AddressListResponse(r));
     }
 
-    internal static async Task<IResult> AddUserAdressesAsync(
+    internal static async Task<IResult> AddUserAddressesAsync(
         AddAddressRequest request,
-        [FromServices] ISender sender,
-        [FromServices] IUserClaimsProvider userClaimsProvider,
+        ISender sender,
+        IUserClaimsProvider userClaimsProvider,
         CancellationToken cancellationToken = default)
     {
         var emailAddress = userClaimsProvider.GetEmailAddress();
@@ -126,16 +107,16 @@ internal static class UserEndpoints
     }
 
     internal static async Task<IResult> DeleteUserAsync(
-        [FromServices] IUserClaimsProvider userClaimsProvider,
-        [FromServices] ISender sender,
+        IUserClaimsProvider userClaimsProvider,
+        ISender sender,
         CancellationToken cancellationToken = default)
     {
         var userId = userClaimsProvider.GetId();
 
-        if (userId is null or [])
+        if (userId is null)
             return TypedResults.Unauthorized();
 
-        var command = new DeleteUserCommand(userId);
+        var command = new DeleteUserCommand(userId.Value);
 
         var result = await sender.Send(command, cancellationToken);
 

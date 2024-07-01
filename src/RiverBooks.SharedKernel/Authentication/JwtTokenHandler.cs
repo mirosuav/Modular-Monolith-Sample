@@ -2,16 +2,12 @@
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using RiverBooks.SharedKernel.Helpers;
-using System.Security.Claims;
 using System.Text;
 
 namespace RiverBooks.SharedKernel.Authentication;
 
 public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProvider) : IJwtTokenHandler
 {
-    private readonly TimeProvider _timeProvider = timeProvider;
-    private readonly IConfiguration _configuration = configuration;
-
     public static TokenValidationParameters CreateValidationParameters(IConfiguration configuration)
     {
         return new TokenValidationParameters
@@ -26,9 +22,9 @@ public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProv
 
     public string CreateToken(string userId, string userEmailAddress)
     {
-        SymmetricSecurityKey securityKey = CreateSecurityKey(_configuration["Auth:JwtSecret"]);
-        int tokenExpiration = _configuration.GetValue("Auth:TokenExpirationMin", 120);
-        var utcNow = _timeProvider.GetUtcNow().UtcDateTime;
+        SymmetricSecurityKey securityKey = CreateSecurityKey(configuration["Auth:JwtSecret"]);
+        int tokenExpiration = configuration.GetValue("Auth:TokenExpirationMin", 120);
+        var utcNow = timeProvider.GetUtcNow().UtcDateTime;
 
         var claims = new Dictionary<string, object>
         {

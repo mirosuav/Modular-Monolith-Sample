@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using static System.ArgumentNullException;
 
 namespace RiverBooks.SharedKernel.Helpers;
 
@@ -10,19 +10,19 @@ public static class PassOrThrow
     public static T IfNull<T>([NotNull] T? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
         where T : class
     {
-        ArgumentNullException.ThrowIfNull(argument, paramName);
+        ThrowIfNull(argument, paramName);
         return argument;
     }
 
     public static string IfNullOrEmpty([NotNull] string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(argument, paramName);
+        ArgumentException.ThrowIfNullOrEmpty(argument, paramName);
         return argument;
     }
 
     public static string IfNullOrWhitespace([NotNull] string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
     {
-        ArgumentNullException.ThrowIfNullOrWhiteSpace(argument, paramName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(argument, paramName);
         return argument;
     }
 

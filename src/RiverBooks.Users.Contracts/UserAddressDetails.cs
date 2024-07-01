@@ -1,6 +1,6 @@
 ﻿namespace RiverBooks.Users.Contracts;
 
-public record UserAddressDetails(string UserId,
+public record UserAddressDetails(Guid UserId,
                                  Guid AddressId,
                                  string Street1,
                                  string Street2,

@@ -23,6 +23,6 @@ internal static class EmailSendingEndpoints
     {
         return (await getEmailsFromOutboxService
             .GetAllUnprocessedEmailsEntities(cancellationToken))
-            .MatchHttpOk(r => r);
+            .ToHttpOk(r => r);
     }
 }

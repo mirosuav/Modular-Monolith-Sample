@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using RiverBooks.OrderProcessing.Application.Interfaces;
 using RiverBooks.OrderProcessing.Domain;
-using RiverBooks.OrderProcessing.Interfaces;
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.OrderProcessing.Infrastructure;
@@ -11,9 +11,6 @@ internal class ReadThroughOrderAddressCache(
     IMediator mediator,
     ILogger<ReadThroughOrderAddressCache> logger) : IOrderAddressCache
 {
-    private readonly SqlServerOrderAddressCache _addressCache = addressCache;
-    private readonly IMediator _mediator = mediator;
-    private readonly ILogger<ReadThroughOrderAddressCache> _logger = logger;
     private static readonly SemaphoreSlim cacheAccessMonitor = new(1, 1);
 
     public async Task<Resultable<OrderAddress>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
@@ -23,15 +20,15 @@ internal class ReadThroughOrderAddressCache(
 
         try
         {
-            var result = await _addressCache.GetByIdAsync(id, cancellationToken);
+            var result = await addressCache.GetByIdAsync(id, cancellationToken);
             if (result.IsSuccess)
                 return result;
 
             // read user address from User module and store in cache
-            _logger.LogInformation("Address {id} not found; fetching from source.", id);
+            logger.LogInformation("Address {id} not found; fetching from source.", id);
             var query = new Users.Contracts.UserAddressDetailsByIdQuery(id);
 
-            var queryResult = await _mediator.Send(query, cancellationToken);
+            var queryResult = await mediator.Send(query, cancellationToken);
 
             if (queryResult.IsSuccess)
             {
@@ -44,7 +41,7 @@ internal class ReadThroughOrderAddressCache(
                                           dto.Country);
 
                 var orderAddress = new OrderAddress(dto.AddressId, address);
-                await _addressCache.StoreAsync(orderAddress, cancellationToken);
+                await addressCache.StoreAsync(orderAddress, cancellationToken);
                 return orderAddress;
             }
 
@@ -61,7 +58,7 @@ internal class ReadThroughOrderAddressCache(
         await cacheAccessMonitor.WaitAsync(cancellationToken);
         try
         {
-            return await _addressCache.StoreAsync(orderAddress, cancellationToken);
+            return await addressCache.StoreAsync(orderAddress, cancellationToken);
         }
         finally
         {

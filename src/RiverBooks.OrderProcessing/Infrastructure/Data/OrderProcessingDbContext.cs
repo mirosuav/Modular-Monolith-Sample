@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RiverBooks.OrderProcessing.Domain;
 using RiverBooks.SharedKernel.DomainEvents;
 using System.Reflection;
@@ -8,11 +7,9 @@ namespace RiverBooks.OrderProcessing.Infrastructure.Data;
 
 internal class OrderProcessingDbContext(
     DbContextOptions<OrderProcessingDbContext> options,
-    IDomainEventDispatcher? dispatcher) 
+    IDomainEventDispatcher? dispatcher)
     : DbContext(options)
 {
-    private readonly IDomainEventDispatcher? _dispatcher = dispatcher;
-
     public DbSet<Order> Orders { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -41,7 +38,7 @@ internal class OrderProcessingDbContext(
         var result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         // ignore events if no dispatcher provided
-        if (_dispatcher == null) return result;
+        if (dispatcher == null) return result;
 
         // dispatch events only if save was successful
         var entitiesWithEvents = ChangeTracker.Entries<IHaveDomainEvents>()
@@ -49,7 +46,7 @@ internal class OrderProcessingDbContext(
             .Where(e => e.DomainEvents.Any())
         .ToArray();
 
-        await _dispatcher.DispatchAndClearEvents(entitiesWithEvents);
+        await dispatcher.DispatchAndClearEvents(entitiesWithEvents);
 
         return result;
     }

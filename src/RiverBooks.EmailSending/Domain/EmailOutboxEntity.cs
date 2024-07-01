@@ -2,7 +2,7 @@
 
 namespace RiverBooks.EmailSending.Domain;
 
-// TODO limit sending tries and log message/mark email as failure in case email cannot be send many times
+// TODO limit sending tries and log message/mark email as failure in case email cannot be sent many times
 public class EmailOutboxEntity
 {
     public Guid Id { get; set; } = SequentialGuid.NewGuid();

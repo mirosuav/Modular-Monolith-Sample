@@ -7,9 +7,10 @@ namespace RiverBooks.OrderProcessing.Domain;
 internal class Order : IHaveDomainEvents
 {
     public Guid Id { get; private set; }
-    public string UserId { get; private set; } = default!;
+    public Guid UserId { get; private set; } = default!;
     public Address ShippingAddress { get; private set; } = default!;
     public Address BillingAddress { get; private set; } = default!;
+
     private readonly List<OrderItem> _orderItems = [];
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
@@ -28,7 +29,8 @@ internal class Order : IHaveDomainEvents
 
     internal class Factory
     {
-        public static Order Create(string userId,
+        public static Order Create(
+            Guid userId,
           Address shippingAddress,
           Address billingAddress,
           IEnumerable<OrderItem> orderItems)

@@ -21,7 +21,7 @@ public static class ResultableExtensions
             ? TypedResults.Ok(result.Value)
             : result.ToProblemHttpResult();
 
-    public static IResult MatchHttpOk<T, TResult>(this Resultable<T> result, Func<T, TResult> resultFactory)
+    public static IResult ToHttpOk<T, TResult>(this Resultable<T> result, Func<T, TResult> resultFactory)
         => result.IsSuccess
             ? TypedResults.Ok(resultFactory(result.Value))
             : result.ToProblemHttpResult();
@@ -29,7 +29,7 @@ public static class ResultableExtensions
     public static ProblemHttpResult ToProblemHttpResult(this IResultable result)
     {
         if (result.IsSuccess)
-            throw new ApplicationException("No Error to detils to crete.");
+            throw new ApplicationException("No Error to details to crete.");
 
         return TypedResults.Problem(result.ToProblemDetails());
     }

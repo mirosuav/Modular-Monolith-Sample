@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RiverBooks.OrderProcessing.Application.Interfaces;
 using RiverBooks.OrderProcessing.Infrastructure;
 using RiverBooks.OrderProcessing.Infrastructure.Data;
-using RiverBooks.OrderProcessing.Interfaces;
 using Serilog;
 using System.Reflection;
 
@@ -38,7 +38,7 @@ public static class ModuleBootstrap
         });
 
         // Add Services
-        services.AddScoped<IOrderRepository, EfOrderRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<SqlServerOrderAddressCache>();
         services.AddScoped<IOrderAddressCache, ReadThroughOrderAddressCache>();
 
