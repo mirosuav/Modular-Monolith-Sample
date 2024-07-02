@@ -5,7 +5,8 @@ using RiverBooks.Users.Application.Interfaces;
 
 namespace RiverBooks.Users.Application.UseCases.Cart.Checkout;
 
-public class CheckoutCartHandler(IApplicationUserRepository userRepository,
+public class CheckoutCartHandler(
+    IApplicationUserRepository userRepository,
   IMediator mediator) : IRequestHandler<CheckoutCartCommand, Resultable<Guid>>
 {
     public async Task<Resultable<Guid>> Handle(CheckoutCartCommand request, CancellationToken cancellationToken)
@@ -13,9 +14,7 @@ public class CheckoutCartHandler(IApplicationUserRepository userRepository,
         var user = await userRepository.GetUserWithCartAsync(request.UserId);
 
         if (user is null)
-        {
             return Error.NotAuthorized;
-        }
 
         var items = user.CartItems.Select(item =>
           new OrderItemDetails(item.BookId,
@@ -29,8 +28,9 @@ public class CheckoutCartHandler(IApplicationUserRepository userRepository,
           request.BillingAddressId,
           items);
 
-        // TODO: Consider replacing with a message-based approach for perf reasons
-        var result = await mediator.Send(createOrderCommand, cancellationToken); // synchronous
+        // Send command to OrderProcessing module and handle the response errors
+        // to ensure eventual consistency
+        var result = await mediator.Send(createOrderCommand, cancellationToken); 
 
         if (!result.IsSuccess)
         {

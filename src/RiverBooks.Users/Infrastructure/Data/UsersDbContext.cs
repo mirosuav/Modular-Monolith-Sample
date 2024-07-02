@@ -15,7 +15,7 @@ public class UsersDbContext(DbContextOptions<UsersDbContext> options, IDomainEve
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("Users");
+        modelBuilder.HasDefaultSchema(ModuleDescriptor.Name);
 
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
@@ -42,7 +42,7 @@ public class UsersDbContext(DbContextOptions<UsersDbContext> options, IDomainEve
         if (dispatcher == null) return result;
 
         // dispatch events only if save was successful
-        var entitiesWithEvents = ChangeTracker.Entries<IHaveDomainEvents>()
+        var entitiesWithEvents = ChangeTracker.Entries<HaveDomainEvents>()
             .Select(e => e.Entity)
             .Where(e => e.DomainEvents.Any())
         .ToArray();

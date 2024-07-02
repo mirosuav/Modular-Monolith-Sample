@@ -10,7 +10,7 @@ public class EmailSendingDbContext(DbContextOptions<EmailSendingDbContext> optio
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("EmailSending");
+        modelBuilder.HasDefaultSchema(ModuleDescriptor.Name);
 
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }

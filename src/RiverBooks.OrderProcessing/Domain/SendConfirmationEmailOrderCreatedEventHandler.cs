@@ -8,9 +8,9 @@ namespace RiverBooks.OrderProcessing.Domain;
 internal class SendConfirmationEmailOrderCreatedEventHandler(
     IMediator mediatR,
     ILogger<SendConfirmationEmailOrderCreatedEventHandler> logger) :
-    INotificationHandler<OrderCreatedEvent>
+    INotificationHandler<OrderCreatedDomainEvent>
 {
-    public async Task Handle(OrderCreatedEvent notification, CancellationToken ct)
+    public async Task Handle(OrderCreatedDomainEvent notification, CancellationToken ct)
     {
         var userByIdQuery = new UserDetailsByIdQuery(notification.Order.UserId);
 

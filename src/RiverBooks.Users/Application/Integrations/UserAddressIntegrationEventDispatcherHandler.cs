@@ -8,9 +8,9 @@ namespace RiverBooks.Users.Application.Integrations;
 internal class UserAddressIntegrationEventDispatcherHandler(
   IMediator mediator,
   ILogger<UserAddressIntegrationEventDispatcherHandler> logger) :
-  INotificationHandler<AddressAddedEvent>
+  INotificationHandler<AddressAddedDomainEvent>
 {
-    public async Task Handle(AddressAddedEvent notification, CancellationToken ct)
+    public async Task Handle(AddressAddedDomainEvent notification, CancellationToken ct)
     {
         var addressDetails = new UserAddressDetails(notification.NewAddress.UserId,
           notification.NewAddress.Id,

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RiverBooks.OrderProcessing.Domain;
 
-internal class Order : IHaveDomainEvents
+internal class Order : HaveDomainEvents
 {
     public Guid Id { get; private set; }
     public Guid UserId { get; private set; } = default!;
@@ -13,14 +13,6 @@ internal class Order : IHaveDomainEvents
 
     private readonly List<OrderItem> _orderItems = [];
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
-
-    private readonly List<DomainEventBase> _domainEvents = [];
-
-    [NotMapped]
-    public IEnumerable<DomainEventBase> DomainEvents => _domainEvents.AsReadOnly();
-
-    protected void RegisterDomainEvent(DomainEventBase domainEvent) => _domainEvents.Add(domainEvent);
-    void IHaveDomainEvents.ClearDomainEvents() => _domainEvents.Clear();
 
     public DateTimeOffset DateCreated { get; private set; } = DateTimeOffset.Now;
 
@@ -47,7 +39,7 @@ internal class Order : IHaveDomainEvents
                 order.AddOrderItem(item);
             }
 
-            var createdEvent = new OrderCreatedEvent(order);
+            var createdEvent = new OrderCreatedDomainEvent(order);
             order.RegisterDomainEvent(createdEvent);
 
             return order;

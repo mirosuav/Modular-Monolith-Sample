@@ -4,11 +4,11 @@ using RiverBooks.OrderProcessing.Domain;
 
 namespace RiverBooks.OrderProcessing.Application.Integrations;
 internal class PublishCreatedOrderIntegrationEventHandler(IMediator mediator) :
-  INotificationHandler<OrderCreatedEvent>
+  INotificationHandler<OrderCreatedDomainEvent>
 {
-    public async Task Handle(OrderCreatedEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(OrderCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
-        var dto = new OrderDetailsDto()
+        var orderDetails = new OrderDetailsDto()
         {
             DateCreated = notification.Order.DateCreated,
             OrderId = notification.Order.Id,
@@ -20,9 +20,9 @@ internal class PublishCreatedOrderIntegrationEventHandler(IMediator mediator) :
                                              oi.Description))
           .ToList()
         };
-        var integrationEvent = new OrderCreatedIntegrationEvent(dto);
+
+        var integrationEvent = new OrderCreatedIntegrationEvent(orderDetails);
 
         await mediator.Publish(integrationEvent, cancellationToken);
-
     }
 }

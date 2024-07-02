@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RiverBooks.Users.Domain;
 
-public class ApplicationUser : IHaveDomainEvents
+public class ApplicationUser : HaveDomainEvents
 {
     public required Guid Id { get; set; }
 
@@ -24,16 +24,7 @@ public class ApplicationUser : IHaveDomainEvents
 
     private readonly List<UserStreetAddress> _addresses = [];
     public IReadOnlyCollection<UserStreetAddress> Addresses => _addresses.AsReadOnly();
-
-    private readonly List<DomainEventBase> _domainEvents = [];
-
-    [NotMapped]
-    public IEnumerable<DomainEventBase> DomainEvents => _domainEvents.AsReadOnly();
-
-    protected void RegisterDomainEvent(DomainEventBase domainEvent) => _domainEvents.Add(domainEvent);
-
-    void IHaveDomainEvents.ClearDomainEvents() => _domainEvents.Clear();
-
+    
     public void SetPassword(string newPassword)
     {
         var passwordHasher = new PasswordHasher<ApplicationUser>();
@@ -76,13 +67,11 @@ public class ApplicationUser : IHaveDomainEvents
         var newAddress = new UserStreetAddress(Id, address);
         _addresses.Add(newAddress);
 
-
-        var domainEvent = new AddressAddedEvent(newAddress);
+        var domainEvent = new AddressAddedDomainEvent(newAddress);
         RegisterDomainEvent(domainEvent);
 
         return newAddress;
     }
-
 
     internal void ClearCart()
     {

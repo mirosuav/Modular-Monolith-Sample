@@ -2,7 +2,7 @@
 
 namespace RiverBooks.Users.Domain;
 
-internal sealed class AddressAddedEvent(UserStreetAddress newAddress) : DomainEventBase
+internal sealed class AddressAddedDomainEvent(UserStreetAddress newAddress) : DomainEventBase
 {
     public UserStreetAddress NewAddress { get; } = newAddress;
 }

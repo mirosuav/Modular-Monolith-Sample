@@ -14,7 +14,7 @@ internal class OrderProcessingDbContext(
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("OrderProcessing");
+        modelBuilder.HasDefaultSchema(ModuleDescriptor.Name);
 
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
@@ -41,7 +41,7 @@ internal class OrderProcessingDbContext(
         if (dispatcher == null) return result;
 
         // dispatch events only if save was successful
-        var entitiesWithEvents = ChangeTracker.Entries<IHaveDomainEvents>()
+        var entitiesWithEvents = ChangeTracker.Entries<HaveDomainEvents>()
             .Select(e => e.Entity)
             .Where(e => e.DomainEvents.Any())
         .ToArray();

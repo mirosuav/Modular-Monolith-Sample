@@ -30,7 +30,7 @@ public static class ModuleBootstrap
     {
 
         // configure EF db context
-        string? connectionString = config.GetConnectionString("EmailSendingConnectionString");
+        string? connectionString = config.GetConnectionString($"{ModuleDescriptor.Name}ConnectionString");
         services.AddDbContext<EmailSendingDbContext>(options => options.UseSqlServer(connectionString));
 
         // Add module services
@@ -41,7 +41,7 @@ public static class ModuleBootstrap
         services.AddTransient<ISendEmailsFromOutboxService, DefaultSendEmailsFromOutboxService>();
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list
-        mediatRAssemblies.Add(typeof(IMarker).Assembly);
+        mediatRAssemblies.Add(typeof(ModuleDescriptor).Assembly);
 
         services.AddResiliencePipeline(typeof(IEmailSender), static builder =>
         {
@@ -60,7 +60,7 @@ public static class ModuleBootstrap
         // Add BackgroundWorker
         services.AddHostedService<EmailSendingBackgroundService>();
 
-        logger.Information("{Module} module services registered", "Email Sending");
+        logger.Information("{Module} module services registered", ModuleDescriptor.Name);
         return services;
     }
 }

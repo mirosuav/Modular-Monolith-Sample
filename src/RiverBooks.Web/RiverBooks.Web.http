@@ -30,7 +30,7 @@ Content-Type: application/json
 
 ###
 
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHRlc3QuY29tIiwiSWQiOiIwNjY4MmZiYS0xOTg4LTdlYWEtODAwMC0wMzZmY2I2Mjc2MGYiLCJzaWQiOiIwNjY4MmZiYy04YzI5LTcwNTktODAwMC04YjJlZWIwMjY2M2QiLCJleHAiOjE3MTk4NjczNjgsImlhdCI6MTcxOTg2MDE2OCwibmJmIjoxNzE5ODYwMTY4fQ.DazKTVBP1WvpwJxCDSA2f0Ee3udHMjg1gfbMl5vUea8
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHRlc3QuY29tIiwiSWQiOiIwNjY4MmZiYS0xOTg4LTdlYWEtODAwMC0wMzZmY2I2Mjc2MGYiLCJzaWQiOiIwNjY4NDZlMC02NzUzLTcwOGYtODAwMC1lMmIyYjFiM2ZmZDYiLCJleHAiOjE3MTk5NjIxNTAsImlhdCI6MTcxOTk1NDk1MCwibmJmIjoxNzE5OTU0OTUwfQ.-Sk4cP9n46YbYDA5g-Z2uJhzgh7M3J17MBY1l-g6Lpk
 
 # GET ALL BOOKS
 
@@ -88,8 +88,8 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "bookId":"06682fbf-0cf2-7353-8000-17e68740046f",
-  "quantity":1
+  "bookId":"17c61e41-3953-42cd-8f88-d3f698869b35",
+  "quantity":2
 }
 
 ###
@@ -154,16 +154,9 @@ Authorization: Bearer {{token}}
 
 ###
 
-# TOP SALES 1 - REACH IN REPORTING
+# TOP SALES - EVENT INGESTION CUSTOM DB
 
 GET {{RootAddress}}/reports/topsales/2024/7
-Accept: application/json
-
-###
-
-# TOP SALES 2 - EVENT INGESTION CUSTOM DB
-
-GET {{RootAddress}}/reports/topsales2/2024/7
 Accept: application/json
 
 ###

@@ -5,9 +5,9 @@ using RiverBooks.Users.Domain;
 namespace RiverBooks.Users.Application;
 
 internal class LogNewAddressesHandler(ILogger<LogNewAddressesHandler> logger)
-    : INotificationHandler<AddressAddedEvent>
+    : INotificationHandler<AddressAddedDomainEvent>
 {
-    public Task Handle(AddressAddedEvent notification, CancellationToken ct)
+    public Task Handle(AddressAddedDomainEvent notification, CancellationToken ct)
     {
         logger.LogInformation("New address added to user {user}: {address}",
           notification.NewAddress.UserId,

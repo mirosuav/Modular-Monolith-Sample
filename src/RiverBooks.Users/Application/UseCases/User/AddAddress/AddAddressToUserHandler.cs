@@ -26,6 +26,7 @@ public class AddAddressToUserHandler(
                                        request.State,
                                        request.PostalCode,
                                        request.Country);
+
         var userAddress = user.AddAddress(addressToAdd);
 
         await userRepository.SaveChangesAsync(ct);

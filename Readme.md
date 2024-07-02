@@ -20,24 +20,42 @@ Modular Monoliths course
 TODO:
 - Use strongly typed Ids
 
+# Features
 
-### Update databases in each module
-```
-dotnet ef database update -p RiverBooks.Users -c UsersDbContext -s RiverBooks.Web
-dotnet ef database update -p RiverBooks.OrderProcessing -c OrderProcessingDbContext -s RiverBooks.Web
-dotnet ef database update -p RiverBooks.EmailSending -c EmailSendingDbContext -s RiverBooks.Web
-dotnet sql-cache create "Server=(local);Integrated Security=true;Initial Catalog=RiverBooks;Trust Server Certificate=True" OrderProcessing UserAdressesCache
-dotnet ef database update -p RiverBooks.Books -c BookDbContext -s RiverBooks.Web
-```
+## Order processing module
+
+### Materialized view for order addresses
+
+- User module sends `NewUserAddressAddedIntegrationEvent` to notify Order processing module about new addresses
+- Customer order addressess are stored in `SqlServerOrderAddressCache` implementing `IDistributedCache`
+- When order is created user addresses are fetched from cache
+- `ReadThroughOrderAddressCache` is used to fetch user addresses from cache or send direct query to the User module and store the result in cache
+
+
+
+# Operations
 
 ### Generate EF migrations
 
 ```
 dotnet ef migrations add Initial -p RiverBooks.EmailSending -c EmailSendingDbContext -s RiverBooks.Web -o Infrastructure\Migrations
 dotnet ef migrations add Initial -p RiverBooks.Users -c UsersDbContext -s RiverBooks.Web -o Infrastructure\Migrations
+dotnet ef migrations add Initial -p RiverBooks.Reporting -c ReportingDbContext -s RiverBooks.Web -o Infrastructure\Migrations
 dotnet ef migrations add Initial -p RiverBooks.OrderProcessing -c OrderProcessingDbContext -s RiverBooks.Web -o Infrastructure\Migrations
 dotnet ef migrations add Initial -p RiverBooks.Books -c BookDbContext -s RiverBooks.Web -o Infrastructure\Migrations
 ```
+
+### Update databases in each module
+```
+dotnet ef database update -p RiverBooks.Users -c UsersDbContext -s RiverBooks.Web
+dotnet ef database update -p RiverBooks.OrderProcessing -c OrderProcessingDbContext -s RiverBooks.Web
+dotnet ef database update -p RiverBooks.Reporting -c ReportingDbContext -s RiverBooks.Web
+dotnet ef database update -p RiverBooks.EmailSending -c EmailSendingDbContext -s RiverBooks.Web
+dotnet sql-cache create "Server=(local);Integrated Security=true;Initial Catalog=RiverBooks;Trust Server Certificate=True" OrderProcessing UserAddressesCache
+dotnet ef database update -p RiverBooks.Books -c BookDbContext -s RiverBooks.Web
+```
+
+
 
 
 

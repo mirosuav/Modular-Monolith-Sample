@@ -85,7 +85,7 @@ internal static class ServiceCollectionExtensions
     {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies([.. messagingAssemblies]));
 
-        // MediatR pipeline bahaviors
+        // MediatR pipeline behaviours
         services.AddLoggingBehavior();
         services.AddValidationBehavior();
 

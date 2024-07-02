@@ -10,7 +10,7 @@ internal class BookDbContext(DbContextOptions<BookDbContext> options) : DbContex
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("Books");
+        modelBuilder.HasDefaultSchema(Module.Name);
 
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }

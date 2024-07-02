@@ -26,15 +26,15 @@ public static class ModuleBootstrap
         ILogger logger,
         List<Assembly> mediatRAssemblies)
     {
-        string? connectionString = config.GetConnectionString("OrderProcessingConnectionString");
-        services.AddDbContext<OrderProcessingDbContext>(config => config.UseSqlServer(connectionString));
+        string? connectionString = config.GetConnectionString($"{ModuleDescriptor.Name}ConnectionString");
+        services.AddDbContext<OrderProcessingDbContext>(c => c.UseSqlServer(connectionString));
 
         // Materialized view for user addresses fetched from User module
         services.AddDistributedSqlServerCache(options =>
         {
             options.ConnectionString = connectionString;
-            options.SchemaName = "OrderProcessing";
-            options.TableName = "UserAdressesCache";
+            options.SchemaName = ModuleDescriptor.Name;
+            options.TableName = "UserAddressesCache";
         });
 
         // Add Services
@@ -43,9 +43,9 @@ public static class ModuleBootstrap
         services.AddScoped<IOrderAddressCache, ReadThroughOrderAddressCache>();
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list
-        mediatRAssemblies.Add(typeof(IMarker).Assembly);
+        mediatRAssemblies.Add(typeof(ModuleDescriptor).Assembly);
 
-        logger.Information("{Module} module services registered", "OrderProcessing");
+        logger.Information("{Module} module services registered", ModuleDescriptor.Name);
 
         return services;
     }

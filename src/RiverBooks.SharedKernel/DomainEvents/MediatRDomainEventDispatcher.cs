@@ -4,7 +4,7 @@ namespace RiverBooks.SharedKernel.DomainEvents;
 
 public class MediatRDomainEventDispatcher(IPublisher publisher) : IDomainEventDispatcher
 {
-    public async Task DispatchAndClearEvents(IEnumerable<IHaveDomainEvents> entitiesWithEvents)
+    public async Task DispatchAndClearEvents(IEnumerable<HaveDomainEvents> entitiesWithEvents)
     {
         foreach (var entity in entitiesWithEvents)
         {

@@ -25,7 +25,7 @@ internal class ReadThroughOrderAddressCache(
                 return result;
 
             // read user address from User module and store in cache
-            logger.LogInformation("Address {id} not found; fetching from source.", id);
+            logger.LogInformation("Address {id} not found in OrderAddressCache; fetching from source.", id);
             var query = new Users.Contracts.UserAddressDetailsByIdQuery(id);
 
             var queryResult = await mediator.Send(query, cancellationToken);
@@ -45,7 +45,7 @@ internal class ReadThroughOrderAddressCache(
                 return orderAddress;
             }
 
-            return Error.NotFound("Could not retreive user address");
+            return Error.NotFound("Could not retrieve user address");
         }
         finally
         {

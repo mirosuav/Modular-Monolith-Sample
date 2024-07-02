@@ -22,16 +22,16 @@ public static class ModuleBootstrap
       Serilog.ILogger logger,
       List<System.Reflection.Assembly> mediatRAssemblies)
     {
-        string? connectionString = config.GetConnectionString("BooksConnectionString");
+        string? connectionString = config.GetConnectionString($"{Module.Name}ConnectionString");
         services.AddDbContext<BookDbContext>(options => options.UseSqlServer(connectionString));
 
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IBookService, BookService>();
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list
-        mediatRAssemblies.Add(typeof(IMarker).Assembly);
+        mediatRAssemblies.Add(typeof(Module).Assembly);
 
-        logger.Information("{Module} module services registered", "Books");
+        logger.Information("{Module} module services registered", Module.Name);
 
         return services;
     }

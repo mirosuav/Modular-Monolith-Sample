@@ -25,11 +25,9 @@ public static class AuthenticationExtensions
 
     public static IServiceCollection AddAuthenticatedUsersOnlyFallbackPolicy(this IServiceCollection services)
     {
-        _ = services.AddAuthorization(authOpt =>
+        return services.AddAuthorization(authOpt =>
             authOpt.FallbackPolicy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
                 .Build());
-
-        return services;
     }
 }
