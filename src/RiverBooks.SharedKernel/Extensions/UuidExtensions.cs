@@ -7,10 +7,10 @@ namespace RiverBooks.SharedKernel.Extensions;
 /// <summary>
 /// Source <see href="https://github.com/stevesimmons/uuid7-csharp"/>
 /// Generate a UUIDv7 following the Peabody and Davis RFC draft.
-/// Aim is to get get 100ns resolution if possible, 
+/// Aim is to get 100ns resolution if possible, 
 /// working on both Windows and Linux.
 /// </summary>
-internal static class Uuid7
+public static class Uuid7
 {
     /// <summary>
     /// The current time in integer nanoseconds, 
@@ -34,6 +34,10 @@ internal static class Uuid7
     private static long _y_asOf = 0;
     private static long _z_asOf = 0;
     private static int _seq_asOf = 0;
+    
+    private const int uuidVersion = 7;
+    private const int uuidVariant = 0b10;
+    private const int maxSeqValue = 0x3FFF;
 
     /// <summary>
     /// A new UUIDv7 Guid, which is time-ordered, with a nominal
@@ -67,21 +71,18 @@ internal static class Uuid7
          |                          rand (32 bits)                       |
          +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
          */
-        int uuidVersion = 7;
         // The UUID variant is the top-most bits of byte #9.
         // The number of bits increases because as new variants were added, 
         // the previous maximum variant value with "all 1 bits" got
         // extended with a new 0/1 bit to the right.
-        // Thus variant 1 for RFC4122 UUIDs is represented by bits 10.
+        // Thus, variant 1 for RFC4122 UUIDs is represented by bits 10.
         // (Variant 2 for Microsoft Guids is represented by three bits 110).
-        int uuidVariant = 0b10;
-        int maxSeqValue = 0x3FFF;
 
         long ns;
-        if (asOfNs == null)
+        if (asOfNs is null)
             ns = TimeNs();
+        // No randomness. In case one is needed for "earlier than everything else"
         else if (asOfNs == 0)
-            // No randomness. In case one is needed for "earlier than everything else"
             return new Guid("00000000-0000-0000-0000-000000000000");
         else
             ns = (long)asOfNs;
@@ -142,7 +143,7 @@ internal static class Uuid7
         // Don't use Guid(bytes[]), which internally uses a mix of
         // big and little endian byte orderings for historical reasons
         // (see https://en.wikipedia.org/wiki/Universally_unique_identifier#Variants).
-        // Instead use Guid(int, short, short, bytes[]), which doesn't mix endianness.
+        // Instead, use Guid(int, short, short, bytes[]), which doesn't mix endianness.
         return new Guid(
             (int)x,
             (short)y,
@@ -150,6 +151,7 @@ internal static class Uuid7
             last8Bytes
         );
     }
+
     public static string String(long? asOfNs = null)
     {
         return Guid(asOfNs).ToString();
