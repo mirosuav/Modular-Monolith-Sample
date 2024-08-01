@@ -8,4 +8,8 @@
     <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="Serilog.AspNetCore" Version="8.0.2" />
+  </ItemGroup>
+
 </Project>

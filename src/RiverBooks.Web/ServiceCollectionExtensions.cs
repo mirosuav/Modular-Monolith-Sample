@@ -10,6 +10,7 @@ using RiverBooks.SharedKernel.Messaging.PipelineBehaviors;
 using RiverBooks.Users.Api;
 using Serilog;
 using Serilog.Settings.Configuration;
+using Serilog.Sinks.OpenTelemetry;
 using System.Reflection;
 
 namespace RiverBooks.Web;
@@ -45,12 +46,27 @@ internal static class ServiceCollectionExtensions
         // Configure logging from all modules configuration
         var options = new ConfigurationReaderOptions([.. moduleAssemblies]);
 
-        services.AddSerilog((services, lc) => lc
+        Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(configuration, options)
-            .ReadFrom.Services(services)
             .Enrich.FromLogContext()
             .Enrich.With(new LogModuleNameEnricher())
-            .WriteTo.Console());
+            .WriteTo.Console()
+            .WriteTo.OpenTelemetry(x =>
+            {
+                x.Endpoint = "http://localhost:5341/ingest/otlp/v1/logs";
+                x.Protocol = OtlpProtocol.HttpProtobuf;
+                x.Headers = new Dictionary<string, string>
+                {
+                    ["X-Seq-ApiKey"] = "gD9YQ2yDYfU4JD5uHT9H"
+                };
+                //x.ResourceAttributes = new Dictionary<string, object>
+                //{
+                //    ["module.name"] = "RiversBook.Users"
+                //};
+            })
+            .CreateLogger();
+
+        services.AddSerilog();
 
         return services;
     }
