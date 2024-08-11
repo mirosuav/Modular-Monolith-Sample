@@ -7,8 +7,8 @@ public class UserStreetAddress
 {
     public UserStreetAddress(Guid userId, Address streetAddress)
     {
-        UserId = PassOrThrow.IfEmpty(userId);
-        StreetAddress = PassOrThrow.IfNull(streetAddress);
+        UserId = PassOrThrowWhen.Empty(userId);
+        StreetAddress = PassOrThrowWhen.Null(streetAddress);
     }
 
     private UserStreetAddress() { } // EF

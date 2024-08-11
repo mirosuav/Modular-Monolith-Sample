@@ -6,10 +6,10 @@ public class CartItem
 {
     public CartItem(Guid bookId, string description, int quantity, decimal unitPrice)
     {
-        BookId = PassOrThrow.IfEmpty(bookId);
-        Description = PassOrThrow.IfNullOrWhitespace(description);
-        Quantity = PassOrThrow.IfNegative(quantity);
-        UnitPrice = PassOrThrow.IfNegative(unitPrice);
+        BookId = PassOrThrowWhen.Empty(bookId);
+        Description = PassOrThrowWhen.NullOrWhiteSpace(description);
+        Quantity = PassOrThrowWhen.Negative(quantity);
+        UnitPrice = PassOrThrowWhen.Negative(unitPrice);
     }
 
     public CartItem()
@@ -25,17 +25,17 @@ public class CartItem
 
     internal void UpdateQuantity(int quantity)
     {
-        Quantity = PassOrThrow.IfNegative(quantity);
+        Quantity = PassOrThrowWhen.Negative(quantity);
     }
 
     internal void UpdateDescription(string description)
     {
-        Description = PassOrThrow.IfNullOrWhitespace(description);
+        Description = PassOrThrowWhen.NullOrWhiteSpace(description);
     }
 
     internal void UpdateUnitPrice(decimal unitPrice)
     {
-        UnitPrice = PassOrThrow.IfNegative(unitPrice);
+        UnitPrice = PassOrThrowWhen.Negative(unitPrice);
     }
 }
 

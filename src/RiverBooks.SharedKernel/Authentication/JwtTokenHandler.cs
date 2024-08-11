@@ -48,8 +48,7 @@ public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProv
 
     private static SymmetricSecurityKey CreateSecurityKey(string? secretString)
     {
-        PassOrThrow.IfNullOrWhitespace(secretString);
-        PassOrThrow.IfShorterThan(secretString, 32);
+        ThrowWhen.NullOrShorterThan(secretString, 32);
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretString));
         return securityKey;
     }

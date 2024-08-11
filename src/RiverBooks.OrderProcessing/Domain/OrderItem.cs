@@ -8,10 +8,10 @@ internal class OrderItem
     public OrderItem(Guid bookId, int quantity, decimal unitPrice, string description)
     {
         Id = SequentialGuid.NewGuid();
-        BookId = PassOrThrow.IfEmpty(bookId);
-        Quantity = PassOrThrow.IfNegative(quantity);
-        UnitPrice = PassOrThrow.IfNegative(unitPrice);
-        Description = PassOrThrow.IfNullOrWhitespace(description);
+        BookId = PassOrThrowWhen.Empty(bookId);
+        Quantity = PassOrThrowWhen.Negative(quantity);
+        UnitPrice = PassOrThrowWhen.Negative(unitPrice);
+        Description = PassOrThrowWhen.NullOrWhiteSpace(description);
     }
 
     private OrderItem()
