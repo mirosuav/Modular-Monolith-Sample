@@ -14,11 +14,19 @@ public class CreateUserCommandHandler(
 {
     public async Task<Resultable> Handle(CreateUserCommand command, CancellationToken cancellationToken)
     {
+        var userEmail = command.Email.ToLower();
+
+        // Some additional validation for user at db level
+        if (await applicationUserRepository.GetUserByEmailAsync(userEmail) is not null)
+        {
+            return Error.Conflict("User.Exists", $"User with email {userEmail} already exists.");
+        }
+
         var newUser = new ApplicationUser
         {
             Id = SequentialGuid.NewGuid(),
-            Email = command.Email,
-            FullName = command.Email
+            Email = userEmail,
+            FullName = userEmail
         };
 
         newUser.SetPassword(command.Password);
@@ -30,7 +38,7 @@ public class CreateUserCommandHandler(
         // send welcome email
         var sendEmailCommand = new SendEmailCommand
         {
-            To = command.Email,
+            To = userEmail,
             From = "donotreply@test.com",
             Subject = "Welcome to RiverBooks!",
             Body = "Thank you for registering."

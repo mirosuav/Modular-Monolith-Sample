@@ -15,7 +15,7 @@ Modular Monoliths course
 - Use MediatR
 - Uses Registration/Login with JWT Bearer authentication scheme
 - Replaced MongoDB based outbox pattern with SqlServer based
-- Use client generate incrementa UUIDv7 as guids
+- Use client generate incrementa UUIDv7 as guids see `RiverBooks.SharedKernel.Extensions.Uuid7` class
 
 TODO:
 - Use strongly typed Ids

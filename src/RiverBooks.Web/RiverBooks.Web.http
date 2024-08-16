@@ -1,8 +1,9 @@
 
 @RootAddress=https://localhost:7179
+@UserEmail=mirek@riverbooks.com
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHJpdmVyYm9va3MuY29tIiwiSWQiOiIwNjZiZmJhOC01OTBhLTc5YmUtODAwMC0wYWVkOWZlMjhjZDMiLCJzaWQiOiIwNjZiZmJjMi0xYWQwLTcyZDAtODAwMC00ZTdmNTBlZWMyZDIiLCJleHAiOjE3MjM4NDg3NjksImlhdCI6MTcyMzg0MTU2OSwibmJmIjoxNzIzODQxNTY5fQ.j90nuRVw8Q2ti-aweV5qD0c8LW5zz1GA4nTJUiDut2A
 
 
-###
 
 # CREATE USER
 
@@ -11,26 +12,24 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "email":"mirek@test.com",
+  "email":"{{UserEmail}}",
   "password":"Pass@word1"
 }
 
 ###
 
 # LOGIN
-
 POST {{RootAddress}}/users/login
 Accept: application/json
 Content-Type: application/json
 
 {
-  "email":"mirek@test.com",
+  "email":"{{UserEmail}}",
   "password":"Pass@word1"
 }
 
-###
 
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHRlc3QuY29tIiwiSWQiOiIwNjY4MmZiYS0xOTg4LTdlYWEtODAwMC0wMzZmY2I2Mjc2MGYiLCJzaWQiOiIwNjY4NDZlMC02NzUzLTcwOGYtODAwMC1lMmIyYjFiM2ZmZDYiLCJleHAiOjE3MTk5NjIxNTAsImlhdCI6MTcxOTk1NDk1MCwibmJmIjoxNzE5OTU0OTUwfQ.-Sk4cP9n46YbYDA5g-Z2uJhzgh7M3J17MBY1l-g6Lpk
+###
 
 # GET ALL BOOKS
 
@@ -40,12 +39,17 @@ Authorization: Bearer {{token}}
 
 ###
 
-@BookID=a89f6cd7-4693-457b-9009-02205dbbfe45
+@BookID=06682fc2-89a8-730b-8000-9698a79fcb01
+
+# GET BOOK By ID
+
 GET {{RootAddress}}/books/{{BookID}}
 Accept: application/json
 Authorization: Bearer {{token}}
 
 ###
+
+# ADD BOOK
 
 POST {{RootAddress}}/books
 Accept: application/json
@@ -53,75 +57,74 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "title": "Clean Coder",
+  "title": "The Fellowship of the Ring",
   "author": "Robert C. Martin",
   "price": 19.99
 }
 
 ###
 
-# Test the location header
-GET {{RootAddress}}/books/06682fc2-89a8-730b-8000-9698a79fcb01
+# DELETE BOOK
+
+DELETE {{RootAddress}}/books/{{BookID}}
 Accept: application/json
 Authorization: Bearer {{token}}
 
 ###
 
-DELETE {{RootAddress}}/books/0667899b-1c4b-72eb-8000-d6b033eb8703
-Accept: application/json
-Authorization: Bearer {{token}}
+# UPDATE BOOK'S PRICE
 
-###
-
-POST {{RootAddress}}/books/06682fc2-89a8-730b-8000-9698a79fcb01/pricehistory
+POST {{RootAddress}}/books/{{BookID}}/pricehistory
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
- 9.99
+ 12.00
 
 
-### Add item to cart
+###
+
+#ADD BOOK TO CART
 POST {{RootAddress}}/cart
 Accept: text/plain
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "bookId":"17c61e41-3953-42cd-8f88-d3f698869b35",
+  "bookId":"{{BookID}}",
   "quantity":2
 }
 
 ###
 
-# List items in cart
+# LIST BOOKS IN CART
 GET {{RootAddress}}/cart
 Accept: application/json
 Authorization: Bearer {{token}}
 
 ###
 
-# List All Orders
+# LIST ALL ORDERS
 GET {{RootAddress}}/orders
 Accept: application/json
 Authorization: Bearer {{token}}
 
 ###
 
-# Checkout Cart
+# CHECKOUT CART
 POST {{RootAddress}}/cart/checkout
 Accept: application/json
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "shippingAddressId":"06682fc9-2bce-7205-8000-efc8a47a19eb",
-  "billingAddressId":"06682fc9-2bce-7205-8000-efc8a47a19eb"
+  "shippingAddressId":"066bfc11-172c-7e7b-8000-a81980dae7ea",
+  "billingAddressId":"066bfc11-172c-7e7b-8000-a81980dae7ea"
 }
 
 ###
 
-# List Addresses
+# LIST ADDRESSES
 
 GET {{RootAddress}}/users/addresses
 Accept: application/json
@@ -129,7 +132,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-# Add Address to User
+# ADD ADDRESS TO USER
 POST {{RootAddress}}/users/addresses
 Accept: application/json
 Authorization: Bearer {{token}}
