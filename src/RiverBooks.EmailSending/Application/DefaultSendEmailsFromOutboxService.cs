@@ -14,6 +14,7 @@ internal class DefaultSendEmailsFromOutboxService(
 {
     public async Task CheckForAndSendEmails(CancellationToken cancellationToken)
     {
+        // Todo Retrieve all unprocessed emails and sends them
         var result = await outboxService.GetNextUnprocessedEmailEntity(cancellationToken);
 
         if (!result.IsSuccess) return;

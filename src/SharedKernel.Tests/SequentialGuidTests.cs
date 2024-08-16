@@ -19,7 +19,7 @@ public class SequentialGuidTests
     }
 
     [Fact]
-    public void NewGuid_ShouldCauseNoConlisions()
+    public void NewGuid_ShouldCauseNoCollisions()
     {
         // ARRANGE
         int size = 10_000_000;

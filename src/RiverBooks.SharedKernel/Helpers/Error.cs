@@ -7,7 +7,7 @@ namespace RiverBooks.SharedKernel.Helpers;
 /// </summary>
 /// <param name="Code">Short error code</param>
 /// <param name="Description">Error human readable description</param>
-/// <param name="ErrorType">Error type mappedto HttpStatusCode</param>
+/// <param name="ErrorType">Error type mapped to HttpStatusCode</param>
 public readonly record struct Error(string Code, string Description, ErrorType ErrorType)
 {
     public static readonly Error None =
@@ -35,16 +35,16 @@ public readonly record struct Error(string Code, string Description, ErrorType E
         new(code, description, ErrorType.NotFound);
 
     public static Error NotFound(string description) =>
-        new("Error.NotFound", description, ErrorType.NotFound);
+        NotFound("Error.NotFound", description);
 
     public static Error NotFound() =>
-        new("Error.NotFound", "Requested resource not found.", ErrorType.NotFound);
+        NotFound("Requested resource not found.");
 
     public static Error Conflict(string code, string description) =>
         new(code, description, ErrorType.Conflict);
 
     public static Error Conflict(string description) =>
-        new("Error.Conflict", description, ErrorType.Conflict);
+        Conflict("Error.Conflict", description);
 
     public static Error Unauthorized(string description) =>
         new("Error.Unauthorized", description, ErrorType.Unauthorized);

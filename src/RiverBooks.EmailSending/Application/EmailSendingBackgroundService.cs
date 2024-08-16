@@ -9,7 +9,7 @@ internal class EmailSendingBackgroundService(
     IServiceScopeFactory scopeFactory,
     ILogger<EmailSendingBackgroundService> logger) : BackgroundService
 {
-    private const int checkEmailsInterval = 5_000;
+    private const int CheckEmailsInterval = 1_000;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -17,13 +17,13 @@ internal class EmailSendingBackgroundService(
 
         using var scope = scopeFactory.CreateScope();
 
-        var _sendEmailsFromOutboxService = scope.ServiceProvider.GetRequiredService<ISendEmailsFromOutboxService>();
+        var sendEmailsFromOutboxService = scope.ServiceProvider.GetRequiredService<ISendEmailsFromOutboxService>();
 
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                await _sendEmailsFromOutboxService.CheckForAndSendEmails(stoppingToken);
+                await sendEmailsFromOutboxService.CheckForAndSendEmails(stoppingToken);
             }
             catch (Exception ex)
             {
@@ -31,8 +31,8 @@ internal class EmailSendingBackgroundService(
             }
             finally
             {
-                logger.LogDebug("Sleeping {checkEmailsInterval}ms...", checkEmailsInterval);
-                await Task.Delay(checkEmailsInterval, stoppingToken);
+                logger.LogDebug("Sleeping {checkEmailsInterval}ms...", CheckEmailsInterval);
+                await Task.Delay(CheckEmailsInterval, stoppingToken);
             }
         }
 

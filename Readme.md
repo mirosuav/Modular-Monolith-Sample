@@ -28,9 +28,21 @@ TODO:
 
 - User module sends `NewUserAddressAddedIntegrationEvent` to notify Order processing module about new addresses
 - Customer order addressess are stored in `SqlServerOrderAddressCache` implementing `IDistributedCache`
-- When order is created user addresses are fetched from cache
+- When order is created user addresses are taken from cache if exists or fetched by...
 - `ReadThroughOrderAddressCache` is used to fetch user addresses from cache or send direct query to the User module and store the result in cache
 
+### Outbox pattern for sending emails
+
+- EmailSending module uses Outbox pattern for gathering and sending emails
+- `SendEmailCommand` is received and queued in db in `QueueEmailInOutboxSendEmailCommandHandler`
+- Then hosted service: `EmailSendingBackgroundService` calls `ISendEmailsFromOutboxService` implementation every second to process emails
+- `DefaultSendEmailsFromOutboxService` implementing `ISendEmailsFromOutboxService` picks up emails and attempts to sends them
+
+### Domain events
+
+- Domain entities are enriched with domain events to perform **eventual consistency** operations
+- For example a ``User`` entity generates the ``AddressAddedDomainEvent`` which is translated to ``NewUserAddressAddedIntegrationEvent`` to notify the ``OrderProcessing`` module to updates its cache of users adresses
+- Or ``Order`` domain entity generates the ``OrderCreatedDomainEvent`` to trigger the ``OrderCreatedIntegrationEvent`` to notify the ``Reporting`` module to store the order reporting tailored data in its table.
 
 
 # Operations
@@ -56,7 +68,9 @@ dotnet ef database update -p RiverBooks.Books -c BookDbContext -s RiverBooks.Web
 ```
 
 
+# Todo
 
+- Implement Domain events to be dispatched *offline* when client is waiting online, inspired by Amichai Mantinband approach
 
 
 

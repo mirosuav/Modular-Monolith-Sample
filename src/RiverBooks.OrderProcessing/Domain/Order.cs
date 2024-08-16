@@ -22,10 +22,10 @@ internal class Order : HaveDomainEvents
     internal class Factory
     {
         public static Order Create(
-            Guid userId,
-          Address shippingAddress,
-          Address billingAddress,
-          IEnumerable<OrderItem> orderItems)
+            Guid userId, 
+            Address shippingAddress, 
+            Address billingAddress, 
+            IEnumerable<OrderItem> orderItems)
         {
             var order = new Order
             {
@@ -34,6 +34,7 @@ internal class Order : HaveDomainEvents
                 ShippingAddress = shippingAddress,
                 BillingAddress = billingAddress
             };
+
             foreach (var item in orderItems)
             {
                 order.AddOrderItem(item);

@@ -44,7 +44,6 @@ internal class EmailOutboxRepository(EmailSendingDbContext dbContext, TimeProvid
 
     public async Task QueueEmailForSending(EmailOutboxEntity entity, CancellationToken cancellationToken)
     {
-        PassOrThrowWhen.Null(entity);
         dbContext.EmailOutboxItems.Add(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
