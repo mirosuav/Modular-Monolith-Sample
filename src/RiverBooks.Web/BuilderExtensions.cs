@@ -20,6 +20,17 @@ public static class BuilderExtensions
         return app;
     }
 
+    public static WebApplication UseSwaggerDevelopmentUI(this WebApplication app)
+    {
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
+
+        return app;
+    }
+
     public static RouteHandlerBuilder MapVersionPrompt(this IEndpointRouteBuilder builder, string pattern)
     {
         var versionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly()!.Location);

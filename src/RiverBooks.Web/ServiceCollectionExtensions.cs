@@ -25,6 +25,15 @@ internal static class ServiceCollectionExtensions
         return services;
     }
 
+    internal static IServiceCollection AddOpenApi(this IServiceCollection services)
+    {
+
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
+
+        return services;
+    }
+
     internal static IServiceCollection AddApiVersioning(this IServiceCollection services, ApiVersion defaultApiVersion)
     {
         services.AddApiVersioning(opt =>
@@ -74,10 +83,19 @@ internal static class ServiceCollectionExtensions
 
     internal static IServiceCollection AddAuth(
         this IServiceCollection services,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IWebHostEnvironment environment)
     {
         services.AddJwtTokenBasedAuthentication(configuration);
-        services.AddAuthenticatedUsersOnlyFallbackPolicy();
+
+        if (environment.IsDevelopment())
+        {
+            services.AddAuthorization();
+        }
+        else
+        {
+            services.AddAuthenticatedUsersOnlyFallbackPolicy();
+        }
 
         services.AddScoped<IUserClaimsProvider, UserClaimsProvider>();
         services.AddScoped<IJwtTokenHandler, JwtTokenHandler>();
