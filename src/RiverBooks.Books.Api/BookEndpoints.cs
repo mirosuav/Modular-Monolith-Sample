@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -52,8 +53,10 @@ internal static class BookEndpoints
     {
         var newBookDto = new BookDto(SequentialGuid.NewGuid(), request.Title, request.Author, request.Price);
 
-        await bookService.CreateBookAsync(newBookDto);
-        return TypedResults.Created($"{newBookDto.Id}", newBookDto);
+        var result = await bookService.CreateBookAsync(newBookDto);
+
+        return result.Match(() => TypedResults.Created($"{newBookDto.Id}", newBookDto),
+            errors => errors.ToProblemHttpResult() as IResult);
     }
 
     internal static async Task<IResult> GetBookAsync(

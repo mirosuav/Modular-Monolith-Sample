@@ -8,6 +8,9 @@ internal class BookService(IBookRepository bookRepository) : IBookService
 {
     public async Task<Resultable> CreateBookAsync(BookDto newBook)
     {
+        if (await bookRepository.GetByTitleAndAuthorAsync(newBook.Title, newBook.Author) is not null)
+            return Error.Conflict("Book.Exists", "Book with this title and author already exists.");
+
         var book = new Book(newBook.Id, newBook.Title, newBook.Author, newBook.Price);
 
         await bookRepository.AddAsync(book);

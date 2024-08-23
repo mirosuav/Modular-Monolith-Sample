@@ -1,7 +1,7 @@
 
 @RootAddress=https://localhost:7179
 @UserEmail=mirek@riverbooks.com
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHJpdmVyYm9va3MuY29tIiwiSWQiOiIwNjZiZmJhOC01OTBhLTc5YmUtODAwMC0wYWVkOWZlMjhjZDMiLCJzaWQiOiIwNjZiZmJjMi0xYWQwLTcyZDAtODAwMC00ZTdmNTBlZWMyZDIiLCJleHAiOjE3MjM4NDg3NjksImlhdCI6MTcyMzg0MTU2OSwibmJmIjoxNzIzODQxNTY5fQ.j90nuRVw8Q2ti-aweV5qD0c8LW5zz1GA4nTJUiDut2A
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHJpdmVyYm9va3MuY29tIiwiSWQiOiIwNjZjODYzYy0zNWU3LTc1MGQtODAwMC0yZjcxOGYzYTliNzEiLCJzaWQiOiIwNjZjODhiMy02YjE3LTdmNjQtODAwMC0zM2Q0YmM4YmZhNWIiLCJleHAiOjE3MjQ0MjYwNzAsImlhdCI6MTcyNDQxODg3MCwibmJmIjoxNzI0NDE4ODcwfQ.grhNjoxk2fl2oR8LDb7yNFmJpoDbqhZ60nkdop_tvSw
 
 
 
@@ -39,7 +39,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-@BookID=06682fc2-89a8-730b-8000-9698a79fcb01
+@BookID=066c8647-2f48-7575-8000-2d9e853f576d
 
 # GET BOOK By ID
 
@@ -57,9 +57,9 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "title": "The Fellowship of the Ring",
+  "title": "The Clean Coder",
   "author": "Robert C. Martin",
-  "price": 19.99
+  "price": 44.99
 }
 
 ###
@@ -118,8 +118,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "shippingAddressId":"066bfc11-172c-7e7b-8000-a81980dae7ea",
-  "billingAddressId":"066bfc11-172c-7e7b-8000-a81980dae7ea"
+  "shippingAddressId":"066c864f-a11b-7a30-8000-0ae29358c402",
+  "billingAddressId":"066c864f-a11b-7a30-8000-0ae29358c402"
 }
 
 ###
@@ -139,12 +139,12 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "street1": "Rybitwy 22",
+  "street1": "Street name",
   "street2": "",
-  "city":"Gdañsk",
-  "state":"Pomorze",
-  "postalCode":"12-942",
-  "country":"Poland"
+  "city":"City name",
+  "state":"State name",
+  "postalCode":"00-123",
+  "country":"Country name"
 }
 
 ###
@@ -159,7 +159,7 @@ Authorization: Bearer {{token}}
 
 # TOP SALES - EVENT INGESTION CUSTOM DB
 
-GET {{RootAddress}}/reports/topsales/2024/7
+GET {{RootAddress}}/reports/topsales/2024/8
 Accept: application/json
 
 ###

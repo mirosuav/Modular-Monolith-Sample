@@ -10,6 +10,7 @@ using RiverBooks.EmailSending.Domain;
 using RiverBooks.EmailSending.Infrastructure;
 using Serilog;
 using System.Reflection;
+using System.Threading.RateLimiting;
 
 namespace RiverBooks.EmailSending.Api;
 
@@ -45,6 +46,7 @@ public static class ModuleBootstrap
 
         services.AddResiliencePipeline(typeof(IEmailSender), static builder =>
         {
+            // Retry policy
             builder.AddRetry(new RetryStrategyOptions
             {
                 ShouldHandle = new PredicateBuilder().Handle<Exception>(),
@@ -54,7 +56,15 @@ public static class ModuleBootstrap
                 MaxRetryAttempts = 3
             });
 
-            builder.AddTimeout(TimeSpan.FromSeconds(15));
+            // Request timeout
+            builder.AddTimeout(TimeSpan.FromMinutes(1));
+
+            // Rate limiting
+            builder.AddRateLimiter(new FixedWindowRateLimiter(new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromSeconds(1),
+            }));
         });
 
         // Add BackgroundWorker

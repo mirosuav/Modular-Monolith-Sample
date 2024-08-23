@@ -23,6 +23,13 @@ internal class BookRepository(BookDbContext dbContext) : IBookRepository
         return await dbContext!.Books.FindAsync(id);
     }
 
+    public async Task<Book?> GetByTitleAndAuthorAsync(string title, string author)
+    {
+        return await dbContext!.Books
+            .Where(x=>x.Author == author && x.Title == title)
+            .SingleOrDefaultAsync();
+    }
+
     public async Task<List<Book>> ListAsync()
     {
         return await dbContext.Books.ToListAsync();

@@ -34,6 +34,11 @@ public static class ResultableExtensions
         return TypedResults.Problem(result.ToProblemDetails());
     }
 
+    public static ProblemHttpResult ToProblemHttpResult(this List<Error> errors, string? instance = null)
+    {
+        return TypedResults.Problem(errors.ToProblemDetails());
+    }
+
     /// <see href="https://datatracker.ietf.org/doc/html/rfc7807#section-3.1"/>
     public static ProblemDetails ToProblemDetails(this IResultable result, string? instance = null)
     {

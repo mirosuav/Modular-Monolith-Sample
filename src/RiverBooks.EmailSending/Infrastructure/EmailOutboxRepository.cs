@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using RiverBooks.EmailSending.Domain;
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.EmailSending.Infrastructure;
 
-internal class EmailOutboxRepository(EmailSendingDbContext dbContext, TimeProvider timeProvider) :
+internal class EmailOutboxRepository(EmailSendingDbContext dbContext, TimeProvider timeProvider, ILogger<EmailOutboxRepository> logger) :
     IGetEmailsFromOutboxService,
     IQueueEmailsInOutboxService,
     IMarkEmailProcessed
@@ -46,5 +47,6 @@ internal class EmailOutboxRepository(EmailSendingDbContext dbContext, TimeProvid
     {
         dbContext.EmailOutboxItems.Add(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
+        logger.LogInformation($"Email {entity.Id} queued in outbox...");
     }
 }
