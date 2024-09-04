@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="RiverBooks.EventsProcessing.Api" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\RiverBooks.EventsProcessing.Contracts\RiverBooks.EventsProcessing.Contracts.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Serilog.AspNetCore" Version="8.0.2" />
+	</ItemGroup>
+
+</Project>

@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using RiverBooks.SharedKernel.DomainEvents;
+using RiverBooks.SharedKernel.Events;
+using RiverBooks.SharedKernel.Extensions;
+using RiverBooks.SharedKernel.Helpers;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RiverBooks.Users.Domain;
 
-public class ApplicationUser : HaveDomainEvents
+public class ApplicationUser : HaveEvents
 {
     public required Guid Id { get; set; }
 
@@ -24,7 +25,7 @@ public class ApplicationUser : HaveDomainEvents
 
     private readonly List<UserStreetAddress> _addresses = [];
     public IReadOnlyCollection<UserStreetAddress> Addresses => _addresses.AsReadOnly();
-    
+
     public void SetPassword(string newPassword)
     {
         var passwordHasher = new PasswordHasher<ApplicationUser>();
@@ -53,9 +54,9 @@ public class ApplicationUser : HaveDomainEvents
         _cartItems.Add(cartItem);
     }
 
-    internal UserStreetAddress AddAddress(Address address)
+    internal UserStreetAddress AddAddress(Address address, TimeProvider timeProvider)
     {
-        ArgumentNullException.ThrowIfNull(address);
+        ThrowWhen.Null(address);
 
         // find existing address and just return it
         var existingAddress = _addresses.SingleOrDefault(a => a.StreetAddress == address);
@@ -67,7 +68,8 @@ public class ApplicationUser : HaveDomainEvents
         var newAddress = new UserStreetAddress(Id, address);
         _addresses.Add(newAddress);
 
-        var domainEvent = new AddressAddedDomainEvent(newAddress);
+        var domainEvent = new AddressAddedDomainEvent(newAddress, timeProvider.GetUtcDateTime());
+
         RegisterDomainEvent(domainEvent);
 
         return newAddress;

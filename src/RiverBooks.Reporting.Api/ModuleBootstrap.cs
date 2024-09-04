@@ -34,6 +34,7 @@ public static class ModuleBootstrap
         // configure module services
         services.AddScoped<ISalesReportService, SalesReportService>();
         services.AddScoped<ISalesReportRepository, SalesReportRepository>();
+        services.AddSingleton(TimeProvider.System);
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list
         mediatRAssemblies.Add(typeof(ModuleDescriptor).Assembly);

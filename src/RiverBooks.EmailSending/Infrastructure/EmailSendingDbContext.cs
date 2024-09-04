@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RiverBooks.EmailSending.Domain;
 using System.Reflection;
+using RiverBooks.SharedKernel.TransactionalOutbox;
 
 namespace RiverBooks.EmailSending.Infrastructure;
 
-public class EmailSendingDbContext(DbContextOptions<EmailSendingDbContext> options) : DbContext(options)
+public class EmailSendingDbContext(DbContextOptions<EmailSendingDbContext> options)
+    : TransactionalOutboxDbContext(options)
 {
     public DbSet<EmailOutboxEntity> EmailOutboxItems { get; set; } = null!;
 
@@ -13,5 +15,7 @@ public class EmailSendingDbContext(DbContextOptions<EmailSendingDbContext> optio
         modelBuilder.HasDefaultSchema(ModuleDescriptor.Name);
 
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        base.OnModelCreating(modelBuilder);
     }
 }

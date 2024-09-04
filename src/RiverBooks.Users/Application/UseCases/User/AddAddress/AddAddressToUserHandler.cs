@@ -8,7 +8,8 @@ namespace RiverBooks.Users.Application.UseCases.User.AddAddress;
 
 public class AddAddressToUserHandler(
     IApplicationUserRepository userRepository,
-    ILogger<AddAddressToUserHandler> logger)
+    ILogger<AddAddressToUserHandler> logger,
+    TimeProvider timeProvider)
     : IRequestHandler<AddAddressToUserCommand, Resultable>
 {
     public async Task<Resultable> Handle(AddAddressToUserCommand request, CancellationToken ct)
@@ -27,7 +28,7 @@ public class AddAddressToUserHandler(
                                        request.PostalCode,
                                        request.Country);
 
-        var userAddress = user.AddAddress(addressToAdd);
+        var userAddress = user.AddAddress(addressToAdd, timeProvider);
 
         await userRepository.SaveChangesAsync(ct);
 

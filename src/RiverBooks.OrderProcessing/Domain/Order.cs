@@ -1,10 +1,11 @@
 ﻿using RiverBooks.SharedKernel;
-using RiverBooks.SharedKernel.DomainEvents;
+using RiverBooks.SharedKernel.Extensions;
 using System.ComponentModel.DataAnnotations.Schema;
+using RiverBooks.SharedKernel.Events;
 
 namespace RiverBooks.OrderProcessing.Domain;
 
-internal class Order : HaveDomainEvents
+internal class Order : HaveEvents
 {
     public Guid Id { get; private set; }
     public Guid UserId { get; private set; } = default!;
@@ -17,34 +18,32 @@ internal class Order : HaveDomainEvents
     public DateTimeOffset DateCreated { get; private set; } = DateTimeOffset.Now;
 
     private void AddOrderItem(OrderItem item) => _orderItems.Add(item);
-
-
-    internal class Factory
+    
+    public static Order CreateNew(
+        Guid userId,
+        Address shippingAddress,
+        Address billingAddress,
+        IEnumerable<OrderItem> orderItems,
+        TimeProvider timeProvider)
     {
-        public static Order Create(
-            Guid userId, 
-            Address shippingAddress, 
-            Address billingAddress, 
-            IEnumerable<OrderItem> orderItems)
+        var order = new Order
         {
-            var order = new Order
-            {
-                Id = SequentialGuid.NewGuid(),
-                UserId = userId,
-                ShippingAddress = shippingAddress,
-                BillingAddress = billingAddress
-            };
+            Id = SequentialGuid.NewGuid(),
+            UserId = userId,
+            ShippingAddress = shippingAddress,
+            BillingAddress = billingAddress
+        };
 
-            foreach (var item in orderItems)
-            {
-                order.AddOrderItem(item);
-            }
-
-            var createdEvent = new OrderCreatedDomainEvent(order);
-            order.RegisterDomainEvent(createdEvent);
-
-            return order;
+        foreach (var item in orderItems)
+        {
+            order.AddOrderItem(item);
         }
+
+        var createdEvent = new OrderCreatedDomainEvent(order, timeProvider.GetUtcDateTime());
+
+        order.RegisterDomainEvent(createdEvent);
+
+        return order;
     }
 }
 

@@ -40,6 +40,7 @@ public static class ModuleBootstrap
         services.AddTransient<IGetEmailsFromOutboxService, EmailOutboxRepository>();
         services.AddTransient<IMarkEmailProcessed, EmailOutboxRepository>();
         services.AddTransient<ISendEmailsFromOutboxService, DefaultSendEmailsFromOutboxService>();
+        services.AddSingleton(TimeProvider.System);
 
         // if using MediatR in this module, add any assemblies that contain handlers to the list
         mediatRAssemblies.Add(typeof(ModuleDescriptor).Assembly);

@@ -4,7 +4,6 @@ using RiverBooks.EmailSending.Api;
 using RiverBooks.OrderProcessing.Api;
 using RiverBooks.Reporting.Api;
 using RiverBooks.SharedKernel.Authentication;
-using RiverBooks.SharedKernel.DomainEvents;
 using RiverBooks.SharedKernel.Extensions;
 using RiverBooks.SharedKernel.Messaging.PipelineBehaviors;
 using RiverBooks.Users.Api;
@@ -12,6 +11,8 @@ using Serilog;
 using Serilog.Settings.Configuration;
 using Serilog.Sinks.OpenTelemetry;
 using System.Reflection;
+using RiverBooks.EventsProcessing.Api;
+using RiverBooks.SharedKernel.Events;
 
 namespace RiverBooks.Web;
 
@@ -108,6 +109,7 @@ internal static class ServiceCollectionExtensions
         Serilog.ILogger logger,
         List<Assembly> moduleAssemblies)
     {
+        services.AddEventsProcessingModuleServices(configuration, logger, moduleAssemblies);
         services.AddBookModuleServices(configuration, logger, moduleAssemblies);
         services.AddEmailSendingModuleServices(configuration, logger, moduleAssemblies);
         services.AddReportingModuleServices(configuration, logger, moduleAssemblies);

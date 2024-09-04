@@ -30,6 +30,7 @@ public static class ModuleBootstrap
         string? connectionString = config.GetConnectionString("UsersConnectionString");
 
         services.AddDbContext<UsersDbContext>(c => c.UseSqlServer(connectionString));
+        services.AddSingleton(TimeProvider.System);
 
         // Add User Services
         services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
@@ -40,7 +41,7 @@ public static class ModuleBootstrap
         // if using MediatR in this module, add any assemblies that contain handlers to the list
         modulesAssemblies.Add(typeof(ModuleDescriptor).Assembly);
 
-        logger.Information("{Module} module services registered", "Users");
+        logger.Information("{Module} module services registered", ModuleDescriptor.Name);
 
         return services;
     }

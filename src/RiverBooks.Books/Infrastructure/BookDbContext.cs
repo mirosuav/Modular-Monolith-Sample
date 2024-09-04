@@ -1,18 +1,22 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using RiverBooks.Books.Domain;
+using RiverBooks.SharedKernel.TransactionalOutbox;
 
 namespace RiverBooks.Books.Infrastructure;
 
-internal class BookDbContext(DbContextOptions<BookDbContext> options) : DbContext(options)
+internal class BookDbContext(DbContextOptions<BookDbContext> options)
+    : TransactionalOutboxDbContext(options)
 {
     internal DbSet<Book> Books { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema(Module.Name);
+        modelBuilder.HasDefaultSchema(ModuleDescriptor.Name);
 
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        base.OnModelCreating(modelBuilder);
     }
 
     protected override void ConfigureConventions(

@@ -1,8 +1,8 @@
 ﻿using RiverBooks.SharedKernel;
 
-namespace RiverBooks.Users;
+namespace RiverBooks.Books;
 internal class ModuleDescriptor: IModuleDescriptor
 {
-    public const string Name = "Users";
+    public const string Name = "Books";
 }
 

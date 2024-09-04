@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RiverBooks.Reporting.Domain;
 using System.Reflection;
+using RiverBooks.SharedKernel.TransactionalOutbox;
 
 namespace RiverBooks.Reporting.Infrastructure.Data;
 
-internal class ReportingDbContext(DbContextOptions<ReportingDbContext> options) : DbContext(options)
+internal class ReportingDbContext(DbContextOptions<ReportingDbContext> options)
+    : TransactionalOutboxDbContext(options)
 {
     public DbSet<BookSale> BookSales { get; set; } = null!;
 

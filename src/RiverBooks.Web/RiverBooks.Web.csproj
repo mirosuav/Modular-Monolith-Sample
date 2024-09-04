@@ -9,12 +9,13 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RiverBooks.Books.Api\RiverBooks.Books.Api.csproj" />
     <ProjectReference Include="..\RiverBooks.EmailSending.Api\RiverBooks.EmailSending.Api.csproj" />
+    <ProjectReference Include="..\RiverBooks.EventsProcessing.Api\RiverBooks.EventsProcessing.Api.csproj" />
     <ProjectReference Include="..\RiverBooks.OrderProcessing.Api\RiverBooks.OrderProcessing.Api.csproj" />
     <ProjectReference Include="..\RiverBooks.Reporting.Api\RiverBooks.Reporting.Api.csproj" />
     <ProjectReference Include="..\RiverBooks.Users.Api\RiverBooks.Users.Api.csproj" />

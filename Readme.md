@@ -38,9 +38,11 @@ TODO:
 - Then hosted service: `EmailSendingBackgroundService` calls `ISendEmailsFromOutboxService` implementation every second to process emails
 - `DefaultSendEmailsFromOutboxService` implementing `ISendEmailsFromOutboxService` picks up emails and attempts to sends them
 
-### Domain events
+### Domain events Transactional Outbox pattern
 
 - Domain entities are enriched with domain events to perform **eventual consistency** operations
+- Domain events are persisted in `EventsOutbox` table of each module's DbContext
+- `EventProcessing` periodically triggers a `ProcessDomainEventsCommand` command on each module to asynchronously process its domain events
 - For example a ``User`` entity generates the ``AddressAddedDomainEvent`` which is translated to ``NewUserAddressAddedIntegrationEvent`` to notify the ``OrderProcessing`` module to updates its cache of users adresses
 - Or ``Order`` domain entity generates the ``OrderCreatedDomainEvent`` to trigger the ``OrderCreatedIntegrationEvent`` to notify the ``Reporting`` module to store the order reporting tailored data in its table.
 
@@ -73,7 +75,19 @@ dotnet ef database update -p RiverBooks.Books -c BookDbContext -s RiverBooks.Web
 - Implement Domain events to be dispatched *offline* when client is waiting online, inspired by Amichai Mantinband approach
 
 
+## Idea: EventsModule - Asynchronously processes all domain event by sending `ProcessDomainEvents` command to each individual module
 
+EventsModule periodically sends commands to individual modules for processing their own domain events:
 
-
-
+### Advantages:
+- Transactional: Each module saves its DomainEvents in one transaction along with the associated business process
+- Modularity: Each module remains responsible for its own domain events, which aligns with the modular monolith architecture.
+- Decoupling: The EventsModule doesn’t need to know the specifics of event processing in each module. It simply triggers the process.
+- Scalability: As your application grows, you can add more modules without affecting the EventsModule.
+### Implementation:
+- Define a ProcessDomainEvents command (or similar) that the EventsModule sends to each module.
+- Each module (e.g., OrderManagementModule, InventoryModule) should handle this command and process its own domain events.
+- The EventsModule can schedule these commands periodically (e.g., every minute) or based on specific triggers (e.g., after a batch of events is persisted).
+### Considerations:
+- Idempotency: Ensure that processing domain events remains idempotent, even if the command is sent multiple times.
+- Retry Mechanism: Handle transient failures during command execution (e.g., network issues, database unavailability).

@@ -9,7 +9,8 @@ namespace RiverBooks.OrderProcessing.Application.Integrations;
 internal class CreateOrderCommandHandler(
     IOrderRepository orderRepository,
     ILogger<CreateOrderCommandHandler> logger,
-    IOrderAddressCache addressCache)
+    IOrderAddressCache addressCache,
+    TimeProvider timeProvider)
     : IRequestHandler<CreateOrderCommand, Resultable<OrderDetailsResponse>>
 {
     public async Task<Resultable<OrderDetailsResponse>> Handle(CreateOrderCommand request,
@@ -26,10 +27,11 @@ internal class CreateOrderCommandHandler(
         if (!billingAddress.IsSuccess)
             return billingAddress.Errors;
 
-        var newOrder = Order.Factory.Create(request.UserId,
+        var newOrder = Order.CreateNew(request.UserId,
           shippingAddress.Value.Address,
           billingAddress.Value.Address,
-          items);
+          items,
+          timeProvider);
 
         orderRepository.Add(newOrder);
         await orderRepository.SaveChangesAsync(cancellationToken);

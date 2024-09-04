@@ -1,10 +1,10 @@
 ﻿using MediatR;
 
-namespace RiverBooks.SharedKernel.DomainEvents;
+namespace RiverBooks.SharedKernel.Events;
 
 public class MediatRDomainEventDispatcher(IPublisher publisher) : IDomainEventDispatcher
 {
-    public async Task DispatchAndClearEvents(IEnumerable<HaveDomainEvents> entitiesWithEvents)
+    public async Task DispatchAndClearEvents(IEnumerable<HaveEvents> entitiesWithEvents)
     {
         foreach (var entity in entitiesWithEvents)
         {

@@ -59,7 +59,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.SharedKernel.Tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BenchmarksProjects", "BenchmarksProjects", "{E2177BDE-10C0-4467-9CE8-F6E2FC6385CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.Benchmarks.Console", "RiverBooks.Benchmarks.Console\RiverBooks.Benchmarks.Console.csproj", "{8E089958-A6EF-42CE-9182-E1D5A87B51F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.Benchmarks.Console", "RiverBooks.Benchmarks.Console\RiverBooks.Benchmarks.Console.csproj", "{8E089958-A6EF-42CE-9182-E1D5A87B51F8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventsModule", "EventsModule", "{73D42889-CCD3-4337-9A44-6AD3C827A190}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.EventsProcessing", "RiverBooks.EventsProcessing\RiverBooks.EventsProcessing.csproj", "{94356B62-3300-4422-B0CA-F66FDEB80B24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.EventsProcessing.Api", "RiverBooks.EventsProcessing.Api\RiverBooks.EventsProcessing.Api.csproj", "{AD0D22EE-7C42-4E96-BF76-BE5B3C09925D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.EventsProcessing.Contracts", "RiverBooks.EventsProcessing.Contracts\RiverBooks.EventsProcessing.Contracts.csproj", "{1B89E342-3634-4F37-AB0F-4C4408FD90EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -143,6 +151,18 @@ Global
 		{8E089958-A6EF-42CE-9182-E1D5A87B51F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E089958-A6EF-42CE-9182-E1D5A87B51F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E089958-A6EF-42CE-9182-E1D5A87B51F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94356B62-3300-4422-B0CA-F66FDEB80B24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94356B62-3300-4422-B0CA-F66FDEB80B24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94356B62-3300-4422-B0CA-F66FDEB80B24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94356B62-3300-4422-B0CA-F66FDEB80B24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD0D22EE-7C42-4E96-BF76-BE5B3C09925D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD0D22EE-7C42-4E96-BF76-BE5B3C09925D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD0D22EE-7C42-4E96-BF76-BE5B3C09925D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD0D22EE-7C42-4E96-BF76-BE5B3C09925D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B89E342-3634-4F37-AB0F-4C4408FD90EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B89E342-3634-4F37-AB0F-4C4408FD90EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B89E342-3634-4F37-AB0F-4C4408FD90EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B89E342-3634-4F37-AB0F-4C4408FD90EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -166,6 +186,9 @@ Global
 		{58C565B7-12FC-4E24-9CCE-E07E1EC01592} = {ED16DF5F-8BD0-42E4-ABE0-C46D506A7101}
 		{A157B4A2-020A-4595-9895-EE3C8A84486D} = {96BA459C-166D-4BEB-A440-5C5AF4D787D6}
 		{8E089958-A6EF-42CE-9182-E1D5A87B51F8} = {E2177BDE-10C0-4467-9CE8-F6E2FC6385CB}
+		{94356B62-3300-4422-B0CA-F66FDEB80B24} = {73D42889-CCD3-4337-9A44-6AD3C827A190}
+		{AD0D22EE-7C42-4E96-BF76-BE5B3C09925D} = {73D42889-CCD3-4337-9A44-6AD3C827A190}
+		{1B89E342-3634-4F37-AB0F-4C4408FD90EA} = {73D42889-CCD3-4337-9A44-6AD3C827A190}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9E0CD6BB-A43C-44EE-89D7-6B9407FC3409}
