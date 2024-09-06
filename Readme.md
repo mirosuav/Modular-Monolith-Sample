@@ -18,7 +18,12 @@ Modular Monoliths course
 - Use client generate incrementa UUIDv7 as guids see `RiverBooks.SharedKernel.Extensions.Uuid7` class
 
 TODO:
-- Use strongly typed Ids
+- Use strongly typed Ids, so instead `Guid UserId` define a typed `record struct UserId(Guid Value)` and use `UserId Id`
+- Simplify events, no need to have separate DomainEvents and IntegrationEvents as we are not using DDD
+- Use MediatR in modules internally but Service Bus to communicate between modules
+- Use Seq and/or Azure ApplicationInsights for OpenTelemetry
+- Implement Unit tests
+- Implement Integration tests with Docker db
 
 # Features
 

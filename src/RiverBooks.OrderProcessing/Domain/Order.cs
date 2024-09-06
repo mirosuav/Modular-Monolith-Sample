@@ -31,7 +31,8 @@ internal class Order : HaveEvents
             Id = SequentialGuid.NewGuid(),
             UserId = userId,
             ShippingAddress = shippingAddress,
-            BillingAddress = billingAddress
+            BillingAddress = billingAddress,
+            DateCreated = timeProvider.GetUtcDateTime()
         };
 
         foreach (var item in orderItems)

@@ -1,7 +1,7 @@
 
 @RootAddress=https://localhost:7179
 @UserEmail=mirek@riverbooks.com
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHJpdmVyYm9va3MuY29tIiwiSWQiOiIwNjZjODYzYy0zNWU3LTc1MGQtODAwMC0yZjcxOGYzYTliNzEiLCJzaWQiOiIwNjZjODhiMy02YjE3LTdmNjQtODAwMC0zM2Q0YmM4YmZhNWIiLCJleHAiOjE3MjQ0MjYwNzAsImlhdCI6MTcyNDQxODg3MCwibmJmIjoxNzI0NDE4ODcwfQ.grhNjoxk2fl2oR8LDb7yNFmJpoDbqhZ60nkdop_tvSw
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHJpdmVyYm9va3MuY29tIiwiSWQiOiIwNjZkYTA5ZC0yZTY0LTc3YzQtODAwMC02ZGQxYWQxYTRhOGQiLCJzaWQiOiIwNjZkYjY1Ny00ODM1LTc0N2YtODAwMC04MDJmYTRiNzQwNGIiLCJhdWQiOiJSaXZlckJvb2tzIiwiaXNzIjoiUml2ZXJCb29rcyIsImV4cCI6MTcyNTY2MTU4OCwiaWF0IjoxNzI1NjU0Mzg4LCJuYmYiOjE3MjU2NTQzODh9.BKafASqW1wBGSVMbmJy3KsoOBtgmdhBi_KP0TfgMbsI
 
 
 
@@ -39,7 +39,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-@BookID=066c8647-2f48-7575-8000-2d9e853f576d
+@BookID=066da09f-a727-703e-8000-e03fd379a407
 
 # GET BOOK By ID
 
@@ -57,9 +57,9 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "title": "The Clean Coder",
+  "title": "Clean Code",
   "author": "Robert C. Martin",
-  "price": 44.99
+  "price": 39.99
 }
 
 ###
@@ -92,7 +92,7 @@ Authorization: Bearer {{token}}
 
 {
   "bookId":"{{BookID}}",
-  "quantity":2
+  "quantity":1
 }
 
 ###
@@ -118,8 +118,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "shippingAddressId":"066c864f-a11b-7a30-8000-0ae29358c402",
-  "billingAddressId":"066c864f-a11b-7a30-8000-0ae29358c402"
+  "shippingAddressId":"066da0a8-bb0f-7d66-8000-af446aa6635a",
+  "billingAddressId":"066da0a8-bb0f-7d66-8000-af446aa6635a"
 }
 
 ###

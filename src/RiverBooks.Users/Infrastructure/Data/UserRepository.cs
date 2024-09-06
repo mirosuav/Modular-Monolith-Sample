@@ -4,47 +4,47 @@ using RiverBooks.Users.Domain;
 
 namespace RiverBooks.Users.Infrastructure.Data;
 
-public class ApplicationUserRepository(UsersDbContext dbContext) : IApplicationUserRepository
+public class UserRepository(UsersDbContext dbContext) : IApplicationUserRepository
 {
-    public void Add(ApplicationUser user)
+    public void Add(User user)
     {
-        dbContext.ApplicationUsers.Add(user);
+        dbContext.Users.Add(user);
     }
 
-    public Task<ApplicationUser?> GetUserByEmailAsync(string emailAddress)
+    public Task<User?> GetUserByEmailAsync(string emailAddress)
     {
-        return dbContext.ApplicationUsers
+        return dbContext.Users
             .Where(u => u.Email.Equals(emailAddress))
             .SingleOrDefaultAsync();
     }
 
-    public Task<ApplicationUser?> GetUserAsync(Guid userId)
+    public Task<User?> GetUserAsync(Guid userId)
     {
-        return dbContext.ApplicationUsers.FindAsync(userId).AsTask();
+        return dbContext.Users.FindAsync(userId).AsTask();
     }
 
-    public Task<ApplicationUser?> GetUserWithAddressesAsync(Guid userId)
+    public Task<User?> GetUserWithAddressesAsync(Guid userId)
     {
-        return dbContext.ApplicationUsers
+        return dbContext.Users
           .Include(user => user.Addresses)
           .SingleOrDefaultAsync(user => user.Id == userId);
     }
 
-    public Task<ApplicationUser?> GetUserWithCartAsync(Guid userId)
+    public Task<User?> GetUserWithCartAsync(Guid userId)
     {
-        return dbContext.ApplicationUsers
+        return dbContext.Users
           .Include(user => user.CartItems)
           .SingleOrDefaultAsync(user => user.Id == userId);
     }
 
     public async Task<bool> DeleteUser(Guid userId)
     {
-        var user = await dbContext.ApplicationUsers.FindAsync(userId);
+        var user = await dbContext.Users.FindAsync(userId);
 
         if (user is null)
             return false;
 
-        dbContext.ApplicationUsers.Remove(user);
+        dbContext.Users.Remove(user);
 
         return true;
     }

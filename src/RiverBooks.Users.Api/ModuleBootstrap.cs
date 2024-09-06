@@ -33,7 +33,7 @@ public static class ModuleBootstrap
         services.AddSingleton(TimeProvider.System);
 
         // Add User Services
-        services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
+        services.AddScoped<IApplicationUserRepository, UserRepository>();
         services.AddScoped<IReadOnlyUserStreetAddressRepository, UserStreetAddressRepository>();
 
         services.AddValidatorsFromAssemblyContaining<ModuleDescriptor>();

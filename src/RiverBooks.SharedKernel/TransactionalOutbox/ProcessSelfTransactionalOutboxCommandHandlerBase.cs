@@ -16,7 +16,7 @@ public abstract class ProcessSelfTransactionalOutboxCommandHandlerBase
     where TOutboxContext : TransactionalOutboxDbContext
 {
     protected abstract SemaphoreSlim AccessLocker { get; }
-    
+
     public async Task Handle(ProcessSelfTransactionalOutboxCommand command, CancellationToken ct)
     {
         await AccessLocker.WaitAsync(ct);
@@ -37,6 +37,13 @@ public abstract class ProcessSelfTransactionalOutboxCommandHandlerBase
 
             // save changes to outbox events
             await dbContext.SaveChangesAsync(ct);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(
+                "Processing transactional events [{ProcessDomainEventsSession}] failed `{ErrorMessage}`.",
+                command.Id, ex.Message);
+            throw;
         }
         finally
         {

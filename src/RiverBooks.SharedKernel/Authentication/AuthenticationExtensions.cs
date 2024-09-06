@@ -23,11 +23,15 @@ public static class AuthenticationExtensions
          });
     }
 
+    /// <summary>
+    /// Make all endpoint require authenticated user by default unless AllowAnonymous is explicitly set
+    /// </summary>
     public static IServiceCollection AddAuthenticatedUsersOnlyFallbackPolicy(this IServiceCollection services)
     {
         return services.AddAuthorization(authOpt =>
             authOpt.FallbackPolicy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
+                .RequireClaim(UserClaims.Id)
                 .Build());
     }
 }

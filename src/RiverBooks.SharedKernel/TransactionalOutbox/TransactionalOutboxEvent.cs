@@ -24,14 +24,13 @@ public sealed class TransactionalOutboxEvent
     [StringLength(2000)]
     public required string Payload { get; init; }
 
-    public static TransactionalOutboxEvent Create<TEvent>(TEvent domainEvent)
-        where TEvent : class, IEvent =>
+    public static TransactionalOutboxEvent Create(IEvent domainEvent) =>
          new()
          {
              Id = domainEvent.Id,
              OccurredUtc = domainEvent.OccurredUtc,
-             EventType = typeof(TEvent).Name,
-             Payload = JsonSerializer.Serialize(domainEvent),
+             EventType = domainEvent.GetType().AssemblyQualifiedName!,
+             Payload = JsonSerializer.Serialize(domainEvent, domainEvent.GetType()),
          };
 }
 

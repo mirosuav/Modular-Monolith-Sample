@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Diagnostics;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -8,6 +9,7 @@ using RiverBooks.SharedKernel.TransactionalOutbox;
 
 namespace RiverBooks.EventsProcessing.Application;
 
+[DebuggerStepThrough]
 internal class EventsProcessingBackgroundService(
     IServiceScopeFactory scopeFactory,
     TimeProvider timeProvider,

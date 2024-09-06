@@ -88,15 +88,7 @@ internal static class ServiceCollectionExtensions
         IWebHostEnvironment environment)
     {
         services.AddJwtTokenBasedAuthentication(configuration);
-
-        if (environment.IsDevelopment())
-        {
-            services.AddAuthorization();
-        }
-        else
-        {
-            services.AddAuthenticatedUsersOnlyFallbackPolicy();
-        }
+        services.AddAuthenticatedUsersOnlyFallbackPolicy();
 
         services.AddScoped<IUserClaimsProvider, UserClaimsProvider>();
         services.AddScoped<IJwtTokenHandler, JwtTokenHandler>();

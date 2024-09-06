@@ -11,20 +11,13 @@ namespace RiverBooks.SharedKernel.TransactionalOutbox;
 public abstract class TransactionalOutboxDbContext(DbContextOptions options)
     : DbContext(options)
 {
-    protected static readonly int TransactionalOutboxMaxAttempts = 3;
+    public static int TransactionalOutboxMaxAttempts = 3;
 
-    protected static readonly Func<TransactionalOutboxDbContext, IQueryable<TransactionalOutboxEvent>>
-        FetchNextTransactionalOutboxEventsQuery =
-        EF.CompileQuery((TransactionalOutboxDbContext context) =>
-                context
-                .OutboxEvents
-                .Where(x => !x.Success) // Get not completed
-                .Where(x => x.Attempts < TransactionalOutboxMaxAttempts) // Exclude persistent failures
-                .OrderBy(x => x.OccurredUtc) // Order by FiFo
-        );
-
-    public IQueryable<TransactionalOutboxEvent> FetchNextTransactionalOutboxEvents() =>
-        FetchNextTransactionalOutboxEventsQuery.Invoke(this);
+    public virtual IQueryable<TransactionalOutboxEvent> FetchNextTransactionalOutboxEvents() =>
+        OutboxEvents
+            .Where(x => !x.Success) // Get not completed
+            .Where(x => x.Attempts < TransactionalOutboxMaxAttempts) // Exclude persistent failures
+            .OrderBy(x => x.OccurredUtc); // Order by FiFo
 
     public DbSet<TransactionalOutboxEvent> OutboxEvents { get; set; }
 
@@ -55,7 +48,7 @@ public abstract class TransactionalOutboxDbContext(DbContextOptions options)
     private void StoreOutboxEvents()
     {
         // capture domain events and store them as OutboxEvents
-        foreach (var entry in ChangeTracker.Entries<HaveEvents>())
+        foreach (var entry in ChangeTracker.Entries<HaveEvents>().ToList())
         {
             var outboxEvents = entry.Entity
                 .DomainEvents

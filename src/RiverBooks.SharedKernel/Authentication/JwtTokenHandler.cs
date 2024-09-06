@@ -13,10 +13,13 @@ public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProv
         return new TokenValidationParameters
         {
             ValidateLifetime = true,
-            ValidateIssuer = false,
-            ValidateAudience = false,
+            ValidateIssuer = true,
+            ValidIssuer = configuration["Auth:JwtIssuer"],
+            ValidAudience = configuration["Auth:JwtAudience"],
+            ValidateIssuerSigningKey = true,
+            ValidateAudience = true,
             ClockSkew = TimeSpan.Zero,
-            IssuerSigningKey = CreateSecurityKey(configuration["Auth:JwtSecret"])
+            IssuerSigningKey = CreateSecurityKey(configuration["Auth:JwtSecret"]),
         };
     }
 
@@ -38,6 +41,8 @@ public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProv
             Claims = claims,
             IssuedAt = utcNow,
             NotBefore = utcNow,
+            Issuer = configuration["Auth:JwtIssuer"],
+            Audience = configuration["Auth:JwtAudience"],
             Expires = utcNow.AddMinutes(tokenExpiration),
             SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256)
         };

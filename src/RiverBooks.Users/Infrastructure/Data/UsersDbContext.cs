@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RiverBooks.Users.Domain;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using RiverBooks.SharedKernel.TransactionalOutbox;
 
 namespace RiverBooks.Users.Infrastructure.Data;
@@ -9,9 +10,8 @@ namespace RiverBooks.Users.Infrastructure.Data;
 public class UsersDbContext(DbContextOptions<UsersDbContext> options)
     : TransactionalOutboxDbContext(options)
 {
-    public DbSet<ApplicationUser> ApplicationUsers { get; set; } = null!;
+    public DbSet<User> Users { get; set; } = null!;
     public DbSet<UserStreetAddress> UserStreetAddresses { get; set; } = null!;
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

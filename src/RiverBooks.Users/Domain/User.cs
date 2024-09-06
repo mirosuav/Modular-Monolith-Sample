@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RiverBooks.Users.Domain;
 
-public class ApplicationUser : HaveEvents
+public class User : HaveEvents
 {
     public required Guid Id { get; set; }
 
@@ -28,13 +28,13 @@ public class ApplicationUser : HaveEvents
 
     public void SetPassword(string newPassword)
     {
-        var passwordHasher = new PasswordHasher<ApplicationUser>();
+        var passwordHasher = new PasswordHasher<User>();
         PasswordHash = passwordHasher.HashPassword(this, newPassword);
     }
 
     public bool CheckPassword(string password)
     {
-        var passwordHasher = new PasswordHasher<ApplicationUser>();
+        var passwordHasher = new PasswordHasher<User>();
         var result = passwordHasher.VerifyHashedPassword(this, PasswordHash, password);
         return result != PasswordVerificationResult.Failed;
     }

@@ -22,7 +22,7 @@ public class CreateUserCommandHandler(
             return Error.Conflict("User.Exists", $"User with email {userEmail} already exists.");
         }
 
-        var newUser = new ApplicationUser
+        var newUser = new Domain.User
         {
             Id = SequentialGuid.NewGuid(),
             Email = userEmail,
