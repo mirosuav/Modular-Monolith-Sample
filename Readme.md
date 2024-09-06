@@ -21,9 +21,14 @@ TODO:
 - Use strongly typed Ids, so instead `Guid UserId` define a typed `record struct UserId(Guid Value)` and use `UserId Id`
 - Simplify events, no need to have separate DomainEvents and IntegrationEvents as we are not using DDD
 - Use MediatR in modules internally but Service Bus to communicate between modules
-- Use Seq and/or Azure ApplicationInsights for OpenTelemetry
+- Use https://www.keycloak.org/ as IdentityProvider
+- Check Seq for OpenTelemetry
+- Check Azure ApplicationInsights for OpenTelemetry
+- Check Jaeger for OpenTelemetry
+- Check Grafana for OpenTelemetry
 - Implement Unit tests
 - Implement Integration tests with Docker db
+- ...
 
 # Features
 
