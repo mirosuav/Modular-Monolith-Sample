@@ -120,12 +120,4 @@ internal static class ServiceCollectionExtensions
 
         return services;
     }
-
-    internal static IServiceCollection AddEvents(this IServiceCollection services)
-    {
-        // Add MediatR Domain Event Dispatcher
-        services.AddScoped<IDomainEventDispatcher, MediatRDomainEventDispatcher>();
-
-        return services;
-    }
 }

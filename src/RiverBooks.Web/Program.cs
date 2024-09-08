@@ -24,7 +24,6 @@ var builder = WebApplication.CreateBuilder(args);
         .AddAuth(builder.Configuration, builder.Environment)
         .AddApplicationServices()
         .AddMessaging(moduleAssemblies)
-        .AddEvents()
         .AddApiVersioning(new ApiVersion(1, 0))
         .AddOpenApi();
 }

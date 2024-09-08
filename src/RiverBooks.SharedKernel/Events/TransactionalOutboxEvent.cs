@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using RiverBooks.SharedKernel.Events;
 
-namespace RiverBooks.SharedKernel.TransactionalOutbox;
+namespace RiverBooks.SharedKernel.Events;
 
 /// <summary>
 /// Holds a DomainEvent in Transactional Outbox table
@@ -10,8 +9,8 @@ namespace RiverBooks.SharedKernel.TransactionalOutbox;
 public sealed class TransactionalOutboxEvent
 {
     public Guid Id { get; init; }
-    public DateTime OccurredUtc { get; init; }
-    public DateTime? ProcessedUtc { get; set; }
+    public DateTimeOffset OccurredUtc { get; init; }
+    public DateTimeOffset? ProcessedUtc { get; set; }
     public bool Success { get; set; }
     public int Attempts { get; set; }
 

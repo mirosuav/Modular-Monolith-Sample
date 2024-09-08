@@ -27,7 +27,7 @@ internal class CreateOrderCommandHandler(
         if (!billingAddress.IsSuccess)
             return billingAddress.Errors;
 
-        var newOrder = Order.CreateNew(request.UserId,
+        var newOrder = Order.Create(request.UserId,
           shippingAddress.Value.Address,
           billingAddress.Value.Address,
           items,

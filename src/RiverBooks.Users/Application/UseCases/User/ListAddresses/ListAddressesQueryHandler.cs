@@ -18,12 +18,7 @@ public class ListAddressesQueryHandler(IApplicationUserRepository userRepository
         }
 
         return user!.Addresses!
-                    .Select(ua => new UserAddressDto(ua.Id, ua.StreetAddress.Street1,
-                    ua.StreetAddress.Street2,
-                    ua.StreetAddress.City,
-                    ua.StreetAddress.State,
-                    ua.StreetAddress.PostalCode,
-                    ua.StreetAddress.Country))
+                    .Select(ua => ua.ToDto())
                     .ToList();
     }
 }

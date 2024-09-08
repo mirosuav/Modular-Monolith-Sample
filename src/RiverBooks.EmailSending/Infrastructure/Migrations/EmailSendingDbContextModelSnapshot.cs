@@ -55,7 +55,7 @@ namespace RiverBooks.EmailSending.Infrastructure.Migrations
                     b.ToTable("EmailOutboxItems", "EmailSending");
                 });
 
-            modelBuilder.Entity("RiverBooks.SharedKernel.TransactionalOutbox.TransactionalOutboxEvent", b =>
+            modelBuilder.Entity("RiverBooks.SharedKernel.Events.TransactionalOutboxEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -68,16 +68,16 @@ namespace RiverBooks.EmailSending.Infrastructure.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<DateTime>("OccurredUtc")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("OccurredUtc")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Payload")
                         .IsRequired()
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<DateTime?>("ProcessedUtc")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("ProcessedUtc")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<bool>("Success")
                         .HasColumnType("bit");

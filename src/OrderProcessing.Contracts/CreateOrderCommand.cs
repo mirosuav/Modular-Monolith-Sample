@@ -6,5 +6,5 @@ namespace RiverBooks.OrderProcessing.Contracts;
 public record CreateOrderCommand(Guid UserId,
                                  Guid ShippingAddressId,
                                  Guid BillingAddressId,
-                                 List<OrderItemDetails> OrderItems) :
+                                 List<OrderItemDto> OrderItems) :
     IRequest<Resultable<OrderDetailsResponse>>;

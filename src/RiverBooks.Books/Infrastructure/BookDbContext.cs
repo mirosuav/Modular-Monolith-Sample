@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using RiverBooks.Books.Domain;
-using RiverBooks.SharedKernel.TransactionalOutbox;
+using RiverBooks.SharedKernel.Events;
 
 namespace RiverBooks.Books.Infrastructure;
 

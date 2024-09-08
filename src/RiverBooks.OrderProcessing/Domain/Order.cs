@@ -1,6 +1,7 @@
 ﻿using RiverBooks.SharedKernel;
 using RiverBooks.SharedKernel.Extensions;
 using System.ComponentModel.DataAnnotations.Schema;
+using RiverBooks.OrderProcessing.Contracts;
 using RiverBooks.SharedKernel.Events;
 
 namespace RiverBooks.OrderProcessing.Domain;
@@ -19,7 +20,7 @@ internal class Order : HaveEvents
 
     private void AddOrderItem(OrderItem item) => _orderItems.Add(item);
     
-    public static Order CreateNew(
+    public static Order Create(
         Guid userId,
         Address shippingAddress,
         Address billingAddress,
@@ -40,12 +41,26 @@ internal class Order : HaveEvents
             order.AddOrderItem(item);
         }
 
-        var createdEvent = new OrderCreatedDomainEvent(order, timeProvider.GetUtcDateTime());
-
-        order.RegisterDomainEvent(createdEvent);
+        order.RegisterEvent(new OrderCreated_PrepareReportEvent(order.Id, order.DateCreated));
+        order.RegisterEvent(new OrderCreated_SendEmailEvent(order.Id, order.DateCreated));
 
         return order;
     }
+
+    public OrderDto ToOrderDto() =>
+        new()
+        {
+            DateCreated = DateCreated,
+            OrderId = Id,
+            UserId = UserId,
+            OrderItems = OrderItems
+                .Select(oi => new OrderItemDto(
+                    oi.BookId,
+                    oi.Quantity,
+                    oi.UnitPrice,
+                    oi.Description))
+                .ToList()
+        };
 }
 
 

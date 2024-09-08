@@ -3,9 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
-namespace RiverBooks.Books.Infrastructure.Migrations
+namespace RiverBooks.EmailSending.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -14,31 +12,33 @@ namespace RiverBooks.Books.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "Books");
+                name: "EmailSending");
 
             migrationBuilder.CreateTable(
-                name: "Books",
-                schema: "Books",
+                name: "EmailOutboxItems",
+                schema: "EmailSending",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Author = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: false)
+                    To = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    From = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateTimeUtcProcessed = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Books", x => x.Id);
+                    table.PrimaryKey("PK_EmailOutboxItems", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "OutboxEvents",
-                schema: "Books",
+                schema: "EmailSending",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OccurredUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProcessedUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    OccurredUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    ProcessedUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     Success = table.Column<bool>(type: "bit", nullable: false),
                     Attempts = table.Column<int>(type: "int", nullable: false),
                     EventType = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
@@ -49,20 +49,15 @@ namespace RiverBooks.Books.Infrastructure.Migrations
                     table.PrimaryKey("PK_OutboxEvents", x => x.Id);
                 });
 
-            migrationBuilder.InsertData(
-                schema: "Books",
-                table: "Books",
-                columns: new[] { "Id", "Author", "Price", "Title" },
-                values: new object[,]
-                {
-                    { new Guid("17c61e41-3953-42cd-8f88-d3f698869b35"), "J.R.R. Tolkien", 12.99m, "The Return of the King" },
-                    { new Guid("a89f6cd7-4693-457b-9009-02205dbbfe45"), "J.R.R. Tolkien", 10.99m, "The Fellowship of the Ring" },
-                    { new Guid("e4fa19bf-6981-4e50-a542-7c9b26e9ec31"), "J.R.R. Tolkien", 11.99m, "The Two Towers" }
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_EmailOutboxItems_DateTimeUtcProcessed",
+                schema: "EmailSending",
+                table: "EmailOutboxItems",
+                column: "DateTimeUtcProcessed");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OutboxEvents_OccurredUtc",
-                schema: "Books",
+                schema: "EmailSending",
                 table: "OutboxEvents",
                 column: "OccurredUtc",
                 filter: "[Success] = 0 AND [Attempts] < 3");
@@ -72,12 +67,12 @@ namespace RiverBooks.Books.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Books",
-                schema: "Books");
+                name: "EmailOutboxItems",
+                schema: "EmailSending");
 
             migrationBuilder.DropTable(
                 name: "OutboxEvents",
-                schema: "Books");
+                schema: "EmailSending");
         }
     }
 }

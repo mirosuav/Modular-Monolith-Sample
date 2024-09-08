@@ -5,14 +5,14 @@ namespace RiverBooks.SharedKernel.Events;
 public abstract class HaveEvents
 {
     [NotMapped]
-    private readonly List<IEvent> _domainEvents = [];
+    private readonly List<IEvent> _events = [];
 
     [NotMapped]
-    public IEnumerable<IEvent> DomainEvents => _domainEvents.AsReadOnly();
+    public IEnumerable<IEvent> Events => _events.AsReadOnly();
 
-    public void ClearDomainEvents() => _domainEvents.Clear();
+    public void ClearEvents() => _events.Clear();
 
-    protected void RegisterDomainEvent(IEvent domainEvent) => _domainEvents.Add(domainEvent);
+    protected void RegisterEvent(IEvent @event) => _events.Add(@event);
 
 }
 

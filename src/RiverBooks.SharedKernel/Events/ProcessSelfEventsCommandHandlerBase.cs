@@ -4,27 +4,31 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RiverBooks.SharedKernel.Extensions;
 
-namespace RiverBooks.SharedKernel.TransactionalOutbox;
+namespace RiverBooks.SharedKernel.Events;
 
-public abstract class ProcessSelfTransactionalOutboxCommandHandlerBase
+public abstract class ProcessSelfEventsCommandHandlerBase
     <TOutboxContext>(
         TOutboxContext dbContext,
-        IPublisher publisher,
+        IMediator mediator,
         ILogger logger,
         TimeProvider timeProvider) :
-    INotificationHandler<ProcessSelfTransactionalOutboxCommand>
+    INotificationHandler<ProcessSelfEventsCommand>
     where TOutboxContext : TransactionalOutboxDbContext
 {
+    protected readonly TOutboxContext DbContext = dbContext;
+    protected readonly IMediator Mediator = mediator;
+    protected readonly ILogger Logger = logger;
+    protected readonly TimeProvider TimeProvider = timeProvider;
     protected abstract SemaphoreSlim AccessLocker { get; }
 
-    public async Task Handle(ProcessSelfTransactionalOutboxCommand command, CancellationToken ct)
+    public async Task Handle(ProcessSelfEventsCommand command, CancellationToken ct)
     {
         await AccessLocker.WaitAsync(ct);
 
         try
         {
             // retrieve outbox events from db
-            var outboxItems = await dbContext.FetchNextTransactionalOutboxEvents().ToListAsync(ct);
+            var outboxItems = await DbContext.FetchNextTransactionalOutboxEvents().ToListAsync(ct);
 
             if (outboxItems is null or [])
                 return;
@@ -36,11 +40,11 @@ public abstract class ProcessSelfTransactionalOutboxCommandHandlerBase
             }
 
             // save changes to outbox events
-            await dbContext.SaveChangesAsync(ct);
+            await DbContext.SaveChangesAsync(ct);
         }
         catch (Exception ex)
         {
-            logger.LogError(
+            Logger.LogError(
                 "Processing transactional events [{ProcessDomainEventsSession}] failed `{ErrorMessage}`.",
                 command.Id, ex.Message);
             throw;
@@ -56,15 +60,15 @@ public abstract class ProcessSelfTransactionalOutboxCommandHandlerBase
         try
         {
             transactionalOutbox.Attempts++;
-            transactionalOutbox.ProcessedUtc = timeProvider.GetUtcDateTime();
-            logger.LogTrace(
+            transactionalOutbox.ProcessedUtc = TimeProvider.GetUtcDateTime();
+            Logger.LogTrace(
                 "Processing events [{ProcessDomainEventsSession}] TransactionalOutboxEvent {TransactionalOutboxEvent.Id}, attempt {Attempt}",
                 processingId, transactionalOutbox.Id, transactionalOutbox.Attempts);
 
             var eventType = Type.GetType(transactionalOutbox.EventType);
             if (eventType is null)
             {
-                logger.LogError(
+                Logger.LogError(
                     "Processing events [{ProcessDomainEventsSession}]: Could not create DomainEvent of type `{TransactionalOutboxEvent}`.",
                     processingId, transactionalOutbox.EventType);
                 return;
@@ -73,26 +77,35 @@ public abstract class ProcessSelfTransactionalOutboxCommandHandlerBase
             var domainEvent = JsonSerializer.Deserialize(transactionalOutbox.Payload, eventType);
             if (domainEvent is null)
             {
-                logger.LogError(
+                Logger.LogError(
                     "Processing events [{ProcessDomainEventsSession}]: Could not create DomainEvent of type `{DomainEvent}`.",
                     processingId, transactionalOutbox.EventType);
                 return;
             }
 
-            await publisher.Publish(domainEvent, cancellationToken);
+            await PublishOutboxEvent(domainEvent, cancellationToken);
+
             transactionalOutbox.Success = true;
 
-            logger.LogTrace(
+            Logger.LogTrace(
                 "Processing events [{ProcessDomainEventsSession}] TransactionalOutboxEvent {TransactionalOutboxEvent.Id}, attempt {Attempt} succeeded.",
                 processingId, transactionalOutbox.Id, transactionalOutbox.Attempts);
+
         }
         catch (Exception ex)
         {
-            logger.LogError(ex,
+            Logger.LogError(ex,
                 "Processing events [{ProcessDomainEventsSession}]: Could not publish DomainEvent of type `{DomainEvent}` and Id `{DomainEvent.Id}`.",
                 processingId, transactionalOutbox.EventType, transactionalOutbox.Id);
             return;
         }
+    }
+
+    protected virtual async Task PublishOutboxEvent(
+        object domainEvent,
+        CancellationToken cancellationToken)
+    {
+        await Mediator.Publish(domainEvent, cancellationToken);
     }
 }
 

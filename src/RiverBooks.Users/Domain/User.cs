@@ -68,9 +68,9 @@ public class User : HaveEvents
         var newAddress = new UserStreetAddress(Id, address);
         _addresses.Add(newAddress);
 
-        var domainEvent = new AddressAddedDomainEvent(newAddress, timeProvider.GetUtcDateTime());
+        var domainEvent = new AddressAddedEvent(newAddress.Id, timeProvider.GetUtcDateTime());
 
-        RegisterDomainEvent(domainEvent);
+        RegisterEvent(domainEvent);
 
         return newAddress;
     }

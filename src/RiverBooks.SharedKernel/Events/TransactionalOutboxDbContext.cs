@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RiverBooks.SharedKernel.Events;
 
-namespace RiverBooks.SharedKernel.TransactionalOutbox;
+namespace RiverBooks.SharedKernel.Events;
 
 /// <summary>
 /// Implementation of Transactional Outbox pattern
-/// DomainEvents are persisted with atomic fashion within the main business entity
+/// Events are persisted with atomic fashion within the main business entity
 /// Then EventsProcessing module triggers the events from outbox table in each individual module asynchronously
 /// </summary>
 public abstract class TransactionalOutboxDbContext(DbContextOptions options)
@@ -51,13 +50,13 @@ public abstract class TransactionalOutboxDbContext(DbContextOptions options)
         foreach (var entry in ChangeTracker.Entries<HaveEvents>().ToList())
         {
             var outboxEvents = entry.Entity
-                .DomainEvents
+                .Events
                 .Select(TransactionalOutboxEvent.Create)
                 .ToArray();
 
             OutboxEvents.AddRange(outboxEvents);
 
-            entry.Entity.ClearDomainEvents();
+            entry.Entity.ClearEvents();
         }
     }
 }

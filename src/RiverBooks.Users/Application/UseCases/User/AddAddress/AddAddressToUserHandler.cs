@@ -32,10 +32,9 @@ public class AddAddressToUserHandler(
 
         await userRepository.SaveChangesAsync(ct);
 
-        logger.LogInformation("[UseCase] Added address {address} to user {eserId} (Total: {total})",
+        logger.LogInformation("Added address {StreetAddress} to user {UserId}",
           userAddress.StreetAddress,
-          request.UserId,
-          user.Addresses.Count);
+          request.UserId);
 
         return Resultable.Success();
     }

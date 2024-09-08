@@ -2,8 +2,8 @@
 
 namespace RiverBooks.OrderProcessing.Contracts;
 
-public class OrderCreatedIntegrationEvent(OrderDetailsDto orderDetailsDto) : INotification
+// Todo as this is only used by Reporting module, should be moved there and renamed to BookSale event or command
+public class OrderCreatedIntegrationEvent(OrderDto orderDto) : INotification
 {
-    public DateTimeOffset DateCreated { get; private set; } = DateTimeOffset.Now;
-    public OrderDetailsDto OrderDetails { get; private set; } = orderDetailsDto;
+    public OrderDto Order { get; private set; } = orderDto;
 }

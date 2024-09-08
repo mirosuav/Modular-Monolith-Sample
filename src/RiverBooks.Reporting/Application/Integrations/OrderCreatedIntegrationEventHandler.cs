@@ -18,7 +18,7 @@ internal class OrderCreatedIntegrationEventHandler(
     {
         logger.LogInformation("Handling order created event to populate reporting database...");
         
-        foreach (var item in notification.OrderDetails.OrderItems)
+        foreach (var item in notification.Order.OrderItems)
         {
             // look up book details from Books module to get author and title
             var bookDetailsQuery = new BookDetailsQuery(item.BookId);
@@ -32,14 +32,14 @@ internal class OrderCreatedIntegrationEventHandler(
             
             var sale = new BookSale
             {
-                OrderId = notification.OrderDetails.OrderId,
-                CustomerId = notification.OrderDetails.UserId,
+                OrderId = notification.Order.OrderId,
+                CustomerId = notification.Order.UserId,
                 Author = result.Value.Author,
                 BookId = item.BookId,
                 Title = result.Value.Title,
                 TotalSales = item.Quantity * item.UnitPrice,
                 UnitsSold = item.Quantity,
-                SoldAtUtc = notification.OrderDetails.DateCreated.DateTime
+                SoldAtUtc = notification.Order.DateCreated.DateTime
             };
 
             bookSaleRepository.AddBookSale(sale);

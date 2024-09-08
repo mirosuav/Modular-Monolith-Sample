@@ -46,8 +46,8 @@ namespace RiverBooks.OrderProcessing.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OccurredUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProcessedUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    OccurredUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    ProcessedUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     Success = table.Column<bool>(type: "bit", nullable: false),
                     Attempts = table.Column<int>(type: "int", nullable: false),
                     EventType = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),

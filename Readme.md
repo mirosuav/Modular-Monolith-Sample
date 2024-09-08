@@ -18,6 +18,7 @@ Modular Monoliths course
 - Use client generate incrementa UUIDv7 as guids see `RiverBooks.SharedKernel.Extensions.Uuid7` class
 
 TODO:
+- Separate Modules IoC i.e. each modules has its own ServiceProvider, Logger etc
 - Use strongly typed Ids, so instead `Guid UserId` define a typed `record struct UserId(Guid Value)` and use `UserId Id`
 - Simplify events, no need to have separate DomainEvents and IntegrationEvents as we are not using DDD
 - Use MediatR in modules internally but Service Bus to communicate between modules

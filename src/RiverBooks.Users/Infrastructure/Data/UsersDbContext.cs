@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using RiverBooks.Users.Domain;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore.Query.Internal;
-using RiverBooks.SharedKernel.TransactionalOutbox;
+using RiverBooks.SharedKernel.Events;
 
 namespace RiverBooks.Users.Infrastructure.Data;
 

@@ -17,7 +17,7 @@ public class CheckoutCartHandler(
             return Error.NotAuthorized;
 
         var items = user.CartItems.Select(item =>
-          new OrderItemDetails(item.BookId,
+          new OrderItemDto(item.BookId,
                                item.Quantity,
                                item.UnitPrice,
                                item.Description))

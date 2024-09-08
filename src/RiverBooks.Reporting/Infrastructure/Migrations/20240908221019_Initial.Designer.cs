@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RiverBooks.EmailSending.Infrastructure;
+using RiverBooks.Reporting.Infrastructure.Data;
 
 #nullable disable
 
-namespace RiverBooks.EmailSending.Infrastructure.Migrations
+namespace RiverBooks.Reporting.Infrastructure.Migrations
 {
-    [DbContext(typeof(EmailSendingDbContext))]
-    [Migration("20240905183519_Initial")]
+    [DbContext(typeof(ReportingDbContext))]
+    [Migration("20240908221019_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,45 +20,49 @@ namespace RiverBooks.EmailSending.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("EmailSending")
+                .HasDefaultSchema("Reporting")
                 .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("RiverBooks.EmailSending.Domain.EmailOutboxEntity", b =>
+            modelBuilder.Entity("RiverBooks.Reporting.Domain.BookSale", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Body")
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Author")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DateTimeUtcProcessed")
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("SoldAtUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("From")
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal>("TotalSales")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
 
-                    b.Property<string>("To")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("UnitsSold")
+                        .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("OrderId", "BookId");
 
-                    b.HasIndex("DateTimeUtcProcessed");
+                    b.HasIndex("SoldAtUtc");
 
-                    b.ToTable("EmailOutboxItems", "EmailSending");
+                    b.ToTable("BookSale", "Reporting");
                 });
 
-            modelBuilder.Entity("RiverBooks.SharedKernel.TransactionalOutbox.TransactionalOutboxEvent", b =>
+            modelBuilder.Entity("RiverBooks.SharedKernel.Events.TransactionalOutboxEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -71,16 +75,16 @@ namespace RiverBooks.EmailSending.Infrastructure.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<DateTime>("OccurredUtc")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("OccurredUtc")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Payload")
                         .IsRequired()
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<DateTime?>("ProcessedUtc")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("ProcessedUtc")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<bool>("Success")
                         .HasColumnType("bit");
@@ -90,7 +94,7 @@ namespace RiverBooks.EmailSending.Infrastructure.Migrations
                     b.HasIndex("OccurredUtc")
                         .HasFilter("[Success] = 0 AND [Attempts] < 3");
 
-                    b.ToTable("OutboxEvents", "EmailSending");
+                    b.ToTable("OutboxEvents", "Reporting");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,11 +1,11 @@
-﻿using System.Diagnostics;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RiverBooks.SharedKernel;
+using RiverBooks.SharedKernel.Events;
 using RiverBooks.SharedKernel.Extensions;
-using RiverBooks.SharedKernel.TransactionalOutbox;
+using System.Diagnostics;
 
 namespace RiverBooks.EventsProcessing.Application;
 
@@ -31,11 +31,11 @@ internal class EventsProcessingBackgroundService(
             var sessionId = SequentialGuid.NewGuid();
             try
             {
-                var processingSession = new ProcessSelfTransactionalOutboxCommand(
+                var processingSession = new ProcessSelfEventsCommand(
                     sessionId,
                     timeProvider.GetUtcDateTime());
 
-                logger.LogTrace("Starting ProcessSelfTransactionalOutboxCommand [{ProcessDomainEventsSession}] at {ProcessDomainEventsSessionTimeStamp} ",
+                logger.LogTrace("Dispatching ProcessSelfEventsCommand [{ProcessDomainEventsSession}] at {ProcessDomainEventsSessionTimeStamp} ",
                     processingSession.Id, processingSession.CreatedUtc);
 
                 // Sends command to all modules using common mediator publisher

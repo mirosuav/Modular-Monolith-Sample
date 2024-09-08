@@ -1,15 +1,15 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using RiverBooks.EmailSending.Infrastructure;
-using RiverBooks.SharedKernel.TransactionalOutbox;
+using RiverBooks.SharedKernel.Events;
 
 namespace RiverBooks.EmailSending.Application.Integrations;
-internal class ProcessSelfTransactionalOutboxCommandHandler(
+internal class ProcessSelfEventsCommandHandler(
     EmailSendingDbContext dbContext,
-    IPublisher publisher,
-    ILogger<ProcessSelfTransactionalOutboxCommandHandler> logger,
+    IMediator mediator,
+    ILogger<ProcessSelfEventsCommandHandler> logger,
     TimeProvider timeProvider) :
-    ProcessSelfTransactionalOutboxCommandHandlerBase<EmailSendingDbContext>(dbContext, publisher, logger, timeProvider)
+    ProcessSelfEventsCommandHandlerBase<EmailSendingDbContext>(dbContext, mediator, logger, timeProvider)
 {
     private static readonly SemaphoreSlim _accessLocker = new(1, 1);
     protected override SemaphoreSlim AccessLocker => _accessLocker;

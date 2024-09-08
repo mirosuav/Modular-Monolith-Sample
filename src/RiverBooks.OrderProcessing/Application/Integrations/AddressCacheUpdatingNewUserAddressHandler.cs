@@ -14,13 +14,13 @@ internal class AddressCacheUpdatingNewUserAddressHandler(
     public async Task Handle(NewUserAddressAddedIntegrationEvent notification,
       CancellationToken cancellationToken)
     {
-        var orderAddress = new OrderAddress(notification.Details.AddressId,
-          new Address(notification.Details.Street1,
-            notification.Details.Street2,
-            notification.Details.City,
-            notification.Details.State,
-            notification.Details.PostalCode,
-            notification.Details.Country));
+        var orderAddress = new OrderAddress(notification.UserAddress.AddressId,
+          new Address(notification.UserAddress.Street1,
+            notification.UserAddress.Street2,
+            notification.UserAddress.City,
+            notification.UserAddress.State,
+            notification.UserAddress.PostalCode,
+            notification.UserAddress.Country));
 
         await addressCache.StoreAsync(orderAddress, cancellationToken);
 

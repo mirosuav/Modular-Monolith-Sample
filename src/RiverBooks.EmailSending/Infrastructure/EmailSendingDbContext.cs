@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RiverBooks.EmailSending.Domain;
 using System.Reflection;
-using RiverBooks.SharedKernel.TransactionalOutbox;
+using RiverBooks.SharedKernel.Events;
 
 namespace RiverBooks.EmailSending.Infrastructure;
 

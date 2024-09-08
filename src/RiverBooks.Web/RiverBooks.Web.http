@@ -1,7 +1,7 @@
 
 @RootAddress=https://localhost:7179
 @UserEmail=mirek@riverbooks.com
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHJpdmVyYm9va3MuY29tIiwiSWQiOiIwNjZkYTA5ZC0yZTY0LTc3YzQtODAwMC02ZGQxYWQxYTRhOGQiLCJzaWQiOiIwNjZkYjY1Ny00ODM1LTc0N2YtODAwMC04MDJmYTRiNzQwNGIiLCJhdWQiOiJSaXZlckJvb2tzIiwiaXNzIjoiUml2ZXJCb29rcyIsImV4cCI6MTcyNTY2MTU4OCwiaWF0IjoxNzI1NjU0Mzg4LCJuYmYiOjE3MjU2NTQzODh9.BKafASqW1wBGSVMbmJy3KsoOBtgmdhBi_KP0TfgMbsI
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHJpdmVyYm9va3MuY29tIiwiSWQiOiIwNjZkZTIxYi1lMGZlLTc3MjEtODAwMC02NGJjZTJlNjY5NjUiLCJzaWQiOiIwNjZkZTIxYy00Njg5LTc2OGUtODAwMC1mYWRjYTdlNGJjYzgiLCJhdWQiOiJSaXZlckJvb2tzIiwiaXNzIjoiUml2ZXJCb29rcyIsImV4cCI6MTcyNTg0MDg2OCwiaWF0IjoxNzI1ODMzNjY4LCJuYmYiOjE3MjU4MzM2Njh9.Pv6pjwJjPMMC2OJq0-h_CtDsUEPC54zHRCt3JD3_PV0
 
 
 
@@ -39,7 +39,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-@BookID=066da09f-a727-703e-8000-e03fd379a407
+@BookID=a89f6cd7-4693-457b-9009-02205dbbfe45
 
 # GET BOOK By ID
 
@@ -79,7 +79,7 @@ Accept: application/json
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
- 12.00
+ 52.00
 
 
 ###
@@ -118,8 +118,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "shippingAddressId":"066da0a8-bb0f-7d66-8000-af446aa6635a",
-  "billingAddressId":"066da0a8-bb0f-7d66-8000-af446aa6635a"
+  "shippingAddressId":"066de22a-50dd-7ea2-8000-39f7dd38dcd4",
+  "billingAddressId":"066de22a-50dd-7ea2-8000-39f7dd38dcd4"
 }
 
 ###
@@ -159,7 +159,7 @@ Authorization: Bearer {{token}}
 
 # TOP SALES - EVENT INGESTION CUSTOM DB
 
-GET {{RootAddress}}/reports/topsales/2024/8
+GET {{RootAddress}}/reports/topsales/2024/9
 Accept: application/json
 
 ###

@@ -5,9 +5,9 @@ using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.Users.Application.Integrations;
 public class UserAddressDetailsByIdQueryHandler(IReadOnlyUserStreetAddressRepository addressRepo) :
-  IRequestHandler<UserAddressDetailsByIdQuery, Resultable<UserAddressDetails>>
+  IRequestHandler<UserAddressDetailsByIdQuery, Resultable<UserAddressDto>>
 {
-    public async Task<Resultable<UserAddressDetails>> Handle(
+    public async Task<Resultable<UserAddressDto>> Handle(
       UserAddressDetailsByIdQuery request,
       CancellationToken ct)
     {
@@ -16,17 +16,7 @@ public class UserAddressDetailsByIdQueryHandler(IReadOnlyUserStreetAddressReposi
         if (address is null)
             return Error.NotFound("No user address found");
 
-        var details = new UserAddressDetails(
-                address.UserId,
-                address.Id,
-                address.StreetAddress.Street1,
-                address.StreetAddress.Street2,
-                address.StreetAddress.City,
-                address.StreetAddress.State,
-                address.StreetAddress.PostalCode,
-                address.StreetAddress.Country);
-
-        return details;
+        return address.ToDto();
     }
 
 }

@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace RiverBooks.Reporting.Infrastructure.Migrations
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
+namespace RiverBooks.Books.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -12,35 +14,31 @@ namespace RiverBooks.Reporting.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "Reporting");
+                name: "Books");
 
             migrationBuilder.CreateTable(
-                name: "BookSale",
-                schema: "Reporting",
+                name: "Books",
+                schema: "Books",
                 columns: table => new
                 {
-                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Author = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SoldAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UnitsSold = table.Column<int>(type: "int", nullable: false),
-                    TotalSales = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Author = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookSale", x => new { x.OrderId, x.BookId });
+                    table.PrimaryKey("PK_Books", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "OutboxEvents",
-                schema: "Reporting",
+                schema: "Books",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OccurredUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProcessedUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    OccurredUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    ProcessedUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     Success = table.Column<bool>(type: "bit", nullable: false),
                     Attempts = table.Column<int>(type: "int", nullable: false),
                     EventType = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
@@ -51,15 +49,20 @@ namespace RiverBooks.Reporting.Infrastructure.Migrations
                     table.PrimaryKey("PK_OutboxEvents", x => x.Id);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_BookSale_SoldAtUtc",
-                schema: "Reporting",
-                table: "BookSale",
-                column: "SoldAtUtc");
+            migrationBuilder.InsertData(
+                schema: "Books",
+                table: "Books",
+                columns: new[] { "Id", "Author", "Price", "Title" },
+                values: new object[,]
+                {
+                    { new Guid("17c61e41-3953-42cd-8f88-d3f698869b35"), "J.R.R. Tolkien", 12.99m, "The Return of the King" },
+                    { new Guid("a89f6cd7-4693-457b-9009-02205dbbfe45"), "J.R.R. Tolkien", 10.99m, "The Fellowship of the Ring" },
+                    { new Guid("e4fa19bf-6981-4e50-a542-7c9b26e9ec31"), "J.R.R. Tolkien", 11.99m, "The Two Towers" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_OutboxEvents_OccurredUtc",
-                schema: "Reporting",
+                schema: "Books",
                 table: "OutboxEvents",
                 column: "OccurredUtc",
                 filter: "[Success] = 0 AND [Attempts] < 3");
@@ -69,12 +72,12 @@ namespace RiverBooks.Reporting.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BookSale",
-                schema: "Reporting");
+                name: "Books",
+                schema: "Books");
 
             migrationBuilder.DropTable(
                 name: "OutboxEvents",
-                schema: "Reporting");
+                schema: "Books");
         }
     }
 }
