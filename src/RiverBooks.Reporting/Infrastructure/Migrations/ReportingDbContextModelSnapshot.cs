@@ -58,41 +58,6 @@ namespace RiverBooks.Reporting.Infrastructure.Migrations
 
                     b.ToTable("BookSale", "Reporting");
                 });
-
-            modelBuilder.Entity("RiverBooks.SharedKernel.Events.TransactionalOutboxEvent", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Attempts")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EventType")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<DateTimeOffset>("OccurredUtc")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Payload")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<DateTimeOffset?>("ProcessedUtc")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<bool>("Success")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OccurredUtc")
-                        .HasFilter("[Success] = 0 AND [Attempts] < 3");
-
-                    b.ToTable("OutboxEvents", "Reporting");
-                });
 #pragma warning restore 612, 618
         }
     }

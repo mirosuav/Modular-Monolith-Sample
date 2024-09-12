@@ -22,7 +22,7 @@ internal class ProcessSelfEventsCommandHandler(
 
     protected override async Task PublishOutboxEvent(object domainEvent, CancellationToken cancellationToken)
     {
-        // Enrich, transform and process OrderCreatedEvent
+        // Enrich, transform and process events
         switch (domainEvent)
         {
             case OrderCreated_PrepareReportEvent reportingEvent:

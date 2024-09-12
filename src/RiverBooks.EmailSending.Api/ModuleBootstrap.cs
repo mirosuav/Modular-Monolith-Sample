@@ -45,12 +45,13 @@ public static class ModuleBootstrap
         // if using MediatR in this module, add any assemblies that contain handlers to the list
         mediatRAssemblies.Add(typeof(ModuleDescriptor).Assembly);
 
-        services.AddResiliencePipeline(typeof(IEmailSender), static builder =>
+        // Add resilience policy for IEmailSender specifically
+        services.AddResiliencePipeline(typeof(ISendEmailsFromOutboxService), static builder =>
         {
             // Retry policy
             builder.AddRetry(new RetryStrategyOptions
             {
-                ShouldHandle = new PredicateBuilder().Handle<Exception>(),
+                // ShouldHandle = new PredicateBuilder().Handle<Specific exception type here>()
                 Delay = TimeSpan.FromSeconds(1.5),
                 BackoffType = DelayBackoffType.Exponential,
                 UseJitter = true,
@@ -63,8 +64,8 @@ public static class ModuleBootstrap
             // Rate limiting
             builder.AddRateLimiter(new FixedWindowRateLimiter(new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 5,
-                Window = TimeSpan.FromSeconds(1),
+                PermitLimit = 5, // max 5 requests
+                Window = TimeSpan.FromSeconds(1), // per second
             }));
         });
 

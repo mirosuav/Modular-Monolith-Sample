@@ -13,7 +13,7 @@ using RiverBooks.OrderProcessing.Infrastructure.Data;
 namespace RiverBooks.OrderProcessing.Infrastructure.Migrations
 {
     [DbContext(typeof(OrderProcessingDbContext))]
-    [Migration("20240908221036_Initial")]
+    [Migration("20240912214251_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

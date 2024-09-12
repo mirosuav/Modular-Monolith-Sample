@@ -38,6 +38,14 @@ public record Resultable<TResult> : Resultable
         Func<List<Error>, Task<TMatchedResult>> errorProcessor) =>
         IsSuccess ? successProcessor(Value) : errorProcessor(Errors);
 
+    public void Switch(Action<TResult> onSuccessDoAsync, Action<List<Error>> onErrorDoAsync)
+    {
+        if (IsSuccess)
+            onSuccessDoAsync(Value);
+        else
+            onErrorDoAsync(Errors);
+    }
+
     public override string ToString()
         => IsSuccess
         ? Value?.ToString() ?? string.Empty

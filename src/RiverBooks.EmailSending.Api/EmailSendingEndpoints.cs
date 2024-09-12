@@ -11,18 +11,30 @@ internal static class EmailSendingEndpoints
 {
     internal static RouteGroupBuilder MapEmailSendingEndpoints(this RouteGroupBuilder group)
     {
-        group.MapGet("", ListEmailsAsync)
+        group.MapGet("/pending", ListPendingEmailsAsync)
+            .Produces<Ok<List<EmailOutboxEntity>>>();
+
+        group.MapGet("/processed", ListProcessedEmailsAsync)
             .Produces<Ok<List<EmailOutboxEntity>>>();
 
         return group;
     }
 
-    internal static async Task<IResult> ListEmailsAsync(
+    internal static async Task<IResult> ListPendingEmailsAsync(
         IGetEmailsFromOutboxService getEmailsFromOutboxService,
         CancellationToken cancellationToken = default)
     {
         return (await getEmailsFromOutboxService
             .GetAllUnprocessedEmailsEntities(cancellationToken))
-            .ToHttpOk(r => r);
+            .ToHttpOk();
+    }
+
+    internal static async Task<IResult> ListProcessedEmailsAsync(
+        IGetEmailsFromOutboxService getEmailsFromOutboxService,
+        CancellationToken cancellationToken = default)
+    {
+        return (await getEmailsFromOutboxService
+                .GetAllProcessedEmailsEntities(cancellationToken))
+            .ToHttpOk();
     }
 }

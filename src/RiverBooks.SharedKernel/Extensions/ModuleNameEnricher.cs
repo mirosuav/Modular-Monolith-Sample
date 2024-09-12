@@ -7,12 +7,12 @@ namespace RiverBooks.SharedKernel.Extensions;
 /// <summary>
 /// A Serilog enricher that adds module name to the context properties
 /// </summary>
-public class LogModuleNameEnricher : ILogEventEnricher
+public class ModuleNameEnricher : ILogEventEnricher
 {
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
         logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(
-                "Module", GetCallingAssemblyModuleName()));
+                "ModuleName", GetCallingAssemblyModuleName()));
     }
 
     private static string GetCallingAssemblyModuleName()

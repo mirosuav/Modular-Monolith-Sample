@@ -2,7 +2,7 @@
 
 namespace RiverBooks.Users.Application.Interfaces;
 
-public interface IApplicationUserRepository
+public interface IUserRepository
 {
     void Add(User user);
     Task<User?> GetUserByEmailAsync(string emailAddress);

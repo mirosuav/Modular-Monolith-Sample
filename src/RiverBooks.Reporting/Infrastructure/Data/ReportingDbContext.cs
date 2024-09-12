@@ -6,7 +6,7 @@ using RiverBooks.SharedKernel.Events;
 namespace RiverBooks.Reporting.Infrastructure.Data;
 
 internal class ReportingDbContext(DbContextOptions<ReportingDbContext> options)
-    : TransactionalOutboxDbContext(options)
+    : DbContext(options)
 {
     public DbSet<BookSale> BookSales { get; set; } = null!;
 

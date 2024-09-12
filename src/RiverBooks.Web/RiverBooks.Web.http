@@ -1,9 +1,7 @@
 
 @RootAddress=https://localhost:7179
-@UserEmail=mirek@riverbooks.com
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1pcmVrQHJpdmVyYm9va3MuY29tIiwiSWQiOiIwNjZkZTIxYi1lMGZlLTc3MjEtODAwMC02NGJjZTJlNjY5NjUiLCJzaWQiOiIwNjZkZTIxYy00Njg5LTc2OGUtODAwMC1mYWRjYTdlNGJjYzgiLCJhdWQiOiJSaXZlckJvb2tzIiwiaXNzIjoiUml2ZXJCb29rcyIsImV4cCI6MTcyNTg0MDg2OCwiaWF0IjoxNzI1ODMzNjY4LCJuYmYiOjE3MjU4MzM2Njh9.Pv6pjwJjPMMC2OJq0-h_CtDsUEPC54zHRCt3JD3_PV0
-
-
+@UserEmail=customer@riverbooks.com
+@token = PASTE_TOKEN_HERE
 
 # CREATE USER
 
@@ -25,7 +23,7 @@ Content-Type: application/json
 
 {
   "email":"{{UserEmail}}",
-  "password":"Pass@word1"
+  "password":"Super@Secure123"
 }
 
 
@@ -39,7 +37,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-@BookID=a89f6cd7-4693-457b-9009-02205dbbfe45
+@BookID=066e3762-9ae2-7450-8000-4ed5c283cacf
 
 # GET BOOK By ID
 
@@ -57,9 +55,9 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "title": "Clean Code",
+  "title": "Clean Coder",
   "author": "Robert C. Martin",
-  "price": 39.99
+  "price": 29.99
 }
 
 ###
@@ -118,8 +116,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "shippingAddressId":"066de22a-50dd-7ea2-8000-39f7dd38dcd4",
-  "billingAddressId":"066de22a-50dd-7ea2-8000-39f7dd38dcd4"
+  "shippingAddressId":"066e376b-412f-71a3-8000-4efca73a67aa",
+  "billingAddressId":"066e376d-5ae5-74e8-8000-1afcb34bc9d6"
 }
 
 ###
@@ -139,7 +137,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "street1": "Street name",
+  "street1": "Officestreet",
   "street2": "",
   "city":"City name",
   "state":"State name",
@@ -149,9 +147,17 @@ Content-Type: application/json
 
 ###
 
-# LIST EMAILS
+# LIST Processed EMAILS
 
-GET {{RootAddress}}/emails
+GET {{RootAddress}}/emails/processed
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+# LIST Pending EMAILS
+
+GET {{RootAddress}}/emails/pending
 Accept: application/json
 Authorization: Bearer {{token}}
 

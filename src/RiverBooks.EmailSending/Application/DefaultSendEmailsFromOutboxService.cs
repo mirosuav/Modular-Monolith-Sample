@@ -14,25 +14,33 @@ internal class DefaultSendEmailsFromOutboxService(
 {
     public async Task CheckForAndSendEmails(CancellationToken cancellationToken)
     {
-        // Todo Retrieve all unprocessed emails and sends them
+        // Retrieve all unprocessed emails and sends them
         var result = await outboxService.GetNextUnprocessedEmailEntity(cancellationToken);
 
         if (!result.IsSuccess) return;
 
         var emailEntity = result.Value;
 
-        var pipeline = _resilienceProvider.GetPipeline(typeof(IEmailSender));
+        var pipeline = _resilienceProvider.GetPipeline(typeof(ISendEmailsFromOutboxService));
 
-        await pipeline.ExecuteAsync(async (ct) =>
-            await emailSender.SendEmailAsync(emailEntity.To,
-              emailEntity.From,
-              emailEntity.Subject,
-              emailEntity.Body,
-              ct)
-            , cancellationToken);
+        try
+        {
+            await pipeline.ExecuteAsync(async (ct) =>
+                await emailSender.SendEmailAsync(
+                    emailEntity.To,
+                    emailEntity.From,
+                    emailEntity.Subject,
+                    emailEntity.Body, ct),
+                cancellationToken);
 
-        await outboxProcessedService.MarkEmailSend(emailEntity.Id, cancellationToken);
+            await outboxProcessedService.UpdateEmailStatus(emailEntity.Id, EmailProcessingStatus.Success, cancellationToken);
 
-        logger.LogInformation("Processed email [{id}].", emailEntity.Id);
+            logger.LogInformation("Processed email [{id}] with success.", emailEntity.Id);
+        }
+        catch (Exception ex)
+        {
+            await outboxProcessedService.UpdateEmailStatus(emailEntity.Id, EmailProcessingStatus.DeadLetter, cancellationToken);
+            logger.LogError(ex, "Processing email [{id}] failed and results in DeadLetter.", emailEntity.Id);
+        }
     }
 }

@@ -37,14 +37,6 @@ public partial record Resultable : IResultable
         Func<List<Error>, Task<TMatchedResult>> errorProcessor) =>
         IsSuccess ? successProcessor() : errorProcessor(Errors);
 
-    public void Switch(Action onSuccessDo, Action onErrorDo)
-    {
-        if (IsSuccess)
-            onSuccessDo();
-        else
-            onErrorDo();
-    }
-
     public Task SwitchAsync(Func<Task> onSuccessDoAsync, Func<Task> onErrorDoAsync) =>
         IsSuccess ? onSuccessDoAsync() : onErrorDoAsync();
 

@@ -6,13 +6,13 @@ using RiverBooks.Users.Application.Interfaces;
 namespace RiverBooks.Users.Application.UseCases.User.Login;
 
 public class LoginUserCommandHandler(
-    IApplicationUserRepository applicationUserRepository,
+    IUserRepository userRepository,
     IJwtTokenHandler jwtTokenHandler)
     : IRequestHandler<LoginUserCommand, Resultable<string>>
 {
     public async Task<Resultable<string>> Handle(LoginUserCommand command, CancellationToken cancellationToken)
     {
-        var user = await applicationUserRepository.GetUserByEmailAsync(command.Email);
+        var user = await userRepository.GetUserByEmailAsync(command.Email);
 
         if (user == null)
         {

@@ -6,7 +6,7 @@ using RiverBooks.SharedKernel.Events;
 namespace RiverBooks.EmailSending.Infrastructure;
 
 public class EmailSendingDbContext(DbContextOptions<EmailSendingDbContext> options)
-    : TransactionalOutboxDbContext(options)
+    : DbContext(options)
 {
     public DbSet<EmailOutboxEntity> EmailOutboxItems { get; set; } = null!;
 

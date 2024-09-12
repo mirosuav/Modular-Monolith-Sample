@@ -6,7 +6,7 @@ using RiverBooks.Users.Application.Interfaces;
 namespace RiverBooks.Users.Application.UseCases.Cart.Checkout;
 
 public class CheckoutCartHandler(
-    IApplicationUserRepository userRepository,
+    IUserRepository userRepository,
   IMediator mediator) : IRequestHandler<CheckoutCartCommand, Resultable<Guid>>
 {
     public async Task<Resultable<Guid>> Handle(CheckoutCartCommand request, CancellationToken cancellationToken)

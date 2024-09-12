@@ -59,7 +59,7 @@ internal static class ServiceCollectionExtensions
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(configuration, options)
             .Enrich.FromLogContext()
-            .Enrich.With(new LogModuleNameEnricher())
+            .Enrich.With(new ModuleNameEnricher())
             .WriteTo.Console()
             // Add Open telemetry with Sec
             //.WriteTo.OpenTelemetry(x =>

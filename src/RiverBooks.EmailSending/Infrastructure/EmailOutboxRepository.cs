@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Security.Cryptography.X509Certificates;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RiverBooks.EmailSending.Domain;
+using RiverBooks.SharedKernel.Extensions;
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.EmailSending.Infrastructure;
@@ -14,7 +16,7 @@ internal class EmailOutboxRepository(EmailSendingDbContext dbContext, TimeProvid
     {
         return await dbContext.EmailOutboxItems
            .AsNoTracking()
-           .Where(x => x.DateTimeUtcProcessed == null)
+           .Where(x => x.Status == EmailProcessingStatus.Pending)
            .OrderBy(x => x.Id)
            .ToListAsync(cancellationToken);
     }
@@ -23,7 +25,7 @@ internal class EmailOutboxRepository(EmailSendingDbContext dbContext, TimeProvid
     {
         var result = await dbContext.EmailOutboxItems
             .AsNoTracking()
-            .Where(x => x.DateTimeUtcProcessed == null)
+            .Where(x => x.Status == EmailProcessingStatus.Pending)
             .OrderBy(x => x.Id)
             .FirstOrDefaultAsync(cancellationToken);
 
@@ -33,13 +35,21 @@ internal class EmailOutboxRepository(EmailSendingDbContext dbContext, TimeProvid
         return result;
     }
 
-    public Task MarkEmailSend(Guid emailId, CancellationToken cancellationToken)
+    public async Task<Resultable<List<EmailOutboxEntity>>> GetAllProcessedEmailsEntities(CancellationToken cancellationToken)
+    {
+        return await dbContext.EmailOutboxItems
+            .AsNoTracking()
+            .Where(x => x.Status != EmailProcessingStatus.Pending)
+            .ToListAsync(cancellationToken);
+    }
+
+    public Task UpdateEmailStatus(Guid emailId, EmailProcessingStatus status, CancellationToken cancellationToken)
     {
         return dbContext.EmailOutboxItems
             .Where(x => x.Id == emailId)
-            .ExecuteUpdateAsync(
-                x => x.SetProperty(e => e.DateTimeUtcProcessed,
-                timeProvider.GetUtcNow().DateTime),
+            .ExecuteUpdateAsync(x => x
+                    .SetProperty(e => e.ProcessedAtUtc, timeProvider.GetUtcDateTime())
+                    .SetProperty(e => e.Status, status),
                 cancellationToken);
     }
 

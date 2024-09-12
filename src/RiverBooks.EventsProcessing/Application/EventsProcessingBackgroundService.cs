@@ -20,7 +20,7 @@ internal class EventsProcessingBackgroundService(
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        logger.LogInformation("{ServiceName} starting...", nameof(EventsProcessingBackgroundService));
+        logger.LogInformation("{ServiceName} started.", nameof(EventsProcessingBackgroundService));
 
         using var scope = scopeFactory.CreateScope();
 
@@ -35,7 +35,7 @@ internal class EventsProcessingBackgroundService(
                     sessionId,
                     timeProvider.GetUtcDateTime());
 
-                logger.LogTrace("Dispatching ProcessSelfEventsCommand [{ProcessDomainEventsSession}] at {ProcessDomainEventsSessionTimeStamp} ",
+                logger.LogTrace("Dispatching ProcessSelfEventsCommand [session={ProcessDomainEventsSession}] at {ProcessDomainEventsSessionTimeStamp} ",
                     processingSession.Id, processingSession.CreatedUtc);
 
                 // Sends command to all modules using common mediator publisher
@@ -43,7 +43,7 @@ internal class EventsProcessingBackgroundService(
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error processing events [session:{ProcessDomainEventsSession}]: {ErrorMessage}",
+                logger.LogError(ex, "Error processing events [session={ProcessDomainEventsSession}]: {ErrorMessage}",
                     sessionId, ex.Message);
             }
             finally
@@ -56,7 +56,7 @@ internal class EventsProcessingBackgroundService(
             }
         }
 
-        logger.LogInformation("{ServiceName} stopping.", nameof(EventsProcessingBackgroundService));
+        logger.LogInformation("{ServiceName} exited.", nameof(EventsProcessingBackgroundService));
     }
 }
 

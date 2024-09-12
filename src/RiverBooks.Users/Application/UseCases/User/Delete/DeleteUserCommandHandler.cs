@@ -6,13 +6,13 @@ using RiverBooks.Users.Application.Interfaces;
 namespace RiverBooks.Users.Application.UseCases.User.Delete;
 
 internal class DeleteUserCommandHandler(
-    IApplicationUserRepository applicationUserRepository,
+    IUserRepository userRepository,
     ISender sender)
     : IRequestHandler<DeleteUserCommand, Resultable>
 {
     public async Task<Resultable> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
-        var result = await applicationUserRepository.DeleteUser(request.UserId);
+        var result = await userRepository.DeleteUser(request.UserId);
 
         if (!result)
             return Error.NotFound("User not found");

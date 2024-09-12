@@ -4,7 +4,7 @@ using RiverBooks.Users.Application.Interfaces;
 
 namespace RiverBooks.Users.Application.UseCases.User.GetById;
 
-public class GetUserByIdHandler(IApplicationUserRepository userRepository) : IRequestHandler<GetUserByIdQuery, Resultable<UserDto>>
+public class GetUserByIdHandler(IUserRepository userRepository) : IRequestHandler<GetUserByIdQuery, Resultable<UserDto>>
 {
     public async Task<Resultable<UserDto>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {

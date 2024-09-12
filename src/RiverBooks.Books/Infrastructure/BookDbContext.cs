@@ -6,7 +6,7 @@ using RiverBooks.SharedKernel.Events;
 namespace RiverBooks.Books.Infrastructure;
 
 internal class BookDbContext(DbContextOptions<BookDbContext> options)
-    : TransactionalOutboxDbContext(options)
+    : DbContext(options)
 {
     internal DbSet<Book> Books { get; set; } = null!;
 

@@ -13,7 +13,7 @@ internal class EmailSendingBackgroundService(
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        logger.LogInformation("{serviceName} starting...", nameof(EmailSendingBackgroundService));
+        logger.LogInformation("{serviceName} started.", nameof(EmailSendingBackgroundService));
 
         using var scope = scopeFactory.CreateScope();
 
@@ -27,11 +27,11 @@ internal class EmailSendingBackgroundService(
             }
             catch (Exception ex)
             {
-                logger.LogError("Error processing outbox: {message}", ex.Message);
+                logger.LogError("Error processing email outbox: {message}", ex.Message);
             }
             finally
             {
-                logger.LogDebug("Sleeping {checkEmailsInterval}ms...", CheckEmailsInterval);
+                logger.LogTrace("Sleeping {checkEmailsInterval}ms...", CheckEmailsInterval);
                 await Task.Delay(CheckEmailsInterval, stoppingToken);
             }
         }

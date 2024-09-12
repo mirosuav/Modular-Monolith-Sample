@@ -7,7 +7,7 @@ using RiverBooks.Users.Domain;
 namespace RiverBooks.Users.Application.UseCases.User.AddAddress;
 
 public class AddAddressToUserHandler(
-    IApplicationUserRepository userRepository,
+    IUserRepository userRepository,
     ILogger<AddAddressToUserHandler> logger,
     TimeProvider timeProvider)
     : IRequestHandler<AddAddressToUserCommand, Resultable>

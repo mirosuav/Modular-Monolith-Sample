@@ -2,4 +2,4 @@
 
 namespace RiverBooks.OrderProcessing.Domain;
 
-internal record OrderCreated_PrepareReportEvent(Guid OrderId, DateTimeOffset OccuredUtc) : EventBase(OccuredUtc);
+internal record OrderCreated_PrepareReportEvent(Guid OrderId, DateTimeOffset OccurredUtc) : EventBase(OccurredUtc);

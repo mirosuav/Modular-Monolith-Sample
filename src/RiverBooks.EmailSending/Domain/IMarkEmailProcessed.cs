@@ -2,5 +2,5 @@
 
 internal interface IMarkEmailProcessed
 {
-    Task MarkEmailSend(Guid emailId, CancellationToken cancellationToken);
+    Task UpdateEmailStatus(Guid emailId, EmailProcessingStatus status, CancellationToken cancellationToken);
 }

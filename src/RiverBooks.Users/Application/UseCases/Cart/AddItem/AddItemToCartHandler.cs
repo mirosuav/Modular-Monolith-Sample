@@ -7,7 +7,7 @@ using RiverBooks.Users.Domain;
 namespace RiverBooks.Users.Application.UseCases.Cart.AddItem;
 
 public class AddItemToCartHandler(
-    IApplicationUserRepository userRepository,
+    IUserRepository userRepository,
     IMediator mediator) : IRequestHandler<AddItemToCartCommand, Resultable>
 {
     public async Task<Resultable> Handle(AddItemToCartCommand request, CancellationToken ct)

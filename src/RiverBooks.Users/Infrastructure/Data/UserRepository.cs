@@ -4,7 +4,7 @@ using RiverBooks.Users.Domain;
 
 namespace RiverBooks.Users.Infrastructure.Data;
 
-public class UserRepository(UsersDbContext dbContext) : IApplicationUserRepository
+public class UserRepository(UsersDbContext dbContext) : IUserRepository
 {
     public void Add(User user)
     {

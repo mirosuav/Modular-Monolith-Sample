@@ -9,7 +9,7 @@ namespace RiverBooks.Users.Application.UseCases.User.Create;
 
 public class CreateUserCommandHandler(
     IPublisher notificationPublisher,
-    IApplicationUserRepository applicationUserRepository)
+    IUserRepository userRepository)
     : IRequestHandler<CreateUserCommand, Resultable>
 {
     public async Task<Resultable> Handle(CreateUserCommand command, CancellationToken cancellationToken)
@@ -17,7 +17,7 @@ public class CreateUserCommandHandler(
         var userEmail = command.Email.ToLower();
 
         // Some additional validation for user at db level
-        if (await applicationUserRepository.GetUserByEmailAsync(userEmail) is not null)
+        if (await userRepository.GetUserByEmailAsync(userEmail) is not null)
         {
             return Error.Conflict("User.Exists", $"User with email {userEmail} already exists.");
         }
@@ -31,9 +31,9 @@ public class CreateUserCommandHandler(
 
         newUser.SetPassword(command.Password);
 
-        applicationUserRepository.Add(newUser);
+        userRepository.Add(newUser);
 
-        await applicationUserRepository.SaveChangesAsync(cancellationToken);
+        await userRepository.SaveChangesAsync(cancellationToken);
 
         // send welcome email
         var sendEmailCommand = new SendEmailCommand

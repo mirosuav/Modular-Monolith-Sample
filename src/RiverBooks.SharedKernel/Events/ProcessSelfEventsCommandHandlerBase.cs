@@ -61,15 +61,15 @@ public abstract class ProcessSelfEventsCommandHandlerBase
         {
             transactionalOutbox.Attempts++;
             transactionalOutbox.ProcessedUtc = TimeProvider.GetUtcDateTime();
-            Logger.LogTrace(
-                "Processing events [{ProcessDomainEventsSession}] TransactionalOutboxEvent {TransactionalOutboxEvent.Id}, attempt {Attempt}",
+            Logger.LogInformation(
+                "Processing events [session={ProcessDomainEventsSession}], event={TransactionalOutboxEvent.Id}, attempt={Attempt}",
                 processingId, transactionalOutbox.Id, transactionalOutbox.Attempts);
 
             var eventType = Type.GetType(transactionalOutbox.EventType);
             if (eventType is null)
             {
                 Logger.LogError(
-                    "Processing events [{ProcessDomainEventsSession}]: Could not create DomainEvent of type `{TransactionalOutboxEvent}`.",
+                    "Processing events [session={ProcessDomainEventsSession}]: Could not create DomainEvent of type `{TransactionalOutboxEvent}`.",
                     processingId, transactionalOutbox.EventType);
                 return;
             }
@@ -78,7 +78,7 @@ public abstract class ProcessSelfEventsCommandHandlerBase
             if (domainEvent is null)
             {
                 Logger.LogError(
-                    "Processing events [{ProcessDomainEventsSession}]: Could not create DomainEvent of type `{DomainEvent}`.",
+                    "Processing events [session={ProcessDomainEventsSession}]: Could not create DomainEvent of type `{DomainEvent}`.",
                     processingId, transactionalOutbox.EventType);
                 return;
             }
@@ -87,15 +87,15 @@ public abstract class ProcessSelfEventsCommandHandlerBase
 
             transactionalOutbox.Success = true;
 
-            Logger.LogTrace(
-                "Processing events [{ProcessDomainEventsSession}] TransactionalOutboxEvent {TransactionalOutboxEvent.Id}, attempt {Attempt} succeeded.",
+            Logger.LogInformation(
+                "Processing events [session={ProcessDomainEventsSession}] TransactionalOutboxEvent {TransactionalOutboxEvent.Id}, attempt {Attempt} succeeded.",
                 processingId, transactionalOutbox.Id, transactionalOutbox.Attempts);
 
         }
         catch (Exception ex)
         {
             Logger.LogError(ex,
-                "Processing events [{ProcessDomainEventsSession}]: Could not publish DomainEvent of type `{DomainEvent}` and Id `{DomainEvent.Id}`.",
+                "Processing events [session={ProcessDomainEventsSession}]: Could not publish DomainEvent of type `{DomainEvent}` and Id `{DomainEvent.Id}`.",
                 processingId, transactionalOutbox.EventType, transactionalOutbox.Id);
             return;
         }

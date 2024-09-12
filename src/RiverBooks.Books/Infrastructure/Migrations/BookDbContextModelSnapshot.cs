@@ -50,60 +50,25 @@ namespace RiverBooks.Books.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a89f6cd7-4693-457b-9009-02205dbbfe45"),
+                            Id = new Guid("066e3606-3083-735d-8000-d5ad646d009e"),
                             Author = "J.R.R. Tolkien",
                             Price = 10.99m,
                             Title = "The Fellowship of the Ring"
                         },
                         new
                         {
-                            Id = new Guid("e4fa19bf-6981-4e50-a542-7c9b26e9ec31"),
+                            Id = new Guid("066e3606-3083-73e0-8000-d305fd8ca056"),
                             Author = "J.R.R. Tolkien",
                             Price = 11.99m,
                             Title = "The Two Towers"
                         },
                         new
                         {
-                            Id = new Guid("17c61e41-3953-42cd-8f88-d3f698869b35"),
+                            Id = new Guid("066e3606-3083-73e5-8000-1ffd1058c7e2"),
                             Author = "J.R.R. Tolkien",
                             Price = 12.99m,
                             Title = "The Return of the King"
                         });
-                });
-
-            modelBuilder.Entity("RiverBooks.SharedKernel.Events.TransactionalOutboxEvent", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Attempts")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EventType")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<DateTimeOffset>("OccurredUtc")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Payload")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<DateTimeOffset?>("ProcessedUtc")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<bool>("Success")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OccurredUtc")
-                        .HasFilter("[Success] = 0 AND [Attempts] < 3");
-
-                    b.ToTable("OutboxEvents", "Books");
                 });
 #pragma warning restore 612, 618
         }
