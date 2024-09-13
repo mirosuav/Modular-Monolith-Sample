@@ -10,4 +10,4 @@ public record AddAddressToUserCommand(
     string State,
     string PostalCode,
     string Country)
-    : IRequest<Resultable>;
+    : IRequest<ResultOf<bool>>;

@@ -5,9 +5,9 @@ using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.Users.Application.UseCases.User.ListAddresses;
 
-public class ListAddressesQueryHandler(IUserRepository userRepository) : IRequestHandler<ListAddressesQuery, Resultable<List<UserAddressDto>>>
+public class ListAddressesQueryHandler(IUserRepository userRepository) : IRequestHandler<ListAddressesQuery, ResultOf<List<UserAddressDto>>>
 {
-    public async Task<Resultable<List<UserAddressDto>>> Handle(ListAddressesQuery request,
+    public async Task<ResultOf<List<UserAddressDto>>> Handle(ListAddressesQuery request,
       CancellationToken cancellationToken)
     {
         var user = await userRepository.GetUserWithAddressesAsync(request.UserId);

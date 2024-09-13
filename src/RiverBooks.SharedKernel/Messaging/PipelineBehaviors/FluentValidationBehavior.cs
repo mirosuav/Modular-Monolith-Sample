@@ -17,35 +17,39 @@ public class FluentValidationBehavior<TRequest, TResponse>(IEnumerable<IValidato
             var context = new ValidationContext<TRequest>(request);
 
             var validationResults = await Task.WhenAll(validators.Select(v => v.ValidateAsync(context, cancellationToken)));
-            var resultErrors = validationResults.SelectMany(r => r.AsErrors()).ToList();
-            var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null).ToList();
 
-#nullable disable
-            if (failures.Count != 0)
+            var errors = validationResults
+                .Where(r => !r.IsValid)
+                .SelectMany(r => r.AsErrors())
+                .ToList();
+
+            if (errors is [])
+                return await next();
+
+            if (typeof(TResponse).IsGenericType && typeof(TResponse).GetGenericTypeDefinition() == typeof(ResultOf<>))
             {
-                if (typeof(TResponse).IsGenericType && typeof(TResponse).GetGenericTypeDefinition() == typeof(Resultable<>))
-                {
-                    var resultType = typeof(TResponse).GetGenericArguments()[0];
-                    var invalidMethod = typeof(Resultable<>)
-                        .MakeGenericType(resultType)
-                        .GetMethod(nameof(Resultable<int>.Failure), [typeof(IEnumerable<Error>)]);
+                var resultType = typeof(TResponse).GetGenericArguments()[0];
 
-                    if (invalidMethod != null)
-                    {
-                        return (TResponse)invalidMethod.Invoke(null, new object[] { resultErrors });
-                    }
-                }
-                else if (typeof(TResponse) == typeof(Resultable))
+                var factoryMethod = typeof(ResultOf<>)
+                    .MakeGenericType(resultType)
+                    .GetMethod(nameof(ResultOf<int>.Failure), [typeof(IEnumerable<Error>)]);
+
+                if (factoryMethod is not null)
                 {
-                    return (TResponse)(object)Resultable.Failure(resultErrors);
-                }
-                else
-                {
-                    throw new ValidationException(failures);
+                    return (TResponse)factoryMethod.Invoke(null, new object[] { errors })!;
                 }
             }
-#nullable enable
+            else
+            {
+                var validationFailures = validationResults
+                    .Where(r => !r.IsValid)
+                    .SelectMany(r => r.Errors)
+                    .ToList();
+
+                throw new ValidationException(validationFailures);
+            }
         }
+
         return await next();
     }
 }

@@ -4,4 +4,4 @@ using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.Users.Application.UseCases.User.ListAddresses;
 public record ListAddressesQuery(Guid UserId) :
-  IRequest<Resultable<List<UserAddressDto>>>;
+  IRequest<ResultOf<List<UserAddressDto>>>;

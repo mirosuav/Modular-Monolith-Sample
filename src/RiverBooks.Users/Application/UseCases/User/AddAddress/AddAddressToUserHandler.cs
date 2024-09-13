@@ -10,9 +10,9 @@ public class AddAddressToUserHandler(
     IUserRepository userRepository,
     ILogger<AddAddressToUserHandler> logger,
     TimeProvider timeProvider)
-    : IRequestHandler<AddAddressToUserCommand, Resultable>
+    : IRequestHandler<AddAddressToUserCommand, ResultOf<bool>>
 {
-    public async Task<Resultable> Handle(AddAddressToUserCommand request, CancellationToken ct)
+    public async Task<ResultOf<bool>> Handle(AddAddressToUserCommand request, CancellationToken ct)
     {
         var user = await userRepository.GetUserWithAddressesAsync(request.UserId);
 
@@ -36,6 +36,6 @@ public class AddAddressToUserHandler(
           userAddress.StreetAddress,
           request.UserId);
 
-        return Resultable.Success();
+        return true;
     }
 }

@@ -11,7 +11,7 @@ internal class SqlServerOrderAddressCache(
     ILogger<SqlServerOrderAddressCache> logger,
     IDistributedCache cache) : IOrderAddressCache
 {
-    public async Task<Resultable<OrderAddress>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<ResultOf<OrderAddress>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var address = await cache.GetValueAsync<OrderAddress>(id.ToString(), cancellationToken);
 
@@ -22,14 +22,14 @@ internal class SqlServerOrderAddressCache(
         }
 
         logger.LogInformation("Address {id} returned from {db}", id, "Distributed cache");
-        return Resultable.Success(address);
+        return address;
     }
 
-    public async Task<Resultable> StoreAsync(OrderAddress orderAddress, CancellationToken cancellationToken)
+    public async Task<ResultOf<bool>> StoreAsync(OrderAddress orderAddress, CancellationToken cancellationToken)
     {
         var key = orderAddress.Id.ToString();
         await cache.SetAsync(key, orderAddress, cancellationToken);
         logger.LogInformation("Address {id} stored in {db}", key, "Distributed cache");
-        return Resultable.Success();
+        return true;
     }
 }

@@ -4,9 +4,9 @@ using RiverBooks.Users.Application.Interfaces;
 
 namespace RiverBooks.Users.Application.UseCases.User.GetById;
 
-public class GetUserByIdHandler(IUserRepository userRepository) : IRequestHandler<GetUserByIdQuery, Resultable<UserDto>>
+public class GetUserByIdHandler(IUserRepository userRepository) : IRequestHandler<GetUserByIdQuery, ResultOf<UserDto>>
 {
-    public async Task<Resultable<UserDto>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+    public async Task<ResultOf<UserDto>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
         var user = await userRepository.GetUserAsync(request.UserId);
 

@@ -6,7 +6,7 @@ namespace RiverBooks.Books.Application;
 
 internal class BookService(IBookRepository bookRepository) : IBookService
 {
-    public async Task<Resultable> CreateBookAsync(BookDto newBook)
+    public async Task<ResultOf<bool>> CreateBookAsync(BookDto newBook)
     {
         if (await bookRepository.GetByTitleAndAuthorAsync(newBook.Title, newBook.Author) is not null)
             return Error.Conflict("Book.Exists", "Book with this title and author already exists.");
@@ -16,10 +16,10 @@ internal class BookService(IBookRepository bookRepository) : IBookService
         await bookRepository.AddAsync(book);
         await bookRepository.SaveChangesAsync();
 
-        return Resultable.Success();
+        return true;
     }
 
-    public async Task<Resultable> DeleteBookAsync(Guid id)
+    public async Task<ResultOf<bool>> DeleteBookAsync(Guid id)
     {
         var bookToDelete = await bookRepository.GetByIdAsync(id);
 
@@ -28,11 +28,11 @@ internal class BookService(IBookRepository bookRepository) : IBookService
 
         await bookRepository.DeleteAsync(bookToDelete);
         await bookRepository.SaveChangesAsync();
-
-        return Resultable.Success();
+        
+        return true;
     }
 
-    public async Task<Resultable<BookDto>> GetBookByIdAsync(Guid id)
+    public async Task<ResultOf<BookDto>> GetBookByIdAsync(Guid id)
     {
         var book = await bookRepository.GetByIdAsync(id);
 
@@ -51,7 +51,7 @@ internal class BookService(IBookRepository bookRepository) : IBookService
         return books;
     }
 
-    public async Task<Resultable> UpdateBookPriceAsync(Guid bookId, decimal newPrice)
+    public async Task<ResultOf<bool>> UpdateBookPriceAsync(Guid bookId, decimal newPrice)
     {
         if (newPrice <= decimal.Zero)
             return Error.Validation("Invalid price", "Price must be positive number");
@@ -63,7 +63,7 @@ internal class BookService(IBookRepository bookRepository) : IBookService
 
         book.UpdatePrice(newPrice);
         await bookRepository.SaveChangesAsync();
-
-        return Resultable.Success();
+        
+        return true;
     }
 }

@@ -4,24 +4,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace RiverBooks.SharedKernel.Helpers;
 
-public static class ResultableExtensions
-{
-    public static IResult ToHttpOk(this Resultable result)
-    => result.IsSuccess
-        ? Results.Ok()
-        : result.ToProblemHttpResult();
+public static class ResultOfHttpExtensions
+{    
+    public static IResult ToHttpOk(this IResultable result)
+        => result.IsSuccess
+            ? TypedResults.Ok()
+            : result.ToProblemHttpResult();
 
     public static IResult ToHttpNoContent(this IResultable result)
         => result.IsSuccess
             ? TypedResults.NoContent()
             : result.ToProblemHttpResult();
 
-    public static IResult ToHttpOk<T>(this Resultable<T> result)
+    public static IResult ToHttpOk<T>(this ResultOf<T> result)
         => result.IsSuccess
             ? TypedResults.Ok(result.Value)
             : result.ToProblemHttpResult();
 
-    public static IResult ToHttpOk<T, TResult>(this Resultable<T> result, Func<T, TResult> resultFactory)
+    public static IResult ToHttpOk<T, TResult>(this ResultOf<T> result, Func<T, TResult> resultFactory)
         => result.IsSuccess
             ? TypedResults.Ok(resultFactory(result.Value))
             : result.ToProblemHttpResult();
@@ -34,7 +34,7 @@ public static class ResultableExtensions
         return TypedResults.Problem(result.ToProblemDetails());
     }
 
-    public static ProblemHttpResult ToProblemHttpResult(this List<Error> errors, string? instance = null)
+    public static ProblemHttpResult ToProblemHttpResult(this IReadOnlyList<Error> errors, string? instance = null)
     {
         return TypedResults.Problem(errors.ToProblemDetails());
     }
@@ -48,7 +48,7 @@ public static class ResultableExtensions
         return result.Errors.ToProblemDetails(instance);
     }
 
-    public static ProblemDetails ToProblemDetails(this List<Error> errors, string? instance = null)
+    public static ProblemDetails ToProblemDetails(this IReadOnlyList<Error> errors, string? instance = null)
     {
         if (errors is [])
             throw new ArgumentException("No errors.");

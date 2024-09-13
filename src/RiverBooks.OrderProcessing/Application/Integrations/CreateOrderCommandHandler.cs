@@ -11,9 +11,9 @@ internal class CreateOrderCommandHandler(
     ILogger<CreateOrderCommandHandler> logger,
     IOrderAddressCache addressCache,
     TimeProvider timeProvider)
-    : IRequestHandler<CreateOrderCommand, Resultable<OrderDetailsResponse>>
+    : IRequestHandler<CreateOrderCommand, ResultOf<OrderDetailsResponse>>
 {
-    public async Task<Resultable<OrderDetailsResponse>> Handle(CreateOrderCommand request,
+    public async Task<ResultOf<OrderDetailsResponse>> Handle(CreateOrderCommand request,
       CancellationToken cancellationToken)
     {
         var items = request.OrderItems.Select(oi => new OrderItem(
@@ -21,11 +21,11 @@ internal class CreateOrderCommandHandler(
 
         var shippingAddress = await addressCache.GetByIdAsync(request.ShippingAddressId, cancellationToken);
         if (!shippingAddress.IsSuccess)
-            return shippingAddress.Errors;
+            return new(shippingAddress.Errors);
 
         var billingAddress = await addressCache.GetByIdAsync(request.BillingAddressId, cancellationToken);
         if (!billingAddress.IsSuccess)
-            return billingAddress.Errors;
+            return new (billingAddress.Errors);
 
         var newOrder = Order.Create(request.UserId,
           shippingAddress.Value.Address,

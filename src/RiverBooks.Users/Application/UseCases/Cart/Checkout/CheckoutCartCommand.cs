@@ -6,4 +6,4 @@ namespace RiverBooks.Users.Application.UseCases.Cart.Checkout;
 public record CheckoutCartCommand(Guid UserId,
                                   Guid ShippingAddressId,
                                   Guid BillingAddressId)
-    : IRequest<Resultable<Guid>>;
+    : IRequest<ResultOf<Guid>>;

@@ -5,9 +5,9 @@ using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.Users.Application.UseCases.Cart.ListItems;
 
-public class ListCartItemsQueryHandler(IUserRepository userRepository) : IRequestHandler<ListCartItemsQuery, Resultable<List<CartItemDto>>>
+public class ListCartItemsQueryHandler(IUserRepository userRepository) : IRequestHandler<ListCartItemsQuery, ResultOf<List<CartItemDto>>>
 {
-    public async Task<Resultable<List<CartItemDto>>> Handle(ListCartItemsQuery request, CancellationToken cancellationToken)
+    public async Task<ResultOf<List<CartItemDto>>> Handle(ListCartItemsQuery request, CancellationToken cancellationToken)
     {
         var user = await userRepository.GetUserWithCartAsync(request.UserId);
 

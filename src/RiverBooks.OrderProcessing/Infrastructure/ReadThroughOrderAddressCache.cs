@@ -13,7 +13,7 @@ internal class ReadThroughOrderAddressCache(
 {
     private static readonly SemaphoreSlim cacheAccessMonitor = new(1, 1);
 
-    public async Task<Resultable<OrderAddress>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<ResultOf<OrderAddress>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         // Read user address from cache
         await cacheAccessMonitor.WaitAsync(cancellationToken);
@@ -53,7 +53,7 @@ internal class ReadThroughOrderAddressCache(
         }
     }
 
-    public async Task<Resultable> StoreAsync(OrderAddress orderAddress, CancellationToken cancellationToken)
+    public async Task<ResultOf<bool>> StoreAsync(OrderAddress orderAddress, CancellationToken cancellationToken)
     {
         await cacheAccessMonitor.WaitAsync(cancellationToken);
         try

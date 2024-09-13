@@ -8,7 +8,7 @@ using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.SharedKernel.Tests.Helpers;
 
-public class ResultableTests
+public class ResultOfTests
 {
     [Fact]
     public void Resultable_ShouldBeSerializable()
@@ -17,9 +17,9 @@ public class ResultableTests
         var id = Guid.NewGuid();
 
         // Act
-        var sut = Resultable.Success(id);
+        var sut = ResultOf<Guid>.Success(id);
         var json = JsonSerializer.Serialize(sut);
-        var recreated = JsonSerializer.Deserialize<Resultable<Guid>>(json);
+        var recreated = JsonSerializer.Deserialize<ResultOf<Guid>>(json);
 
         // Assert
         recreated.Should().Be(sut);

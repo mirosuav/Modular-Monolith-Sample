@@ -7,9 +7,9 @@ namespace RiverBooks.Users.Application.UseCases.Cart.Checkout;
 
 public class CheckoutCartHandler(
     IUserRepository userRepository,
-  IMediator mediator) : IRequestHandler<CheckoutCartCommand, Resultable<Guid>>
+  IMediator mediator) : IRequestHandler<CheckoutCartCommand, ResultOf<Guid>>
 {
-    public async Task<Resultable<Guid>> Handle(CheckoutCartCommand request, CancellationToken cancellationToken)
+    public async Task<ResultOf<Guid>> Handle(CheckoutCartCommand request, CancellationToken cancellationToken)
     {
         var user = await userRepository.GetUserWithCartAsync(request.UserId);
 
@@ -34,12 +34,12 @@ public class CheckoutCartHandler(
 
         if (!result.IsSuccess)
         {
-            return result.Errors;
+            return new(result.Errors);
         }
 
         user.ClearCart();
         await userRepository.SaveChangesAsync(cancellationToken);
 
-        return Resultable.Success(result.Value.OrderId);
+        return result.Value.OrderId;
     }
 }

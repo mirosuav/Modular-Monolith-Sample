@@ -7,4 +7,4 @@ public record CreateOrderCommand(Guid UserId,
                                  Guid ShippingAddressId,
                                  Guid BillingAddressId,
                                  List<OrderItemDto> OrderItems) :
-    IRequest<Resultable<OrderDetailsResponse>>;
+    IRequest<ResultOf<OrderDetailsResponse>>;

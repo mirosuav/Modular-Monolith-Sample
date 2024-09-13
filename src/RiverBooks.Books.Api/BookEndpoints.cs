@@ -56,7 +56,7 @@ internal static class BookEndpoints
 
         var result = await bookService.CreateBookAsync(newBookDto);
 
-        return result.Match(() => TypedResults.Created($"{newBookDto.Id}", newBookDto),
+        return result.Match(_ => TypedResults.Created($"{newBookDto.Id}", newBookDto),
             errors => errors.ToProblemHttpResult() as IResult);
     }
 

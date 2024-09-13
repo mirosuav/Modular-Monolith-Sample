@@ -12,7 +12,7 @@ internal class EmailOutboxRepository(EmailSendingDbContext dbContext, TimeProvid
     IQueueEmailsInOutboxService,
     IMarkEmailProcessed
 {
-    public async Task<Resultable<List<EmailOutboxEntity>>> GetAllUnprocessedEmailsEntities(CancellationToken cancellationToken)
+    public async Task<ResultOf<List<EmailOutboxEntity>>> GetAllUnprocessedEmailsEntities(CancellationToken cancellationToken)
     {
         return await dbContext.EmailOutboxItems
            .AsNoTracking()
@@ -21,7 +21,7 @@ internal class EmailOutboxRepository(EmailSendingDbContext dbContext, TimeProvid
            .ToListAsync(cancellationToken);
     }
 
-    public async Task<Resultable<EmailOutboxEntity>> GetNextUnprocessedEmailEntity(CancellationToken cancellationToken)
+    public async Task<ResultOf<EmailOutboxEntity>> GetNextUnprocessedEmailEntity(CancellationToken cancellationToken)
     {
         var result = await dbContext.EmailOutboxItems
             .AsNoTracking()
@@ -35,7 +35,7 @@ internal class EmailOutboxRepository(EmailSendingDbContext dbContext, TimeProvid
         return result;
     }
 
-    public async Task<Resultable<List<EmailOutboxEntity>>> GetAllProcessedEmailsEntities(CancellationToken cancellationToken)
+    public async Task<ResultOf<List<EmailOutboxEntity>>> GetAllProcessedEmailsEntities(CancellationToken cancellationToken)
     {
         return await dbContext.EmailOutboxItems
             .AsNoTracking()

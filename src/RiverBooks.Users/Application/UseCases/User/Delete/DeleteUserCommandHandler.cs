@@ -8,9 +8,9 @@ namespace RiverBooks.Users.Application.UseCases.User.Delete;
 internal class DeleteUserCommandHandler(
     IUserRepository userRepository,
     ISender sender)
-    : IRequestHandler<DeleteUserCommand, Resultable>
+    : IRequestHandler<DeleteUserCommand, ResultOf<bool>>
 {
-    public async Task<Resultable> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
+    public async Task<ResultOf<bool>> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
         var result = await userRepository.DeleteUser(request.UserId);
 

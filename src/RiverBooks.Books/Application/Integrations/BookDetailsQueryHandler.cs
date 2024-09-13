@@ -5,9 +5,9 @@ using RiverBooks.SharedKernel.Helpers;
 namespace RiverBooks.Books.Application.Integrations;
 
 internal class BookDetailsQueryHandler(IBookService bookService) :
-  IRequestHandler<BookDetailsQuery, Resultable<BookDetailsResponse>>
+  IRequestHandler<BookDetailsQuery, ResultOf<BookDetailsResponse>>
 {
-    public async Task<Resultable<BookDetailsResponse>> Handle(BookDetailsQuery request,
+    public async Task<ResultOf<BookDetailsResponse>> Handle(BookDetailsQuery request,
       CancellationToken cancellationToken)
     {
         var result = await bookService.GetBookByIdAsync(request.BookId);

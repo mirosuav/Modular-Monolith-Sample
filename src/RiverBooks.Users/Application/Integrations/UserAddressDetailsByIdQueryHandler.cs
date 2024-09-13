@@ -5,9 +5,9 @@ using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.Users.Application.Integrations;
 public class UserAddressDetailsByIdQueryHandler(IReadOnlyUserStreetAddressRepository addressRepo) :
-  IRequestHandler<UserAddressDetailsByIdQuery, Resultable<UserAddressDto>>
+  IRequestHandler<UserAddressDetailsByIdQuery, ResultOf<UserAddressDto>>
 {
-    public async Task<Resultable<UserAddressDto>> Handle(
+    public async Task<ResultOf<UserAddressDto>> Handle(
       UserAddressDetailsByIdQuery request,
       CancellationToken ct)
     {

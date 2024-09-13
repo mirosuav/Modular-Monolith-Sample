@@ -4,4 +4,4 @@ using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.Users.Application.UseCases.Cart.ListItems;
 
-public record ListCartItemsQuery(Guid UserId) : IRequest<Resultable<List<CartItemDto>>>;
+public record ListCartItemsQuery(Guid UserId) : IRequest<ResultOf<List<CartItemDto>>>;

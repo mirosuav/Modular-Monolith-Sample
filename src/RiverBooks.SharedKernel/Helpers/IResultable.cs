@@ -4,5 +4,5 @@ public interface IResultable
 {
     bool IsSuccess { get; }
 
-    List<Error>? Errors { get; }
+    IReadOnlyList<Error>? Errors { get; }
 }

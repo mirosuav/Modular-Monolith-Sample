@@ -7,9 +7,9 @@ namespace RiverBooks.OrderProcessing.Application.ListOrdersForUsers;
 
 internal class ListOrdersForUserQueryHandler(IOrderRepository orderRepository) :
   IRequestHandler<ListOrdersForUserQuery,
-  Resultable<List<OrderSummary>>>
+  ResultOf<List<OrderSummary>>>
 {
-    public async Task<Resultable<List<OrderSummary>>> Handle(ListOrdersForUserQuery request, CancellationToken cancellationToken)
+    public async Task<ResultOf<List<OrderSummary>>> Handle(ListOrdersForUserQuery request, CancellationToken cancellationToken)
     {
         var orders = await orderRepository
             .ListForUserAsync(request.UserId, cancellationToken);
