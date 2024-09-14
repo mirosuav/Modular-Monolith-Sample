@@ -1,6 +1,6 @@
 ﻿namespace RiverBooks.SharedKernel.Helpers;
 
-public interface IResultable
+public interface IResultOf
 {
     bool IsSuccess { get; }
 

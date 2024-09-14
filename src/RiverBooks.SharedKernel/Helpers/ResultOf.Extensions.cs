@@ -1,5 +1,5 @@
 ﻿namespace RiverBooks.SharedKernel.Helpers;
-public readonly partial struct ResultOf<T> : IResultable
+public readonly partial struct ResultOf<T> : IResultOf
 {
     public TMatchedResult Match<TMatchedResult>(
         Func<T, TMatchedResult> successProcessor,

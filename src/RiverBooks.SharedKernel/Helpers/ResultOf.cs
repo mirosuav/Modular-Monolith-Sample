@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -8,20 +9,25 @@ namespace RiverBooks.SharedKernel.Helpers;
 /// Optional <see cref="ResultOf{T}"/> of type T. Is either successful 'Value' object of type T or 'Error'
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public readonly partial struct ResultOf<T> : IResultable
+public readonly partial struct ResultOf<T> : IResultOf
 {
-    [JsonInclude]
-    public readonly T? Value;
-
-    [JsonInclude]
     private readonly IList<Error>? _errors;
-
-    [JsonInclude]
+    
     [MemberNotNullWhen(true, nameof(Value))]
     [MemberNotNullWhen(false, nameof(Errors))]
     public bool IsSuccess { get; }
 
+    public T? Value { get; }
+
     public IReadOnlyList<Error>? Errors => _errors?.AsReadOnly();
+
+    [JsonConstructor]
+    private ResultOf(bool isSuccess, T? value, IReadOnlyList<Error>? errors)
+    {
+        IsSuccess = isSuccess;
+        Value = value ?? default;
+        _errors = errors?.ToList() ?? default;
+    }
 
     public ResultOf(T value) =>
         (IsSuccess, Value) = (true, value);
@@ -37,11 +43,6 @@ public readonly partial struct ResultOf<T> : IResultable
 
     public static implicit operator ResultOf<T>(Error error) =>
         new(error);
-
-    public override string ToString()
-        => IsSuccess
-            ? Value.ToString() ?? string.Empty
-            : JsonSerializer.Serialize(Errors);
 
     public string AsJson()
         => IsSuccess

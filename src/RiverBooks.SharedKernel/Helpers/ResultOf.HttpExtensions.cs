@@ -6,12 +6,12 @@ namespace RiverBooks.SharedKernel.Helpers;
 
 public static class ResultOfHttpExtensions
 {    
-    public static IResult ToHttpOk(this IResultable result)
+    public static IResult ToHttpOk(this IResultOf result)
         => result.IsSuccess
             ? TypedResults.Ok()
             : result.ToProblemHttpResult();
 
-    public static IResult ToHttpNoContent(this IResultable result)
+    public static IResult ToHttpNoContent(this IResultOf result)
         => result.IsSuccess
             ? TypedResults.NoContent()
             : result.ToProblemHttpResult();
@@ -26,7 +26,7 @@ public static class ResultOfHttpExtensions
             ? TypedResults.Ok(resultFactory(result.Value))
             : result.ToProblemHttpResult();
 
-    public static ProblemHttpResult ToProblemHttpResult(this IResultable result)
+    public static ProblemHttpResult ToProblemHttpResult(this IResultOf result)
     {
         if (result.IsSuccess)
             throw new ApplicationException("No Error to details to crete.");
@@ -40,7 +40,7 @@ public static class ResultOfHttpExtensions
     }
 
     /// <see href="https://datatracker.ietf.org/doc/html/rfc7807#section-3.1"/>
-    public static ProblemDetails ToProblemDetails(this IResultable result, string? instance = null)
+    public static ProblemDetails ToProblemDetails(this IResultOf result, string? instance = null)
     {
         if (result.Errors is null or [])
             throw new ArgumentException("Not a failure result.");
