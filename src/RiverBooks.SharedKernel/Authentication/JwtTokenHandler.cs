@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using RiverBooks.SharedKernel.Helpers;
@@ -23,7 +24,7 @@ public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProv
         };
     }
 
-    public string CreateToken(string userId, string userEmailAddress)
+    public AuthToken CreateToken(string userId, string userEmailAddress)
     {
         SymmetricSecurityKey securityKey = CreateSecurityKey(configuration["Auth:JwtSecret"]);
         int tokenExpiration = configuration.GetValue("Auth:TokenExpirationMin", 120);
@@ -48,7 +49,13 @@ public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProv
         };
 
         var tokenHandler = new JsonWebTokenHandler();
-        return tokenHandler.CreateToken(tokenDescriptor);
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+        return new AuthToken
+        {
+            Token = token,
+            ExpiresIn = tokenExpiration,
+        };
     }
 
     private static SymmetricSecurityKey CreateSecurityKey(string? secretString)
@@ -58,6 +65,3 @@ public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProv
         return securityKey;
     }
 }
-
-
-

@@ -1,10 +1,11 @@
 using Bogus;
 using FluentAssertions;
 using RiverBooks.Books.Contracts;
+using RiverBooks.SharedKernel.Authentication;
 using RiverBooks.Users.Contracts;
 using System.Net;
 using System.Net.Http.Headers;
-using System.Text.Json;
+using System.Net.Http.Json;
 
 namespace RiverBooks.Integration.Tests;
 
@@ -23,52 +24,78 @@ public class End2EndTests : IClassFixture<ApiFixture>
     [Fact]
     public async Task Login2OrderTest()
     {
-        // CreateUser
-        var userLogin = await CreateUser();
+        // CreateNewUser
+        var userLogin = await CreateNewUser();
 
         // Login user
         var userToken = await LoginUser(userLogin);
 
         // Set user auth token
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", userToken);
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", userToken.Token);
 
         // Get All books
         var allBooks = await GetAllBooks();
+        allBooks.Should().NotBeEmpty(); // some books pre-seeded
+
+        // Get user adresses
+        var userAdresList = await GetUserAdresses();
+        userAdresList.Should().BeEmpty();
+
+        // Get cart items
+        var cartItems = await GetCartItems();
+        cartItems.Should().BeEmpty();
 
     }
 
-    private async Task<UserLoginRequest> CreateUser()
+    private async Task<UserLoginRequest> CreateNewUser()
     {
         // Arrange
         var userEmail = _faker.Person.Email;
         var password = _faker.Hacker.Phrase();
-        var request = new CreateUserRequest(userEmail, password);
 
-        // Act
-        var result = await _httpClient.PostAsync("/users", request.ToStringContentUtf());
-
-        // Assert
-        result.IsSuccessStatusCode.Should().BeTrue();
-
-        // Extra Validation check
-        var invalidResult = await _httpClient.PostAsync("/users", request.ToStringContentUtf());
-        invalidResult.StatusCode.Should().Be(HttpStatusCode.Conflict);
+        await CreateUser_ShouldReturnProperStatus(userEmail, password);
 
         return new UserLoginRequest(userEmail, password);
     }
 
-    private async Task<string> LoginUser(UserLoginRequest userLogin)
+    [Theory]
+    [InlineData("Thomas@acme.com", "", HttpStatusCode.BadRequest)]
+    [InlineData("Thomas@acme.com", " ", HttpStatusCode.BadRequest)]
+    [InlineData("Thomas@acme.com", "123", HttpStatusCode.BadRequest)]
+    [InlineData("Thomasacme.com", "123456", HttpStatusCode.BadRequest)]
+    [InlineData("Thomas@acme@com", "123456", HttpStatusCode.BadRequest)]
+    [InlineData("Thomas@acme.com@", "123456", HttpStatusCode.BadRequest)]
+    [InlineData("Thomas@acme.com", "123456", HttpStatusCode.Created)]
+    public async Task CreateUser_ShouldReturnProperStatus(string userEmail, string password, HttpStatusCode expectedResult = HttpStatusCode.Created)
     {
+        var request = new CreateUserRequest(userEmail, password);
+
         // Act
-        var result = await _httpClient.PostAsync("/users/login", userLogin.ToStringContentUtf());
+        var result = await _httpClient.PostAsJsonAsync("/users", request);
 
         // Assert
-        result.IsSuccessStatusCode.Should().BeTrue();
-        var accessToken = await result.Content.ReadAsStringAsync();
+        result.StatusCode.Should().Be(expectedResult);
 
-        accessToken.Should().NotBeNullOrWhiteSpace();
+        if (result.IsSuccessStatusCode)
+        {
+            // Extra Validation check
+            var invalidResult = await _httpClient.PostAsJsonAsync("/users", request);
+            invalidResult.StatusCode.Should().Be(HttpStatusCode.Conflict);
+        }
+    }
 
-        return accessToken;
+    private async Task<AuthToken> LoginUser(UserLoginRequest userLogin)
+    {
+        // Act
+        var result = await _httpClient.PostAsJsonAsync("/users/login", userLogin);
+
+        // Assert
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var authToken = await result.Content.ReadFromJsonAsync<AuthToken>();
+        authToken.Token.Should().NotBeNullOrWhiteSpace();
+
+        return authToken;
     }
 
     private async Task<List<BookDto>> GetAllBooks()
@@ -77,17 +104,46 @@ public class End2EndTests : IClassFixture<ApiFixture>
         var result = await _httpClient.GetAsync("/books");
 
         // Assert
-        result.IsSuccessStatusCode.Should().BeTrue();
-        var responseStr = await result.Content.ReadAsStringAsync();
-        responseStr.Should().NotBeNullOrWhiteSpace();
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var booksResponse = JsonSerializer.Deserialize<ListBooksResponse>(responseStr);
+        var booksResponse = await result.Content.ReadFromJsonAsync<ListBooksResponse>();
 
         booksResponse.Should().NotBeNull();
-        booksResponse!.Books.Should().NotBeEmpty();
+        booksResponse!.Books.Should().NotBeNull();
 
         return booksResponse!.Books;
     }
+    
+    private async Task<List<UserAddressDto>> GetUserAdresses()
+    {
+        // Act
+        var result = await _httpClient.GetAsync("/users/addresses");
 
+        // Assert
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var adressesResponse = await result.Content.ReadFromJsonAsync<AddressListResponse>();
+
+        adressesResponse.Should().NotBeNull();
+        adressesResponse!.Addresses.Should().NotBeNull();
+
+        return adressesResponse!.Addresses;
+    }
+    
+    private async Task<List<CartItemDto>> GetCartItems()
+    {
+        // Act
+        var result = await _httpClient.GetAsync("/cart");
+
+        // Assert
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var cartResponse = await result.Content.ReadFromJsonAsync<CartResponse>();
+
+        cartResponse.Should().NotBeNull();
+        cartResponse!.CartItems.Should().NotBeNull();
+
+        return cartResponse!.CartItems;
+    }
 
 }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace RiverBooks.SharedKernel.Helpers;
 
 public static class ResultOfHttpExtensions
-{    
+{
     public static IResult ToHttpOk(this IResultOf result)
         => result.IsSuccess
             ? TypedResults.Ok()
@@ -14,6 +14,11 @@ public static class ResultOfHttpExtensions
     public static IResult ToHttpNoContent(this IResultOf result)
         => result.IsSuccess
             ? TypedResults.NoContent()
+            : result.ToProblemHttpResult();
+
+    public static IResult ToHttpCreated(this IResultOf result, string? uri = null)
+        => result.IsSuccess
+            ? TypedResults.Created(uri)
             : result.ToProblemHttpResult();
 
     public static IResult ToHttpOk<T>(this ResultOf<T> result)

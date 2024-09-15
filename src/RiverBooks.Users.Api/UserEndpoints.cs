@@ -52,7 +52,7 @@ internal static class UserEndpoints
         return (await sender.Send(
                 new CreateUserCommand(request.Email, request.Password),
                 cancellationToken))
-            .ToHttpOk();
+            .ToHttpCreated();
     }
 
     internal static async Task<IResult> LoginUserAsync(

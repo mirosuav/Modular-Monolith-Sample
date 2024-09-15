@@ -33,6 +33,7 @@ internal class MSSqlContainer
 
     public string GetConnectionString(string databaseName)
     {
+        // return "Server=(local);Integrated Security=true;Initial Catalog=RiverBooks.Tests;Trust Server Certificate=True";
         var properties = new Dictionary<string, string>
             {
                 { "Server", msSqlContainer.Hostname + "," + msSqlContainer.GetMappedPublicPort(MsSqlBuilder.MsSqlPort) },

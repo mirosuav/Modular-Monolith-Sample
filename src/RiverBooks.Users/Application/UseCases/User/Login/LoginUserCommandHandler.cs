@@ -8,9 +8,9 @@ namespace RiverBooks.Users.Application.UseCases.User.Login;
 public class LoginUserCommandHandler(
     IUserRepository userRepository,
     IJwtTokenHandler jwtTokenHandler)
-    : IRequestHandler<LoginUserCommand, ResultOf<string>>
+    : IRequestHandler<LoginUserCommand, ResultOf<AuthToken>>
 {
-    public async Task<ResultOf<string>> Handle(LoginUserCommand command, CancellationToken cancellationToken)
+    public async Task<ResultOf<AuthToken>> Handle(LoginUserCommand command, CancellationToken cancellationToken)
     {
         var user = await userRepository.GetUserByEmailAsync(command.Email);
 
