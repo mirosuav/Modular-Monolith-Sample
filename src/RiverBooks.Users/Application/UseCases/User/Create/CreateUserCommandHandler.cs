@@ -10,9 +10,9 @@ namespace RiverBooks.Users.Application.UseCases.User.Create;
 public class CreateUserCommandHandler(
     IPublisher notificationPublisher,
     IUserRepository userRepository)
-    : IRequestHandler<CreateUserCommand, ResultOf<bool>>
+    : IRequestHandler<CreateUserCommand, ResultOf>
 {
-    public async Task<ResultOf<bool>> Handle(CreateUserCommand command, CancellationToken cancellationToken)
+    public async Task<ResultOf> Handle(CreateUserCommand command, CancellationToken cancellationToken)
     {
         var userEmail = command.Email.ToLower();
 

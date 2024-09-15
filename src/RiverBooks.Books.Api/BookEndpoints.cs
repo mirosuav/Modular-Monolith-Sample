@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -56,7 +54,7 @@ internal static class BookEndpoints
 
         var result = await bookService.CreateBookAsync(newBookDto);
 
-        return result.Match(_ => TypedResults.Created($"{newBookDto.Id}", newBookDto),
+        return result.Match(() => TypedResults.Created($"{newBookDto.Id}", newBookDto),
             errors => errors.ToProblemHttpResult() as IResult);
     }
 
@@ -72,19 +70,19 @@ internal static class BookEndpoints
     internal static async Task<IResult> UpdateBookPriceAsync(
             Guid bookId,
             [FromBody] decimal newPrice,
-            [FromServices] IBookService _bookService,
+            [FromServices] IBookService bookService,
             CancellationToken cancellationToken)
     {
-        return (await _bookService.UpdateBookPriceAsync(bookId, newPrice))
+        return (await bookService.UpdateBookPriceAsync(bookId, newPrice))
             .ToHttpNoContent();
     }
 
     internal static async Task<IResult> DeleteBookAsync(
             Guid bookId,
-            [FromServices] IBookService _bookService,
+            [FromServices] IBookService bookService,
             CancellationToken cancellationToken)
     {
-        return (await _bookService.DeleteBookAsync(bookId))
+        return (await bookService.DeleteBookAsync(bookId))
             .ToHttpNoContent();
     }
 }

@@ -6,7 +6,7 @@ namespace RiverBooks.SharedKernel.Helpers;
 
 public static class ResultOfHttpExtensions
 {
-    public static IResult ToHttpOk(this IResultOf result)
+    public static IResult ToHttpOk(this ResultOf result)
         => result.IsSuccess
             ? TypedResults.Ok()
             : result.ToProblemHttpResult();

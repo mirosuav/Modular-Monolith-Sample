@@ -113,6 +113,48 @@ public class ResultOfTests
         recreated.Value.Should().BeEquivalentTo(sut.Value);
         recreated.Errors.Should().BeEquivalentTo(sut.Errors);
     }
+    
+    [Fact]
+    public void ResultOf_ShouldBeSerializable_WithFailure()
+    {
+        // Arrange
+        var sut = ResultOf.Failure(new[] { Error.NullOrEmpty, Error.NotAuthorized });
+
+        // Assert sut
+        sut.IsSuccess.Should().BeFalse();
+        sut.Errors.Should().NotBeNull();
+
+        // Act
+        var json = JsonSerializer.Serialize(sut);
+        var recreated = JsonSerializer.Deserialize<ResultOf>(json);
+        var recreatedJson = JsonSerializer.Serialize(recreated);
+
+        // Assert recreated
+        recreatedJson.Should().Be(json);
+        recreated.IsSuccess.Should().BeFalse();
+        recreated.Errors.Should().BeEquivalentTo(sut.Errors);
+    }
+    
+    [Fact]
+    public void ResultOf_ShouldBeSerializable_WithSuccess()
+    {
+        // Arrange
+        var sut = ResultOf.Success();
+
+        // Assert sut
+        sut.IsSuccess.Should().BeTrue();
+        sut.Errors.Should().BeNull();
+
+        // Act
+        var json = JsonSerializer.Serialize(sut);
+        var recreated = JsonSerializer.Deserialize<ResultOf>(json);
+        var recreatedJson = JsonSerializer.Serialize(recreated);
+
+        // Assert recreated
+        recreatedJson.Should().Be(json);
+        recreated.IsSuccess.Should().BeTrue();
+        recreated.Errors.Should().BeNull();
+    }
 
     public class SampleDto
     {

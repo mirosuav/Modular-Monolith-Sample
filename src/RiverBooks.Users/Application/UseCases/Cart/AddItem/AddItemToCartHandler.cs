@@ -8,9 +8,9 @@ namespace RiverBooks.Users.Application.UseCases.Cart.AddItem;
 
 public class AddItemToCartHandler(
     IUserRepository userRepository,
-    IMediator mediator) : IRequestHandler<AddItemToCartCommand, ResultOf<bool>>
+    IMediator mediator) : IRequestHandler<AddItemToCartCommand, ResultOf>
 {
-    public async Task<ResultOf<bool>> Handle(AddItemToCartCommand request, CancellationToken ct)
+    public async Task<ResultOf> Handle(AddItemToCartCommand request, CancellationToken ct)
     {
         var user = await userRepository.GetUserWithCartAsync(request.UserId);
 

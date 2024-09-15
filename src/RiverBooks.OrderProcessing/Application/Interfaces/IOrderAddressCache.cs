@@ -7,5 +7,5 @@ internal interface IOrderAddressCache
 {
     Task<ResultOf<OrderAddress>> GetByIdAsync(Guid addressId, CancellationToken cancellationToken);
 
-    Task<ResultOf<bool>> StoreAsync(OrderAddress orderAddress, CancellationToken cancellationToken);
+    Task<ResultOf> StoreAsync(OrderAddress orderAddress, CancellationToken cancellationToken);
 }

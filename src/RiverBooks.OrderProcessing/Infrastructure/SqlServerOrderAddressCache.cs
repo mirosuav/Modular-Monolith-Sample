@@ -25,7 +25,7 @@ internal class SqlServerOrderAddressCache(
         return address;
     }
 
-    public async Task<ResultOf<bool>> StoreAsync(OrderAddress orderAddress, CancellationToken cancellationToken)
+    public async Task<ResultOf> StoreAsync(OrderAddress orderAddress, CancellationToken cancellationToken)
     {
         var key = orderAddress.Id.ToString();
         await cache.SetAsync(key, orderAddress, cancellationToken);

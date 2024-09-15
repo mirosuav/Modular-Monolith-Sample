@@ -1,36 +1,26 @@
-﻿using System.Collections;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace RiverBooks.SharedKernel.Helpers;
 
 /// <summary>
-/// Optional <see cref="ResultOf{T}"/> of type T. Is either successful 'Value' object of type T or 'Error'
+/// Optional <see cref="ResultOf"/>. Is either successful or 'Error'
 /// </summary>
-/// <typeparam name="T"></typeparam>
-public readonly partial struct ResultOf<T> : IResultOf
+public readonly struct ResultOf : IResultOf
 {
     private readonly IList<Error>? _errors;
-    
-    [MemberNotNullWhen(true, nameof(Value))]
+
     [MemberNotNullWhen(false, nameof(Errors))]
     public bool IsSuccess { get; }
-
-    public T? Value { get; }
 
     public IReadOnlyList<Error>? Errors => _errors?.AsReadOnly();
 
     [JsonConstructor]
-    private ResultOf(bool isSuccess, T? value, IReadOnlyList<Error>? errors)
+    private ResultOf(bool isSuccess, IReadOnlyList<Error>? errors)
     {
         IsSuccess = isSuccess;
-        Value = value ?? default;
         _errors = errors?.ToList() ?? default;
     }
-
-    public ResultOf(T value) =>
-        (IsSuccess, Value) = (true, value);
 
     public ResultOf(Error error) =>
         (IsSuccess, _errors) = (false, new List<Error> { error });
@@ -38,14 +28,55 @@ public readonly partial struct ResultOf<T> : IResultOf
     public ResultOf(IEnumerable<Error> errors) =>
         (IsSuccess, _errors) = (false, errors.ToList());
 
-    public static implicit operator ResultOf<T>(T value) =>
-        new(value);
+    public TMatchedResult Match<TMatchedResult>(
+        Func<TMatchedResult> successProcessor,
+        Func<IReadOnlyList<Error>, TMatchedResult> errorProcessor) =>
+        IsSuccess
+            ? successProcessor()
+            : errorProcessor(Errors);
 
-    public static implicit operator ResultOf<T>(Error error) =>
+    public Task<TMatchedResult> MatchAsync<TMatchedResult>(
+        Func<Task<TMatchedResult>> successProcessor,
+        Func<IReadOnlyList<Error>, Task<TMatchedResult>> errorProcessor) =>
+        IsSuccess
+            ? successProcessor()
+            : errorProcessor(Errors);
+
+    public void Switch(
+        Action onSuccess,
+        Action<IReadOnlyList<Error>> onError)
+    {
+        if (IsSuccess)
+            onSuccess();
+        else
+            onError(Errors);
+    }
+
+    public Task SwitchAsync(
+        Func<Task> onSuccessAsync,
+        Func<IReadOnlyList<Error>, Task> onErrorAsync) =>
+        IsSuccess
+            ? onSuccessAsync()
+            : onErrorAsync(Errors);
+
+    public static ResultOf Success() =>
+        new(true, null);
+
+    public static ResultOf Failure(Error error) =>
         new(error);
 
-    public string AsJson()
-        => IsSuccess
-        ? JsonSerializer.Serialize(Value)
-        : JsonSerializer.Serialize(Errors);
+    public static ResultOf Failure(IEnumerable<Error> errors) =>
+        new(errors);
+
+    /// <summary>
+    /// Implicit conversion from bool only accepts conversion of 'true' to success result
+    /// </summary>
+    /// <param name="value">Boolean true value only</param>
+    public static implicit operator ResultOf(bool value) =>
+        value
+            ? new(true, null)
+            : throw new InvalidOperationException($"Invalid {nameof(ResultOf)} value. Did you intended to return explicit {nameof(Error)} instance ?");
+
+    public static implicit operator ResultOf(Error error) =>
+        new(error);
 }

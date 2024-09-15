@@ -53,7 +53,7 @@ internal class ReadThroughOrderAddressCache(
         }
     }
 
-    public async Task<ResultOf<bool>> StoreAsync(OrderAddress orderAddress, CancellationToken cancellationToken)
+    public async Task<ResultOf> StoreAsync(OrderAddress orderAddress, CancellationToken cancellationToken)
     {
         await cacheAccessMonitor.WaitAsync(cancellationToken);
         try
