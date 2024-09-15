@@ -7,7 +7,9 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.OutputCaching;
+using RiverBooks.EmailSending.Domain;
 using RiverBooks.OrderProcessing.Contracts;
+using RiverBooks.Reporting.Contracts;
 
 namespace RiverBooks.Integration.Tests;
 
@@ -111,8 +113,19 @@ public class End2EndTests : IClassFixture<ApiFixture>
         userOrders[0].OrderId.Should().Be(orderId);
         userOrders[0].Total.Should().Be(quantity * book.Price);
 
-        
+        // Check email processed
+        var emails = await GetAllProcessedEmails();
+        emails.Should().NotBeEmpty();
+        emails[0].To.Should().BeEquivalentTo(userLogin.Email);
 
+        // Wait for events to be processed
+        await Task.Delay(1000);
+
+        // Get top sales
+        var topSales = await GetTopSales(DateTime.UtcNow.Year, DateTime.UtcNow.Month);
+        topSales.Results.Should().NotBeEmpty();
+        topSales.Results[0].BookId.Should().Be(bookId);
+        topSales.Results[0].Sales.Should().Be(quantity * book.Price);
     }
 
     private async Task<UserLoginRequest> CreateNewUser()
@@ -332,6 +345,7 @@ public class End2EndTests : IClassFixture<ApiFixture>
 
         return response;
     }
+
     private async Task<List<OrderSummary>> GetAllUserOrders()
     {
         // Act
@@ -344,6 +358,34 @@ public class End2EndTests : IClassFixture<ApiFixture>
 
         response.Should().NotBeNull();
         return response!.Orders;
+    }
+
+    private async Task<List<EmailOutboxEntity>> GetAllProcessedEmails()
+    {
+        // Act
+        var result = await _httpClient.GetAsync("/emails/processed");
+
+        // Assert
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var response = await result.Content.ReadFromJsonAsync<List<EmailOutboxEntity>>();
+
+        response.Should().NotBeNull();
+        return response!;
+    }
+
+    private async Task<TopBooksByMonthReport> GetTopSales(int year, int month)
+    {
+        // Act
+        var result = await _httpClient.GetAsync($"/reports/topsales/{year}/{month}");
+
+        // Assert
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var response = await result.Content.ReadFromJsonAsync<TopBooksByMonthReport>();
+
+        response.Should().NotBeNull();
+        return response!;
     }
 
 }
