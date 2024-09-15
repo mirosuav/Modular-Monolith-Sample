@@ -13,6 +13,7 @@ using RiverBooks.OrderProcessing.Infrastructure.Data;
 using RiverBooks.Reporting.Infrastructure.Data;
 using RiverBooks.Users.Infrastructure.Data;
 using RiverBooks.Web;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace RiverBooks.Integration.Tests;
 
@@ -45,7 +46,7 @@ public class ApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 
             config.AddConfiguration(configuration);
         });
-        
+
         builder.ConfigureServices(services =>
         {
             ReplaceDbContextRegistrationFor<UsersDbContext>(services, dbConnection);
@@ -62,15 +63,6 @@ public class ApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
                 MigrateDatabaseFor<EmailSendingDbContext>(scope.ServiceProvider);
                 MigrateDatabaseFor<BookDbContext>(scope.ServiceProvider);
             }
-
-            // Replacement of
-            // dotnet sql-cache create "Server=(local);Integrated Security=true;Initial Catalog=RiverBooks;Trust Server Certificate=True" OrderProcessing UserAddressesCache
-            services.AddDistributedSqlServerCache(options =>
-            {
-                options.ConnectionString = dbConnection;
-                options.SchemaName = "OrderProcessing";
-                options.TableName = "UserAddressesCache";
-            });
         });
 
         builder.ConfigureLogging(logging =>

@@ -22,7 +22,7 @@ internal static class CartEndpoints
             .Produces<BadRequest>();
 
         group.MapPost("/checkout", CheckoutCartAsync)
-            .Produces<Ok<CheckoutResponse>>()
+            .Produces<Ok<Guid>>()
             .Produces<BadRequest>();
 
         group.MapGet("", ListCartItemsAsync)
@@ -67,7 +67,7 @@ internal static class CartEndpoints
 
         var result = await sender.Send(command, cancellationToken);
 
-        return result.ToHttpOk(v => new CheckoutResponse(v));
+        return result.ToHttpOk();
     }
 
     internal static async Task<IResult> ListCartItemsAsync(

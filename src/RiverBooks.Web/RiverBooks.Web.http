@@ -1,7 +1,7 @@
 
 @RootAddress=https://localhost:7179
 @UserEmail=customer@riverbooks.com
-@token = PASTE_TOKEN_HERE
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6ImN1c3RvbWVyQHJpdmVyYm9va3MuY29tIiwiSWQiOiIwNjZlNjIyOC1mNTAyLTdiNWYtODAwMC0zMDY1NTMxOGUyOTMiLCJzaWQiOiIwNjZlNzJiNS1mNTFiLTdjNDgtODAwMC01MzNmYmFlMDY5OGMiLCJhdWQiOiJSaXZlckJvb2tzIiwiaXNzIjoiUml2ZXJCb29rcyIsImV4cCI6MTcyNjQzMzE1MSwiaWF0IjoxNzI2NDI1OTUxLCJuYmYiOjE3MjY0MjU5NTF9.322LDaEfT7N-ko9HmuMW0bY1F3eh1Mza0L7oR5nljtA
 
 # CREATE USER
 
@@ -23,7 +23,7 @@ Content-Type: application/json
 
 {
   "email":"{{UserEmail}}",
-  "password":"Super@Secure123"
+  "password":"Pass@word1"
 }
 
 
@@ -37,7 +37,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-@BookID=066e3762-9ae2-7450-8000-4ed5c283cacf
+@BookID=066e3752-baeb-740c-8000-837e07ca7c41
 
 # GET BOOK By ID
 
@@ -116,8 +116,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "shippingAddressId":"066e376b-412f-71a3-8000-4efca73a67aa",
-  "billingAddressId":"066e376d-5ae5-74e8-8000-1afcb34bc9d6"
+  "shippingAddressId":"066e72b8-a0de-7076-8000-4443ad10d075",
+  "billingAddressId":"066e72b8-a0de-7076-8000-4443ad10d075"
 }
 
 ###

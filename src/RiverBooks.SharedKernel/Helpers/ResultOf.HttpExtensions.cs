@@ -21,6 +21,11 @@ public static class ResultOfHttpExtensions
             ? TypedResults.Created(uri)
             : result.ToProblemHttpResult();
 
+    public static IResult ToHttpCreated<T>(this ResultOf<T> result, string? uri = null)
+        => result.IsSuccess
+            ? TypedResults.Created<T>(uri, result.Value)
+            : result.ToProblemHttpResult();
+
     public static IResult ToHttpOk<T>(this ResultOf<T> result)
         => result.IsSuccess
             ? TypedResults.Ok(result.Value)

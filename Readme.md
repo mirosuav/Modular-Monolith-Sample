@@ -76,8 +76,10 @@ dotnet ef database update -p RiverBooks.Users -c UsersDbContext -s RiverBooks.We
 dotnet ef database update -p RiverBooks.OrderProcessing -c OrderProcessingDbContext -s RiverBooks.Web
 dotnet ef database update -p RiverBooks.Reporting -c ReportingDbContext -s RiverBooks.Web
 dotnet ef database update -p RiverBooks.EmailSending -c EmailSendingDbContext -s RiverBooks.Web
-dotnet sql-cache create "Server=(local);Integrated Security=true;Initial Catalog=RiverBooks;Trust Server Certificate=True" OrderProcessing UserAddressesCache
 dotnet ef database update -p RiverBooks.Books -c BookDbContext -s RiverBooks.Web
+
+Below is optional - currently handled by Initial migration in OrderProcessing module
+dotnet sql-cache create "Server=(local);Integrated Security=true;Initial Catalog=RiverBooks;Trust Server Certificate=True" OrderProcessing UserAddressesCache
 ```
 
 

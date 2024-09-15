@@ -19,7 +19,7 @@ internal class ListOrdersForUserQueryHandler(IOrderRepository orderRepository) :
             DateCreated = o.DateCreated,
             OrderId = o.Id,
             UserId = o.UserId,
-            Total = o.OrderItems.Sum(oi => oi.UnitPrice) // need to .Include OrderItems
+            Total = o.OrderItems.Sum(oi => oi.Quantity * oi.UnitPrice) // need to .Include OrderItems
         })
           .ToList();
 

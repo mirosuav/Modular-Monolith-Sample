@@ -19,7 +19,7 @@ internal static class UserEndpoints
     internal static RouteGroupBuilder MapUserEndpoints(this RouteGroupBuilder group)
     {
         group.MapPost("", CreateUserAsync)
-            .Produces<Ok>()
+            .Produces<Created>()
             .Produces<BadRequest>()
             .AllowAnonymous();
 
@@ -34,7 +34,7 @@ internal static class UserEndpoints
             .Produces<BadRequest>();
 
         group.MapPost("/addresses", AddUserAddressesAsync)
-            .Produces<Ok>()
+            .Produces<Created<Guid>>()
             .Produces<BadRequest>();
 
         group.MapDelete("", DeleteUserAsync)
@@ -104,7 +104,7 @@ internal static class UserEndpoints
 
         var result = await sender.Send(command, cancellationToken);
 
-        return result.ToHttpOk();
+        return result.ToHttpCreated();
     }
 
     internal static async Task<IResult> DeleteUserAsync(
