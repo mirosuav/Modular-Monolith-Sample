@@ -2,6 +2,7 @@
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="RiverBooks.Users.Api" />
+		<InternalsVisibleTo Include="RiverBooks.Integration.Tests" />
 	</ItemGroup>
 
 	<ItemGroup>

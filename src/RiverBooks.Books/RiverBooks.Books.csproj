@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<ItemGroup>
 		<InternalsVisibleTo Include="RiverBooks.Books.Api" />
+		<InternalsVisibleTo Include="RiverBooks.Integration.Tests" />
 	</ItemGroup>
 
 	<!-- https://learn.microsoft.com/en-us/aspnet/core/fundamentals/target-aspnetcore?view=aspnetcore-3.1&tabs=visual-studio -->

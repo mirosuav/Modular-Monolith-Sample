@@ -63,11 +63,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.Benchmarks.Conso
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventsModule", "EventsModule", "{73D42889-CCD3-4337-9A44-6AD3C827A190}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.EventsProcessing", "RiverBooks.EventsProcessing\RiverBooks.EventsProcessing.csproj", "{94356B62-3300-4422-B0CA-F66FDEB80B24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.EventsProcessing", "RiverBooks.EventsProcessing\RiverBooks.EventsProcessing.csproj", "{94356B62-3300-4422-B0CA-F66FDEB80B24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.EventsProcessing.Api", "RiverBooks.EventsProcessing.Api\RiverBooks.EventsProcessing.Api.csproj", "{AD0D22EE-7C42-4E96-BF76-BE5B3C09925D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.EventsProcessing.Api", "RiverBooks.EventsProcessing.Api\RiverBooks.EventsProcessing.Api.csproj", "{AD0D22EE-7C42-4E96-BF76-BE5B3C09925D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.EventsProcessing.Contracts", "RiverBooks.EventsProcessing.Contracts\RiverBooks.EventsProcessing.Contracts.csproj", "{1B89E342-3634-4F37-AB0F-4C4408FD90EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.EventsProcessing.Contracts", "RiverBooks.EventsProcessing.Contracts\RiverBooks.EventsProcessing.Contracts.csproj", "{1B89E342-3634-4F37-AB0F-4C4408FD90EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.Integration.Tests", "RiverBooks.Integration.Tests\RiverBooks.Integration.Tests.csproj", "{753EF1B0-DE85-4F97-A917-3AFADDA7455D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -163,6 +165,10 @@ Global
 		{1B89E342-3634-4F37-AB0F-4C4408FD90EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B89E342-3634-4F37-AB0F-4C4408FD90EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B89E342-3634-4F37-AB0F-4C4408FD90EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{753EF1B0-DE85-4F97-A917-3AFADDA7455D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{753EF1B0-DE85-4F97-A917-3AFADDA7455D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{753EF1B0-DE85-4F97-A917-3AFADDA7455D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{753EF1B0-DE85-4F97-A917-3AFADDA7455D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
