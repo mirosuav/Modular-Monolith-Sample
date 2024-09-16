@@ -1,6 +1,5 @@
 ﻿using Serilog.Core;
 using Serilog.Events;
-using System.Reflection;
 
 namespace RiverBooks.SharedKernel.Extensions;
 
@@ -11,14 +10,23 @@ public class ModuleNameEnricher : ILogEventEnricher
 {
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
-        logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(
-                "ModuleName", GetCallingAssemblyModuleName()));
+        var moduleName = RetreiveModuleName(logEvent);
+        if (moduleName is not null)
+            logEvent.AddOrUpdateProperty(propertyFactory.CreateProperty(
+                    "ModuleName", moduleName));
     }
 
-    private static string GetCallingAssemblyModuleName()
+    private static string? RetreiveModuleName(LogEvent logEvent)
     {
-        var assemblyName = Assembly.GetCallingAssembly().GetName()?.Name ?? nameof(RiverBooks);
+        if (logEvent.Properties.TryGetValue("SourceContext", out var sourceContextProp))
+        {
+            var sourceContext = sourceContextProp.ToString().Trim('"');
+            if (sourceContext.StartsWith(nameof(RiverBooks)))
+                return sourceContext.Split('.')[1];
+            else
+                return sourceContext;
+        }
 
-        return assemblyName.Split('.')[1];
+        return null;
     }
 }

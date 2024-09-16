@@ -22,21 +22,15 @@ public static class AuthenticationExtensions
              o.RequireHttpsMetadata = false;
              o.SaveToken = false;
              o.TokenValidationParameters = JwtTokenHandler.CreateValidationParameters(configuration);
-             // Add event handler for when authentication fails
-             o.Events = new JwtBearerEvents
-             {
-                 OnAuthenticationFailed = context =>
-                 {
-                     // Log or handle the token validation failure
-                     Console.WriteLine("Token validation failed: " + context.Exception.Message);
-
-                     // Optionally modify the response
-                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                     context.Response.ContentType = "application/json";
-                     var result = JsonSerializer.Serialize(new { error = "Invalid token" });
-                     return context.Response.WriteAsync(result);
-                 }
-             };
+             //o.Events = new JwtBearerEvents
+             //{
+             //    OnAuthenticationFailed = context =>
+             //    {
+             //        // Log or handle the token validation failure
+             //        Console.WriteLine("Token validation failed: " + context.Exception.Message);
+             //        return Task.CompletedTask;
+             //    }
+             //};
          });
     }
 

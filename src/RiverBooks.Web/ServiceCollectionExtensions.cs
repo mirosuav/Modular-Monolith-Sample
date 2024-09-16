@@ -13,6 +13,9 @@ using Serilog.Sinks.OpenTelemetry;
 using System.Reflection;
 using RiverBooks.EventsProcessing.Api;
 using RiverBooks.SharedKernel.Events;
+using Serilog.Events;
+using Serilog.Sinks.SystemConsole.Themes;
+using Microsoft.Extensions.Configuration;
 
 namespace RiverBooks.Web;
 
@@ -44,8 +47,23 @@ internal static class ServiceCollectionExtensions
             opt.ReportApiVersions = true;
             opt.ApiVersionReader = new UrlSegmentApiVersionReader();
         });
-
         return services;
+    }
+
+    public static LoggerConfiguration UseCommonSerilogConfiguration(this LoggerConfiguration configuration)
+    {
+        configuration
+            .MinimumLevel.Information()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .MinimumLevel.Override("System", LogEventLevel.Error)
+            .Enrich.FromLogContext()
+            .Enrich.With(new ModuleNameEnricher())
+            .WriteTo.Console(
+                theme: AnsiConsoleTheme.Literate,
+                outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {ModuleName} {Message:lj} {NewLine}{Exception}"
+            // outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] ({ModuleName}) {Message:lj} <s:{SourceContext}>{NewLine}{Exception}"
+            );
+        return configuration;
     }
 
     public static IServiceCollection AddLogging(
@@ -53,14 +71,9 @@ internal static class ServiceCollectionExtensions
         ConfigurationManager configuration,
         List<Assembly> moduleAssemblies)
     {
-        // Configure logging from all modules configuration
-        var options = new ConfigurationReaderOptions([.. moduleAssemblies]);
-
         Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(configuration, options)
-            .Enrich.FromLogContext()
-            .Enrich.With(new ModuleNameEnricher())
-            .WriteTo.Console()
+            .ReadFrom.Configuration(configuration)
+            .UseCommonSerilogConfiguration()
             // Add Open telemetry with Sec
             //.WriteTo.OpenTelemetry(x =>
             //{

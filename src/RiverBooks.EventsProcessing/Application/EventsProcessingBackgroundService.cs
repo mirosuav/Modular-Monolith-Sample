@@ -20,8 +20,7 @@ internal class EventsProcessingBackgroundService(
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        logger.LogInformation("{ServiceName} started.", nameof(EventsProcessingBackgroundService));
-
+        logger.LogInformation("{ServiceName} started.", ModuleDescriptor.Name);
         using var scope = scopeFactory.CreateScope();
 
         var publisher = scope.ServiceProvider.GetRequiredService<IPublisher>();
@@ -56,7 +55,7 @@ internal class EventsProcessingBackgroundService(
             }
         }
 
-        logger.LogInformation("{ServiceName} exited.", nameof(EventsProcessingBackgroundService));
+        logger.LogInformation("{ServiceName} exited.", ModuleDescriptor.Name);
     }
 }
 

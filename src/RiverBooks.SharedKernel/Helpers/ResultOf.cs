@@ -1,4 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace RiverBooks.SharedKernel.Helpers;
@@ -6,7 +8,8 @@ namespace RiverBooks.SharedKernel.Helpers;
 /// <summary>
 /// Optional <see cref="ResultOf"/>. Is either successful or 'Error'
 /// </summary>
-public readonly struct ResultOf : IResultOf
+[DebuggerStepThrough]
+public readonly record struct ResultOf : IResultOf
 {
     private readonly IList<Error>? _errors;
 
@@ -27,7 +30,13 @@ public readonly struct ResultOf : IResultOf
 
     public ResultOf(IEnumerable<Error> errors) =>
         (IsSuccess, _errors) = (false, errors.ToList());
+    
+    public override string ToString() => AsJson();
 
+    public string AsJson()
+        => IsSuccess
+            ? "Success"
+            : JsonSerializer.Serialize(Errors);
     public TMatchedResult Match<TMatchedResult>(
         Func<TMatchedResult> successProcessor,
         Func<IReadOnlyList<Error>, TMatchedResult> errorProcessor) =>

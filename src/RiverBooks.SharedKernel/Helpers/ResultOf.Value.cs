@@ -1,5 +1,7 @@
 ﻿using System.Collections;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -9,10 +11,11 @@ namespace RiverBooks.SharedKernel.Helpers;
 /// Optional <see cref="ResultOf{T}"/> of type T. Is either successful 'Value' object of type T or 'Error'
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public readonly struct ResultOf<T> : IResultOf
+[DebuggerStepThrough]
+public readonly record struct ResultOf<T> : IResultOf
 {
     private readonly IList<Error>? _errors;
-    
+
     [MemberNotNullWhen(true, nameof(Value))]
     [MemberNotNullWhen(false, nameof(Errors))]
     public bool IsSuccess { get; }
@@ -37,6 +40,8 @@ public readonly struct ResultOf<T> : IResultOf
 
     public ResultOf(IEnumerable<Error> errors) =>
         (IsSuccess, _errors) = (false, errors.ToList());
+
+    public override string ToString() => AsJson();
 
     public string AsJson()
         => IsSuccess
@@ -79,14 +84,14 @@ public readonly struct ResultOf<T> : IResultOf
         IsSuccess
             ? onSuccessAsync(Value)
             : onErrorAsync(Errors);
-    
-    public static ResultOf<T> Success(T value) => 
+
+    public static ResultOf<T> Success(T value) =>
         new(value);
 
-    public static ResultOf<T> Failure(Error error) => 
+    public static ResultOf<T> Failure(Error error) =>
         new(error);
 
-    public static ResultOf<T> Failure(IEnumerable<Error> errors) => 
+    public static ResultOf<T> Failure(IEnumerable<Error> errors) =>
         new(errors);
 
     public static implicit operator ResultOf<T>(T value) =>
