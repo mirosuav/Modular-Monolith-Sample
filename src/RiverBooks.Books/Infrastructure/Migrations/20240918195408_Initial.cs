@@ -37,9 +37,9 @@ namespace RiverBooks.Books.Infrastructure.Migrations
                 columns: new[] { "Id", "Author", "Price", "Title" },
                 values: new object[,]
                 {
-                    { new Guid("066e3606-3083-735d-8000-d5ad646d009e"), "J.R.R. Tolkien", 10.99m, "The Fellowship of the Ring" },
-                    { new Guid("066e3606-3083-73e0-8000-d305fd8ca056"), "J.R.R. Tolkien", 11.99m, "The Two Towers" },
-                    { new Guid("066e3606-3083-73e5-8000-1ffd1058c7e2"), "J.R.R. Tolkien", 12.99m, "The Return of the King" }
+                    { new Guid("066eb2fe-0aa7-71f0-8000-ca0e8dfaf9ee"), "J.R.R. Tolkien", 10.99m, "The Fellowship of the Ring" },
+                    { new Guid("066eb2fe-0aa7-7273-8000-a9a032fc6646"), "J.R.R. Tolkien", 11.99m, "The Two Towers" },
+                    { new Guid("066eb2fe-0aa7-727a-8000-dba7f3bf5c86"), "J.R.R. Tolkien", 12.99m, "The Return of the King" }
                 });
         }
 

@@ -7,15 +7,15 @@ public class AddItemToCartCommandValidator : AbstractValidator<AddItemToCartComm
     public AddItemToCartCommandValidator()
     {
         RuleFor(x => x.UserId)
-          .NotEmpty()
-          .WithMessage("Not a valid UserId.");
+            .NotEmpty()
+            .WithMessage("Not a valid UserId.");
 
         RuleFor(x => x.Quantity)
-          .GreaterThan(0)
-          .WithMessage("Quantity must be at least 1.");
+            .GreaterThan(0)
+            .WithMessage("Quantity must be at least 1.");
 
         RuleFor(x => x.BookId)
-          .NotEmpty()
-          .WithMessage("Not a valid BookId.");
+            .NotEmpty()
+            .WithMessage("Not a valid BookId.");
     }
 }

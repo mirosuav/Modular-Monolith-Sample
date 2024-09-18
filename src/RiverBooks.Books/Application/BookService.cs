@@ -28,7 +28,7 @@ internal class BookService(IBookRepository bookRepository) : IBookService
 
         await bookRepository.DeleteAsync(bookToDelete);
         await bookRepository.SaveChangesAsync();
-        
+
         return true;
     }
 
@@ -45,8 +45,8 @@ internal class BookService(IBookRepository bookRepository) : IBookService
     public async Task<List<BookDto>> ListBooksAsync()
     {
         var books = (await bookRepository.ListAsync())
-          .Select(book => new BookDto(book.Id, book.Title, book.Author, book.Price))
-          .ToList();
+            .Select(book => new BookDto(book.Id, book.Title, book.Author, book.Price))
+            .ToList();
 
         return books;
     }
@@ -63,7 +63,7 @@ internal class BookService(IBookRepository bookRepository) : IBookService
 
         book.UpdatePrice(newPrice);
         await bookRepository.SaveChangesAsync();
-        
+
         return true;
     }
 }

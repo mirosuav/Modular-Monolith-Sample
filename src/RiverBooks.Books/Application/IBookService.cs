@@ -2,6 +2,7 @@
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.Books.Application;
+
 internal interface IBookService
 {
     Task<List<BookDto>> ListBooksAsync();

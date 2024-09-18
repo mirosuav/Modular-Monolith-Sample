@@ -5,10 +5,10 @@ namespace RiverBooks.SharedKernel.Extensions;
 
 public static class IdentityResultExtensions
 {
-    public static List<Error> AsErrors(this IdentityResult identityResult) =>
-        identityResult.Errors
-        .Select(error => Error.Failure(error.Code, error.Description))
-        .ToList();
+    public static List<Error> AsErrors(this IdentityResult identityResult)
+    {
+        return identityResult.Errors
+            .Select(error => Error.Failure(error.Code, error.Description))
+            .ToList();
+    }
 }
-
-

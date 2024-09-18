@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RiverBooks.Reporting.Application;
-using RiverBooks.Reporting.Contracts;
 using RiverBooks.Reporting.Domain;
 
 namespace RiverBooks.Reporting.Infrastructure.Data;
+
 internal class SalesReportRepository(ReportingDbContext dbContext) : ISalesReportRepository
 {
     public void AddBookSale(BookSale sale)
@@ -16,12 +11,13 @@ internal class SalesReportRepository(ReportingDbContext dbContext) : ISalesRepor
         dbContext.BookSales.Add(sale);
     }
 
-    public Task<List<BookSale>> GetBookSalesByYearAndMonthAsync(int year, int month, CancellationToken cancellationToken)
+    public Task<List<BookSale>> GetBookSalesByYearAndMonthAsync(int year, int month,
+        CancellationToken cancellationToken)
     {
         return dbContext.BookSales
-             .AsNoTracking()
-             .Where(b => b.SoldAtUtc.Year == year && b.SoldAtUtc.Month == month)
-             .ToListAsync(cancellationToken);
+            .AsNoTracking()
+            .Where(b => b.SoldAtUtc.Year == year && b.SoldAtUtc.Month == month)
+            .ToListAsync(cancellationToken);
     }
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken)
@@ -29,4 +25,3 @@ internal class SalesReportRepository(ReportingDbContext dbContext) : ISalesRepor
         return dbContext.SaveChangesAsync(cancellationToken);
     }
 }
-

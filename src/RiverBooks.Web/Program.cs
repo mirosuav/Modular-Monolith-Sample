@@ -1,7 +1,6 @@
-﻿using Asp.Versioning;
+﻿using System.Reflection;
+using Asp.Versioning;
 using Serilog;
-using Serilog.Events;
-using System.Reflection;
 
 namespace RiverBooks.Web;
 
@@ -9,7 +8,6 @@ public class Program
 {
     public static void Main(string[] args)
     {
-
         // BootstrapLogger
         Log.Logger = new LoggerConfiguration()
             .UseCommonSerilogConfiguration()
@@ -17,7 +15,6 @@ public class Program
 
         try
         {
-
             Log.Logger.Information("Starting web host");
 
             // Collect modules assemblies
@@ -39,12 +36,12 @@ public class Program
             {
                 app.UseAuthentication();
                 app.UseAuthorization();
+                app.UseExceptionHandler();
                 app.MapVersionPrompt("/").AllowAnonymous();
                 app.MapModulesEndpoints();
                 app.UseSwaggerDevelopmentUI();
                 app.Run();
             }
-
         }
         catch (Exception ex)
         {
@@ -56,4 +53,3 @@ public class Program
         }
     }
 }
-

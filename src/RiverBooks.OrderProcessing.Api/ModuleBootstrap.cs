@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,7 +8,6 @@ using RiverBooks.OrderProcessing.Application.Interfaces;
 using RiverBooks.OrderProcessing.Infrastructure;
 using RiverBooks.OrderProcessing.Infrastructure.Data;
 using Serilog;
-using System.Reflection;
 
 namespace RiverBooks.OrderProcessing.Api;
 
@@ -26,8 +26,9 @@ public static class ModuleBootstrap
         ILogger logger,
         List<Assembly> mediatRAssemblies)
     {
-        string? connectionString = config.GetConnectionString($"{ModuleDescriptor.Name}ConnectionString");
-        services.AddDbContext<OrderProcessingDbContext>(c => c.UseSqlServer(connectionString));
+        var connectionString = config.GetConnectionString($"{ModuleDescriptor.Name}ConnectionString");
+        services.AddDbContext<OrderProcessingDbContext>(options =>
+            options.UseSqlServer(connectionString, o => o.EnableRetryOnFailure()));
 
         // Materialized view for user addresses fetched from User module
         services.AddDistributedSqlServerCache(options =>

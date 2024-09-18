@@ -1,29 +1,25 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 using RiverBooks.SharedKernel.Events;
 using RiverBooks.SharedKernel.Extensions;
 using RiverBooks.SharedKernel.Helpers;
-using System.ComponentModel.DataAnnotations;
 
 namespace RiverBooks.Users.Domain;
 
 public class User : HaveEvents
 {
-    public required Guid Id { get; set; }
-
-    [EmailAddress]
-    [MaxLength(50)]
-    public string Email { get; set; } = string.Empty;
-
-    [MaxLength(50)]
-    public string FullName { get; set; } = string.Empty;
-
-    [MaxLength(200)]
-    public string PasswordHash { get; set; } = string.Empty;
+    private readonly List<UserStreetAddress> _addresses = [];
 
     private readonly List<CartItem> _cartItems = [];
-    public IReadOnlyCollection<CartItem> CartItems => _cartItems.AsReadOnly();
+    public required Guid Id { get; set; }
 
-    private readonly List<UserStreetAddress> _addresses = [];
+    [EmailAddress] [MaxLength(50)] public string Email { get; set; } = string.Empty;
+
+    [MaxLength(50)] public string FullName { get; set; } = string.Empty;
+
+    [MaxLength(200)] public string PasswordHash { get; set; } = string.Empty;
+
+    public IReadOnlyCollection<CartItem> CartItems => _cartItems.AsReadOnly();
     public IReadOnlyCollection<UserStreetAddress> Addresses => _addresses.AsReadOnly();
 
     public void SetPassword(string newPassword)
@@ -51,6 +47,7 @@ public class User : HaveEvents
             existingBook.UpdateUnitPrice(cartItem.UnitPrice);
             return;
         }
+
         _cartItems.Add(cartItem);
     }
 
@@ -60,10 +57,7 @@ public class User : HaveEvents
 
         // find existing address and just return it
         var existingAddress = _addresses.SingleOrDefault(a => a.StreetAddress == address);
-        if (existingAddress != null)
-        {
-            return existingAddress;
-        }
+        if (existingAddress != null) return existingAddress;
 
         var newAddress = new UserStreetAddress(Id, address);
         _addresses.Add(newAddress);
@@ -80,4 +74,3 @@ public class User : HaveEvents
         _cartItems.Clear();
     }
 }
-

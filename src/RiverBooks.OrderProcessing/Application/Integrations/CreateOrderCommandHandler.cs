@@ -6,6 +6,7 @@ using RiverBooks.OrderProcessing.Domain;
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.OrderProcessing.Application.Integrations;
+
 internal class CreateOrderCommandHandler(
     IOrderRepository orderRepository,
     ILogger<CreateOrderCommandHandler> logger,
@@ -14,24 +15,24 @@ internal class CreateOrderCommandHandler(
     : IRequestHandler<CreateOrderCommand, ResultOf<OrderDetailsResponse>>
 {
     public async Task<ResultOf<OrderDetailsResponse>> Handle(CreateOrderCommand request,
-      CancellationToken cancellationToken)
+        CancellationToken cancellationToken)
     {
         var items = request.OrderItems.Select(oi => new OrderItem(
-          oi.BookId, oi.Quantity, oi.UnitPrice, oi.Description));
+            oi.BookId, oi.Quantity, oi.UnitPrice, oi.Description));
 
         var shippingAddress = await addressCache.GetByIdAsync(request.ShippingAddressId, cancellationToken);
         if (!shippingAddress.IsSuccess)
-            return new(shippingAddress.Errors);
+            return new ResultOf<OrderDetailsResponse>(shippingAddress.Errors);
 
         var billingAddress = await addressCache.GetByIdAsync(request.BillingAddressId, cancellationToken);
         if (!billingAddress.IsSuccess)
-            return new (billingAddress.Errors);
+            return new ResultOf<OrderDetailsResponse>(billingAddress.Errors);
 
         var newOrder = Order.Create(request.UserId,
-          shippingAddress.Value.Address,
-          billingAddress.Value.Address,
-          items,
-          timeProvider);
+            shippingAddress.Value.Address,
+            billingAddress.Value.Address,
+            items,
+            timeProvider);
 
         orderRepository.Add(newOrder);
         await orderRepository.SaveChangesAsync(cancellationToken);

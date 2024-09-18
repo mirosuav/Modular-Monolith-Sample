@@ -5,11 +5,11 @@ using RiverBooks.EmailSending.Domain;
 namespace RiverBooks.EmailSending.Application;
 
 internal class DefaultSendEmailsFromOutboxService(
-        IGetEmailsFromOutboxService outboxService,
-        IMarkEmailProcessed outboxProcessedService,
-        IEmailSender emailSender,
-        ResiliencePipelineProvider<Type> _resilienceProvider,
-        ILogger<DefaultSendEmailsFromOutboxService> logger)
+    IGetEmailsFromOutboxService outboxService,
+    IMarkEmailProcessed outboxProcessedService,
+    IEmailSender emailSender,
+    ResiliencePipelineProvider<Type> _resilienceProvider,
+    ILogger<DefaultSendEmailsFromOutboxService> logger)
     : ISendEmailsFromOutboxService
 {
     public async Task CheckForAndSendEmails(CancellationToken cancellationToken)
@@ -25,21 +25,23 @@ internal class DefaultSendEmailsFromOutboxService(
 
         try
         {
-            await pipeline.ExecuteAsync(async (ct) =>
-                await emailSender.SendEmailAsync(
-                    emailEntity.To,
-                    emailEntity.From,
-                    emailEntity.Subject,
-                    emailEntity.Body, ct),
+            await pipeline.ExecuteAsync(async ct =>
+                    await emailSender.SendEmailAsync(
+                        emailEntity.To,
+                        emailEntity.From,
+                        emailEntity.Subject,
+                        emailEntity.Body, ct),
                 cancellationToken);
 
-            await outboxProcessedService.UpdateEmailStatus(emailEntity.Id, EmailProcessingStatus.Success, cancellationToken);
+            await outboxProcessedService.UpdateEmailStatus(emailEntity.Id, EmailProcessingStatus.Success,
+                cancellationToken);
 
             logger.LogInformation("Processed email [{id}] with success.", emailEntity.Id);
         }
         catch (Exception ex)
         {
-            await outboxProcessedService.UpdateEmailStatus(emailEntity.Id, EmailProcessingStatus.DeadLetter, cancellationToken);
+            await outboxProcessedService.UpdateEmailStatus(emailEntity.Id, EmailProcessingStatus.DeadLetter,
+                cancellationToken);
             logger.LogError(ex, "Processing email [{id}] failed and results in DeadLetter.", emailEntity.Id);
         }
     }

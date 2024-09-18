@@ -9,6 +9,7 @@ using RiverBooks.SharedKernel.Events;
 using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.OrderProcessing.Application.Integrations;
+
 internal class ProcessSelfEventsCommandHandler(
     OrderProcessingDbContext dbContext,
     IMediator mediator,
@@ -25,41 +26,39 @@ internal class ProcessSelfEventsCommandHandler(
         // Enrich, transform and process events
         switch (domainEvent)
         {
-            case OrderCreated_PrepareReportEvent reportingEvent:
+            case PrepareReportForOrderEvent reportingEvent:
+            {
+                var order = await FetchOrder(cancellationToken, reportingEvent.OrderId);
+
+                await Mediator.Publish(new OrderCreatedIntegrationEvent(order.ToOrderDto()), cancellationToken);
+
+                break;
+            }
+
+            case SendOrderConfirmationEmailEvent emailNotificationEvent:
+            {
+                var order = await FetchOrder(cancellationToken, emailNotificationEvent.OrderId);
+
+                var userByIdQuery = new UserDetailsByIdQuery(order.UserId);
+
+                var result = await Mediator.Send(userByIdQuery, cancellationToken);
+
+                if (!result.IsSuccess)
+                    throw new ApplicationException("Could not retrieve user details from User module.");
+
+                var userEmail = result.Value.EmailAddress;
+
+                var command = new SendEmailCommand
                 {
-                    var order = await FetchOrder(cancellationToken, reportingEvent.OrderId);
+                    To = userEmail,
+                    From = "noreply@test.com",
+                    Subject = "Your RiverBooks Purchase",
+                    Body = $"You bought {order.OrderItems.Count} items."
+                };
 
-                    await Mediator.Publish(new OrderCreatedIntegrationEvent(order.ToOrderDto()), cancellationToken);
-
-                    break;
-                }
-
-            case OrderCreated_SendEmailEvent emailNotificationEvent:
-                {
-                    var order = await FetchOrder(cancellationToken, emailNotificationEvent.OrderId);
-
-                    var userByIdQuery = new UserDetailsByIdQuery(order.UserId);
-
-                    var result = await Mediator.Send(userByIdQuery, cancellationToken);
-
-                    if (!result.IsSuccess)
-                    {
-                        throw new ApplicationException("Could not retrieve user details from User module.");
-                    }
-
-                    string userEmail = result.Value.EmailAddress;
-
-                    var command = new SendEmailCommand()
-                    {
-                        To = userEmail,
-                        From = "noreply@test.com",
-                        Subject = "Your RiverBooks Purchase",
-                        Body = $"You bought {order.OrderItems.Count} items."
-                    };
-
-                    await Mediator.Publish(command, cancellationToken);
-                    break;
-                }
+                await Mediator.Publish(command, cancellationToken);
+                break;
+            }
             default:
                 await base.PublishOutboxEvent(domainEvent, cancellationToken);
                 break;

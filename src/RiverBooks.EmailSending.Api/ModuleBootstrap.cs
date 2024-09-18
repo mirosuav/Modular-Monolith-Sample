@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Reflection;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -9,8 +11,6 @@ using RiverBooks.EmailSending.Application;
 using RiverBooks.EmailSending.Domain;
 using RiverBooks.EmailSending.Infrastructure;
 using Serilog;
-using System.Reflection;
-using System.Threading.RateLimiting;
 
 namespace RiverBooks.EmailSending.Api;
 
@@ -24,15 +24,15 @@ public static class ModuleBootstrap
     }
 
     public static IServiceCollection AddEmailSendingModuleServices(
-      this IServiceCollection services,
-      ConfigurationManager config,
-      ILogger logger,
-      List<Assembly> mediatRAssemblies)
+        this IServiceCollection services,
+        ConfigurationManager config,
+        ILogger logger,
+        List<Assembly> mediatRAssemblies)
     {
-
         // configure EF db context
-        string? connectionString = config.GetConnectionString($"{ModuleDescriptor.Name}ConnectionString");
-        services.AddDbContext<EmailSendingDbContext>(options => options.UseSqlServer(connectionString));
+        var connectionString = config.GetConnectionString($"{ModuleDescriptor.Name}ConnectionString");
+        services.AddDbContext<EmailSendingDbContext>(options =>
+            options.UseSqlServer(connectionString, o => o.EnableRetryOnFailure()));
 
         // Add module services
         services.AddTransient<IEmailSender, LoggingEmailSender>();
@@ -65,7 +65,7 @@ public static class ModuleBootstrap
             builder.AddRateLimiter(new FixedWindowRateLimiter(new FixedWindowRateLimiterOptions
             {
                 PermitLimit = 5, // max 5 requests
-                Window = TimeSpan.FromSeconds(1), // per second
+                Window = TimeSpan.FromSeconds(1) // per second
             }));
         });
 

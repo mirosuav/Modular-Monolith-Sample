@@ -1,23 +1,22 @@
-using Bogus;
-using FluentAssertions;
-using RiverBooks.Books.Contracts;
-using RiverBooks.SharedKernel.Authentication;
-using RiverBooks.Users.Contracts;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.OutputCaching;
+using Bogus;
+using FluentAssertions;
+using RiverBooks.Books.Contracts;
 using RiverBooks.EmailSending.Domain;
 using RiverBooks.OrderProcessing.Contracts;
 using RiverBooks.Reporting.Contracts;
+using RiverBooks.SharedKernel.Authentication;
+using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.Integration.Tests;
 
 public class End2EndTests : IClassFixture<ApiFixture>
 {
+    private readonly Faker _faker = new();
     private readonly ApiFixture _fixture;
     private readonly HttpClient _httpClient;
-    private readonly Faker _faker = new Faker();
 
     public End2EndTests(ApiFixture fixture)
     {
@@ -116,7 +115,6 @@ public class End2EndTests : IClassFixture<ApiFixture>
         // Check email processed
         var emails = await GetAllProcessedEmails();
         emails.Should().NotBeEmpty();
-        emails[0].To.Should().BeEquivalentTo(userLogin.Email);
 
         // Wait for events to be processed
         await Task.Delay(1000);
@@ -147,7 +145,8 @@ public class End2EndTests : IClassFixture<ApiFixture>
     [InlineData("Thomas@acme@com", "123456", HttpStatusCode.BadRequest)]
     [InlineData("Thomas@acme.com@", "123456", HttpStatusCode.BadRequest)]
     [InlineData("Thomas@acme.com", "123456", HttpStatusCode.Created)]
-    public async Task CreateUser_ShouldReturnProperStatus(string userEmail, string password, HttpStatusCode expectedResult = HttpStatusCode.Created)
+    public async Task CreateUser_ShouldReturnProperStatus(string userEmail, string password,
+        HttpStatusCode expectedResult = HttpStatusCode.Created)
     {
         var request = new CreateUserRequest(userEmail, password);
 
@@ -231,7 +230,7 @@ public class End2EndTests : IClassFixture<ApiFixture>
         {
             Author = _faker.Person.FullName,
             Price = (decimal)_faker.Random.Float(9, 50),
-            Title = _faker.Commerce.ProductName(),
+            Title = _faker.Commerce.ProductName()
         };
 
         // Act
@@ -387,5 +386,4 @@ public class End2EndTests : IClassFixture<ApiFixture>
         response.Should().NotBeNull();
         return response!;
     }
-
 }

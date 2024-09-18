@@ -17,7 +17,7 @@ internal class OrderCreatedIntegrationEventHandler(
         CancellationToken cancellationToken)
     {
         logger.LogInformation("Handling order created event to populate reporting database...");
-        
+
         foreach (var item in notification.Order.OrderItems)
         {
             // look up book details from Books module to get author and title
@@ -29,7 +29,7 @@ internal class OrderCreatedIntegrationEventHandler(
                 logger.LogWarning("Issue loading book details for {id}", item.BookId);
                 continue;
             }
-            
+
             var sale = new BookSale
             {
                 OrderId = notification.Order.OrderId,

@@ -123,5 +123,4 @@ internal static class UserEndpoints
 
         return result.ToHttpOk();
     }
-
 }

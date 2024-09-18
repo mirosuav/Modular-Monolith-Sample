@@ -10,4 +10,3 @@ public sealed class CreateUserCommandValidator : AbstractValidator<CreateUserCom
         RuleFor(x => x.Password).NotEmpty().MinimumLength(6);
     }
 }
-

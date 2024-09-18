@@ -6,5 +6,3 @@ public record BookSalesResult(
     string Author,
     int Units,
     decimal Sales);
-
-

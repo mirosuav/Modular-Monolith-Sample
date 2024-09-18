@@ -4,7 +4,7 @@ using System.Text.Json;
 namespace RiverBooks.SharedKernel.Events;
 
 /// <summary>
-/// Holds a DomainEvent in Transactional Outbox table
+///     Holds a DomainEvent in Transactional Outbox table
 /// </summary>
 public sealed class TransactionalOutboxEvent
 {
@@ -14,22 +14,22 @@ public sealed class TransactionalOutboxEvent
     public bool Success { get; set; }
     public int Attempts { get; set; }
 
-    [StringLength(300)]
-    public required string EventType { get; init; }
+    [StringLength(300)] public required string EventType { get; init; }
 
     /// <summary>
-    /// Json serialized DomainEvent
+    ///     Json serialized DomainEvent
     /// </summary>
     [StringLength(2000)]
     public required string Payload { get; init; }
 
-    public static TransactionalOutboxEvent Create(IEvent domainEvent) =>
-         new()
-         {
-             Id = domainEvent.Id,
-             OccurredUtc = domainEvent.OccurredUtc,
-             EventType = domainEvent.GetType().AssemblyQualifiedName!,
-             Payload = JsonSerializer.Serialize(domainEvent, domainEvent.GetType()),
-         };
+    public static TransactionalOutboxEvent Create(IEvent domainEvent)
+    {
+        return new TransactionalOutboxEvent
+        {
+            Id = domainEvent.Id,
+            OccurredUtc = domainEvent.OccurredUtc,
+            EventType = domainEvent.GetType().AssemblyQualifiedName!,
+            Payload = JsonSerializer.Serialize(domainEvent, domainEvent.GetType())
+        };
+    }
 }
-

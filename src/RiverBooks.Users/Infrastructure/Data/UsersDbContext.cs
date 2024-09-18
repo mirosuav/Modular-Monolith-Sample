@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using RiverBooks.Users.Domain;
-using System.Reflection;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using RiverBooks.SharedKernel.Events;
+using RiverBooks.Users.Domain;
 
 namespace RiverBooks.Users.Infrastructure.Data;
 
@@ -23,10 +21,9 @@ public class UsersDbContext(DbContextOptions<UsersDbContext> options)
     }
 
     protected override void ConfigureConventions(
-      ModelConfigurationBuilder configurationBuilder)
+        ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.Properties<decimal>()
             .HavePrecision(18, 6);
     }
 }
-

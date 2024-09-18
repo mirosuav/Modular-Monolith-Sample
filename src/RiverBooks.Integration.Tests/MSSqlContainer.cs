@@ -1,5 +1,6 @@
-﻿using DotNet.Testcontainers.Builders;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Security.Cryptography;
+using DotNet.Testcontainers.Builders;
 using Testcontainers.MsSql;
 
 namespace RiverBooks.Integration.Tests;
@@ -13,7 +14,7 @@ internal class MSSqlContainer
     {
         try
         {
-            sqlPassword = "pAs5!w0R!D" + Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(3)).TrimEnd('=');
+            sqlPassword = "pAs5!w0R!D" + Convert.ToBase64String(RandomNumberGenerator.GetBytes(3)).TrimEnd('=');
 
             msSqlContainer = new MsSqlBuilder()
                 .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
@@ -35,18 +36,23 @@ internal class MSSqlContainer
     {
         // return "Server=(local);Integrated Security=true;Initial Catalog=RiverBooks.Tests;Trust Server Certificate=True";
         var properties = new Dictionary<string, string>
-            {
-                { "Server", msSqlContainer.Hostname + "," + msSqlContainer.GetMappedPublicPort(MsSqlBuilder.MsSqlPort) },
-                { "Database", databaseName ?? "master" },
-                { "User Id", "sa" },
-                { "Password", sqlPassword },
-                { "TrustServerCertificate", "True" }
-            };
+        {
+            { "Server", msSqlContainer.Hostname + "," + msSqlContainer.GetMappedPublicPort(MsSqlBuilder.MsSqlPort) },
+            { "Database", databaseName ?? "master" },
+            { "User Id", "sa" },
+            { "Password", sqlPassword },
+            { "TrustServerCertificate", "True" }
+        };
         return string.Join(";", properties.Select(property => string.Join("=", property.Key, property.Value)));
     }
 
-    public Task StartAsync() => msSqlContainer.StartAsync();
+    public Task StartAsync()
+    {
+        return msSqlContainer.StartAsync();
+    }
 
-    public ValueTask DisposeAsync() => msSqlContainer.DisposeAsync();
+    public ValueTask DisposeAsync()
+    {
+        return msSqlContainer.DisposeAsync();
+    }
 }
-

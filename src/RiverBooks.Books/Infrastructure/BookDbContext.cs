@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using RiverBooks.Books.Domain;
-using RiverBooks.SharedKernel.Events;
 
 namespace RiverBooks.Books.Infrastructure;
 
@@ -20,9 +19,9 @@ internal class BookDbContext(DbContextOptions<BookDbContext> options)
     }
 
     protected override void ConfigureConventions(
-      ModelConfigurationBuilder configurationBuilder)
+        ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.Properties<decimal>()
-          .HavePrecision(18, 6);
+            .HavePrecision(18, 6);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RiverBooks.Users.Domain;
-using System.Reflection.Emit;
 
 namespace RiverBooks.Users.Infrastructure.Data;
 
@@ -11,10 +10,9 @@ public class UserStreetAddressConfiguration : IEntityTypeConfiguration<UserStree
     {
         builder.ToTable(nameof(UserStreetAddress));
         builder
-          .Property(x => x.Id)
-          .ValueGeneratedNever();
+            .Property(x => x.Id)
+            .ValueGeneratedNever();
 
         builder.ComplexProperty(usa => usa.StreetAddress);
     }
 }
-

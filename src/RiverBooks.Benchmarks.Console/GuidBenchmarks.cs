@@ -7,14 +7,20 @@ namespace RiverBooks.Benchmarks.Console;
 public class GuidBenchmarks
 {
     [Benchmark]
-    public Guid OldGuid() => Guid.NewGuid();
+    public Guid OldGuid()
+    {
+        return Guid.NewGuid();
+    }
 
     [Benchmark]
-    public Guid UUidv7() => Uuid7.Guid();
+    public Guid UUidv7()
+    {
+        return Uuid7.Guid();
+    }
 }
 
 /*
- 
+
 Results
 
    | Method  | Mean      | Error    | StdDev   | Gen0   | Allocated |

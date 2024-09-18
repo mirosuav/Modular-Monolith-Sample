@@ -10,12 +10,8 @@ public class GetUserByIdHandler(IUserRepository userRepository) : IRequestHandle
     {
         var user = await userRepository.GetUserAsync(request.UserId);
 
-        if (user is null)
-        {
-            return Error.NotFound("No such user");
-        }
+        if (user is null) return Error.NotFound("No such user");
 
         return new UserDto(user.Id, user.Email!);
     }
 }
-

@@ -26,15 +26,15 @@ public class UserRepository(UsersDbContext dbContext) : IUserRepository
     public Task<User?> GetUserWithAddressesAsync(Guid userId)
     {
         return dbContext.Users
-          .Include(user => user.Addresses)
-          .SingleOrDefaultAsync(user => user.Id == userId);
+            .Include(user => user.Addresses)
+            .SingleOrDefaultAsync(user => user.Id == userId);
     }
 
     public Task<User?> GetUserWithCartAsync(Guid userId)
     {
         return dbContext.Users
-          .Include(user => user.CartItems)
-          .SingleOrDefaultAsync(user => user.Id == userId);
+            .Include(user => user.CartItems)
+            .SingleOrDefaultAsync(user => user.Id == userId);
     }
 
     public async Task<bool> DeleteUser(Guid userId)

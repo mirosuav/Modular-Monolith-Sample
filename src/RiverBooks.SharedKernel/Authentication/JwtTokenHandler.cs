@@ -1,33 +1,17 @@
-﻿using Microsoft.AspNetCore.Authentication.OAuth;
+﻿using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using RiverBooks.SharedKernel.Helpers;
-using System.Text;
 
 namespace RiverBooks.SharedKernel.Authentication;
 
 public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProvider) : IJwtTokenHandler
 {
-    public static TokenValidationParameters CreateValidationParameters(IConfiguration configuration)
-    {
-        return new TokenValidationParameters
-        {
-            ValidateLifetime = true,
-            ValidateIssuer = true,
-            ValidIssuer = configuration["Auth:JwtIssuer"],
-            ValidAudience = configuration["Auth:JwtAudience"],
-            ValidateIssuerSigningKey = true,
-            ValidateAudience = true,
-            ClockSkew = TimeSpan.Zero,
-            IssuerSigningKey = CreateSecurityKey(configuration["Auth:JwtSecret"]),
-        };
-    }
-
     public AuthToken CreateToken(string userId, string userEmailAddress)
     {
-        SymmetricSecurityKey securityKey = CreateSecurityKey(configuration["Auth:JwtSecret"]);
-        int tokenExpiration = configuration.GetValue("Auth:TokenExpirationMin", 120);
+        var securityKey = CreateSecurityKey(configuration["Auth:JwtSecret"]);
+        var tokenExpiration = configuration.GetValue("Auth:TokenExpirationMin", 120);
         var utcNow = timeProvider.GetUtcNow().UtcDateTime;
 
         var claims = new Dictionary<string, object>
@@ -54,7 +38,22 @@ public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProv
         return new AuthToken
         {
             Token = token,
-            ExpiresIn = tokenExpiration,
+            ExpiresIn = tokenExpiration
+        };
+    }
+
+    public static TokenValidationParameters CreateValidationParameters(IConfiguration configuration)
+    {
+        return new TokenValidationParameters
+        {
+            ValidateLifetime = true,
+            ValidateIssuer = true,
+            ValidIssuer = configuration["Auth:JwtIssuer"],
+            ValidAudience = configuration["Auth:JwtAudience"],
+            ValidateIssuerSigningKey = true,
+            ValidateAudience = true,
+            ClockSkew = TimeSpan.Zero,
+            IssuerSigningKey = CreateSecurityKey(configuration["Auth:JwtSecret"])
         };
     }
 

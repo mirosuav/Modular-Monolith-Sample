@@ -1,7 +1,5 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace RiverBooks.SharedKernel.Messaging.PipelineBehaviors;
 
@@ -14,7 +12,7 @@ public static class BehaviorExtensions
     }
 
     /// <summary>
-    /// Register all FluentValidators in MediatR Pipeline. Don't forget to register the validators!
+    ///     Register all FluentValidators in MediatR Pipeline. Don't forget to register the validators!
     /// </summary>
     public static IServiceCollection AddValidationBehavior(this IServiceCollection services)
     {

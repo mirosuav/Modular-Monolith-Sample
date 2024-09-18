@@ -20,7 +20,6 @@ internal class EmailSendingBackgroundService(
         var sendEmailsFromOutboxService = scope.ServiceProvider.GetRequiredService<ISendEmailsFromOutboxService>();
 
         while (!stoppingToken.IsCancellationRequested)
-        {
             try
             {
                 await sendEmailsFromOutboxService.CheckForAndSendEmails(stoppingToken);
@@ -34,7 +33,6 @@ internal class EmailSendingBackgroundService(
                 logger.LogTrace("Sleeping {checkEmailsInterval}ms...", CheckEmailsInterval);
                 await Task.Delay(CheckEmailsInterval, stoppingToken);
             }
-        }
 
         logger.LogInformation("{serviceName} stopping.", nameof(EmailSendingBackgroundService));
     }

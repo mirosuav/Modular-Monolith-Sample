@@ -1,19 +1,27 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace RiverBooks.SharedKernel.Extensions;
 
 public static class DistributedCacheExtensions
 {
+    private static readonly JsonSerializerOptions CacheJsonSerializerOptions = new()
+    {
+        PropertyNamingPolicy = null,
+        WriteIndented = true,
+        AllowTrailingCommas = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
+
     public static Task SetAsync<T>(
         this IDistributedCache cache,
         string key,
         T value,
         CancellationToken cancellationToken)
     {
-        return SetAsync(cache, key, value, new(), cancellationToken);
+        return SetAsync(cache, key, value, new DistributedCacheEntryOptions(), cancellationToken);
     }
 
     public static Task SetAsync<T>(
@@ -39,12 +47,4 @@ public static class DistributedCacheExtensions
 
         return JsonSerializer.Deserialize<T>(cacheBytes, CacheJsonSerializerOptions);
     }
-
-    private static readonly JsonSerializerOptions CacheJsonSerializerOptions = new()
-    {
-        PropertyNamingPolicy = null,
-        WriteIndented = true,
-        AllowTrailingCommas = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    };
 }

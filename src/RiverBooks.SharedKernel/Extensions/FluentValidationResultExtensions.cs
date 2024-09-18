@@ -5,8 +5,9 @@ namespace RiverBooks.SharedKernel.Extensions;
 
 public static class FluentValidationResultExtensions
 {
-    public static IEnumerable<Error> AsErrors(this ValidationResult valResult) =>
-        valResult.Errors.Select(error =>
+    public static IEnumerable<Error> AsErrors(this ValidationResult valResult)
+    {
+        return valResult.Errors.Select(error =>
             Error.Validation(error.ErrorCode, error.ErrorMessage + $" Property={error.PropertyName}"));
+    }
 }
-

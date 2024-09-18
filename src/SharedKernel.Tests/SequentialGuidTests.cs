@@ -4,7 +4,6 @@ namespace RiverBooks.SharedKernel.Tests;
 
 public class SequentialGuidTests
 {
-
     [Fact]
     public void NewGuid_ShouldReturnSortedGuids()
     {
@@ -22,7 +21,7 @@ public class SequentialGuidTests
     public void NewGuid_ShouldCauseNoCollisions()
     {
         // ARRANGE
-        int size = 10_000_000;
+        var size = 10_000_000;
         var guids = new Guid[size];
 
         // ACT

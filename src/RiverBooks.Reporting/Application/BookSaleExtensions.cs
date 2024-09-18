@@ -5,7 +5,9 @@ namespace RiverBooks.Reporting.Application;
 
 internal static class BookSaleExtensions
 {
-    public static BookSalesResult ToResult(this BookSale bookSale) =>
-        new BookSalesResult(bookSale.BookId, bookSale.Title, bookSale.Author, bookSale.UnitsSold, bookSale.TotalSales);
+    public static BookSalesResult ToResult(this BookSale bookSale)
+    {
+        return new BookSalesResult(bookSale.BookId, bookSale.Title, bookSale.Author, bookSale.UnitsSold,
+            bookSale.TotalSales);
+    }
 }
-

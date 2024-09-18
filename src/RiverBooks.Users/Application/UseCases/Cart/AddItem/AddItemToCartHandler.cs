@@ -14,25 +14,24 @@ public class AddItemToCartHandler(
     {
         var user = await userRepository.GetUserWithCartAsync(request.UserId);
 
-        if (user is null)
-        {
-            return Error.NotAuthorized;
-        }
+        if (user is null) return Error.NotAuthorized;
 
         var query = new BookDetailsQuery(request.BookId);
 
         var result = await mediator.Send(query, ct);
 
         if (!result.IsSuccess)
-            return new(result.Errors);
+            return new ResultOf(result.Errors);
 
         var bookDetails = result.Value!;
 
         var description = $"{bookDetails.Title} by {bookDetails.Author}";
-        var newCartItem = new CartItem(request.BookId,
-          description,
-          request.Quantity,
-          bookDetails.Price);
+        var newCartItem = new CartItem(
+            request.BookId,
+            request.UserId,
+            description,
+            request.Quantity,
+            bookDetails.Price);
 
         user.AddItemToCart(newCartItem);
 

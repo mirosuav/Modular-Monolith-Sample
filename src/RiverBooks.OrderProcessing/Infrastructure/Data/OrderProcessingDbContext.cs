@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using RiverBooks.OrderProcessing.Domain;
-using System.Reflection;
 using RiverBooks.SharedKernel.Events;
 
 namespace RiverBooks.OrderProcessing.Infrastructure.Data;
@@ -20,7 +20,7 @@ internal class OrderProcessingDbContext(DbContextOptions<OrderProcessingDbContex
     }
 
     protected override void ConfigureConventions(
-      ModelConfigurationBuilder configurationBuilder)
+        ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.Properties<decimal>()
             .HavePrecision(18, 6);

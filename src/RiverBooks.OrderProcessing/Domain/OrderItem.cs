@@ -24,6 +24,4 @@ internal class OrderItem
     public int Quantity { get; private set; }
     public decimal UnitPrice { get; private set; }
     public string Description { get; private set; } = string.Empty;
-
 }
-

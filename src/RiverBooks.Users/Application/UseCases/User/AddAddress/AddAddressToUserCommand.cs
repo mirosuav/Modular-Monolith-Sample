@@ -2,6 +2,7 @@
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.Users.Application.UseCases.User.AddAddress;
+
 public record AddAddressToUserCommand(
     Guid UserId,
     string Street1,

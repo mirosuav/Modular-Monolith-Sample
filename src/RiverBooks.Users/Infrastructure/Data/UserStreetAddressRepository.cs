@@ -9,6 +9,6 @@ public class UserStreetAddressRepository(UsersDbContext _dbContext) : IReadOnlyU
     public Task<UserStreetAddress?> GetById(Guid userStreetAddressId)
     {
         return _dbContext.UserStreetAddresses
-          .SingleOrDefaultAsync(a => a.Id == userStreetAddressId);
+            .SingleOrDefaultAsync(a => a.Id == userStreetAddressId);
     }
 }

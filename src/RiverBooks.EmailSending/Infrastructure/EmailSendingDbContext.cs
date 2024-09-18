@@ -1,7 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using RiverBooks.EmailSending.Domain;
-using System.Reflection;
-using RiverBooks.SharedKernel.Events;
 
 namespace RiverBooks.EmailSending.Infrastructure;
 

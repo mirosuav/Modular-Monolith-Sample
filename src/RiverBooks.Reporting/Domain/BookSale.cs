@@ -2,7 +2,7 @@
 
 public class BookSale
 {
-   // public Guid Id { get; set; }
+    // public Guid Id { get; set; }
     public Guid OrderId { get; set; }
     public Guid BookId { get; set; }
     public string Title { get; set; } = string.Empty;
@@ -12,4 +12,3 @@ public class BookSale
     public int UnitsSold { get; set; }
     public decimal TotalSales { get; set; }
 }
-

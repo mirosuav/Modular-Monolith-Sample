@@ -1,10 +1,10 @@
-﻿using RiverBooks.Books.Api;
+﻿using System.Diagnostics;
+using System.Reflection;
+using RiverBooks.Books.Api;
 using RiverBooks.EmailSending.Api;
 using RiverBooks.OrderProcessing.Api;
 using RiverBooks.Reporting.Api;
 using RiverBooks.Users.Api;
-using System.Diagnostics;
-using System.Reflection;
 
 namespace RiverBooks.Web;
 
@@ -37,4 +37,3 @@ public static class BuilderExtensions
         return builder.MapGet(pattern, () => $"RiverBooks API ver. {versionInfo.ProductVersion}");
     }
 }
-

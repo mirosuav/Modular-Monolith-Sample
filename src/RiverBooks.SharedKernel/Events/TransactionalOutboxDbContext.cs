@@ -3,22 +3,25 @@
 namespace RiverBooks.SharedKernel.Events;
 
 /// <summary>
-/// Implementation of Transactional Outbox pattern
-/// Events are persisted with atomic fashion within the main business entity
-/// Then EventsProcessing module triggers the events from outbox table in each individual module asynchronously
+///     Implementation of Transactional Outbox pattern
+///     Events are persisted with atomic fashion within the main business entity
+///     Then EventsProcessing module triggers the events from outbox table in each individual module asynchronously
 /// </summary>
 public abstract class TransactionalOutboxDbContext(DbContextOptions options)
     : DbContext(options)
 {
     public static int TransactionalOutboxMaxAttempts = 3;
 
-    public virtual IQueryable<TransactionalOutboxEvent> FetchNextTransactionalOutboxEvents() =>
-        OutboxEvents
+    public DbSet<TransactionalOutboxEvent> OutboxEvents { get; set; }
+
+    public virtual IQueryable<TransactionalOutboxEvent> FetchNextTransactionalOutboxEvents()
+    {
+        return OutboxEvents
             .Where(x => !x.Success) // Get not completed
             .Where(x => x.Attempts < TransactionalOutboxMaxAttempts) // Exclude persistent failures
-            .OrderBy(x => x.OccurredUtc); // Order by FiFo
-
-    public DbSet<TransactionalOutboxEvent> OutboxEvents { get; set; }
+            .OrderBy(x => x.OccurredUtc);
+        // Order by FiFo
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -35,7 +38,7 @@ public abstract class TransactionalOutboxDbContext(DbContextOptions options)
     }
 
     /// <summary>
-    /// Retrieve domain events from all entities and save them in the EventsOutbox
+    ///     Retrieve domain events from all entities and save them in the EventsOutbox
     /// </summary>
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -60,4 +63,3 @@ public abstract class TransactionalOutboxDbContext(DbContextOptions options)
         }
     }
 }
-

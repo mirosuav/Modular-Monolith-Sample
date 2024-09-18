@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using RiverBooks.OrderProcessing.Application.Interfaces;
 using RiverBooks.OrderProcessing.Domain;
 using RiverBooks.SharedKernel.Helpers;
+using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.OrderProcessing.Infrastructure;
 
@@ -26,7 +27,7 @@ internal class ReadThroughOrderAddressCache(
 
             // read user address from User module and store in cache
             logger.LogInformation("Address {id} not found in OrderAddressCache; fetching from source.", id);
-            var query = new Users.Contracts.UserAddressDetailsByIdQuery(id);
+            var query = new UserAddressDetailsByIdQuery(id);
 
             var queryResult = await mediator.Send(query, cancellationToken);
 
@@ -34,11 +35,11 @@ internal class ReadThroughOrderAddressCache(
             {
                 var dto = queryResult.Value;
                 var address = new Address(dto.Street1,
-                                          dto.Street2,
-                                          dto.City,
-                                          dto.State,
-                                          dto.PostalCode,
-                                          dto.Country);
+                    dto.Street2,
+                    dto.City,
+                    dto.State,
+                    dto.PostalCode,
+                    dto.Country);
 
                 var orderAddress = new OrderAddress(dto.AddressId, address);
                 await addressCache.StoreAsync(orderAddress, cancellationToken);

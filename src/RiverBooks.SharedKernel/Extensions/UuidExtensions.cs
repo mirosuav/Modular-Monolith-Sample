@@ -5,16 +5,33 @@ using System.Security.Cryptography;
 namespace RiverBooks.SharedKernel.Extensions;
 
 /// <summary>
-/// Source <see href="https://github.com/stevesimmons/uuid7-csharp"/>
-/// Generate a UUIDv7 following the Peabody and Davis RFC draft.
-/// Aim is to get 100ns resolution if possible, 
-/// working on both Windows and Linux.
+///     Source <see href="https://github.com/stevesimmons/uuid7-csharp" />
+///     Generate a UUIDv7 following the Peabody and Davis RFC draft.
+///     Aim is to get 100ns resolution if possible,
+///     working on both Windows and Linux.
 /// </summary>
 public static class Uuid7
 {
+    private const int uuidVersion = 7;
+    private const int uuidVariant = 0b10;
+    private const int maxSeqValue = 0x3FFF;
+
+    // Time values and sequence counter from the last call
+    private static long _x;
+    private static long _y;
+    private static long _z;
+    private static int _seq;
+
+    // Time values and sequence counter from the last asOfNs call.
+    // This ensures real-time operations will stay monotonic.
+    private static long _x_asOf;
+    private static long _y_asOf;
+    private static long _z_asOf;
+    private static int _seq_asOf;
+
     /// <summary>
-    /// The current time in integer nanoseconds, 
-    /// measured from the Unix epoch (midnight on 1 January 1970).
+    ///     The current time in integer nanoseconds,
+    ///     measured from the Unix epoch (midnight on 1 January 1970).
     /// </summary>
     /// <returns>Integer number of nanoseconds.</returns>
     public static long TimeNs()
@@ -22,35 +39,17 @@ public static class Uuid7
         return 100 * (DateTime.UtcNow.Ticks - DateTime.UnixEpoch.Ticks);
     }
 
-    // Time values and sequence counter from the last call
-    private static long _x = 0;
-    private static long _y = 0;
-    private static long _z = 0;
-    private static int _seq = 0;
-
-    // Time values and sequence counter from the last asOfNs call.
-    // This ensures real-time operations will stay monotonic.
-    private static long _x_asOf = 0;
-    private static long _y_asOf = 0;
-    private static long _z_asOf = 0;
-    private static int _seq_asOf = 0;
-    
-    private const int uuidVersion = 7;
-    private const int uuidVariant = 0b10;
-    private const int maxSeqValue = 0x3FFF;
-
     /// <summary>
-    /// A new UUIDv7 Guid, which is time-ordered, with a nominal
-    /// time resolution of 100ns and 32 bits of randomness.
-    /// The current time is used, unless overridden.
-    /// Consecutive calls using the same Uuid7 instance employ a 14-bit sequence
-    /// counter so their uuids/Id25s stay time-ordered. The lowest 48 bits are random.
-    /// 
-    /// The special value of 0 gives an all zero uuid.
+    ///     A new UUIDv7 Guid, which is time-ordered, with a nominal
+    ///     time resolution of 100ns and 32 bits of randomness.
+    ///     The current time is used, unless overridden.
+    ///     Consecutive calls using the same Uuid7 instance employ a 14-bit sequence
+    ///     counter so their uuids/Id25s stay time-ordered. The lowest 48 bits are random.
+    ///     The special value of 0 gives an all zero uuid.
     /// </summary>
     /// <param name="asOfNs">Optional time to use, in integer nanoseconds since the Unix epoch.</param>
     /// <returns>
-    /// Guid that follows UUID v7 format whose string and integer representations are time-sortable.
+    ///     Guid that follows UUID v7 format whose string and integer representations are time-sortable.
     /// </returns>
     public static Guid Guid(long? asOfNs = null)
     {
@@ -58,7 +57,7 @@ public static class Uuid7
          * corresponding to 50ns. This is sufficient for the underlying
          * 100ns tick size. The actual clock precision may be several
          * times less than this.
-         
+
           0                   1                   2                   3
           0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
          +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -69,7 +68,7 @@ public static class Uuid7
          |var|       seq (14 bits)       |          rand (16 bits)       |
          +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
          |                          rand (32 bits)                       |
-         +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+         +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
          */
         // The UUID variant is the top-most bits of byte #9.
         // The number of bits increases because as new variants were added, 
@@ -90,9 +89,9 @@ public static class Uuid7
         // Get timestamp components of length 32, 16, 12 bits,
         // with the first 36 bits being whole seconds and
         // the remaining 24 bits being fractional seconds.
-        long x = Math.DivRem(ns, 16_000_000_000L, out long rest1);
-        long y = Math.DivRem(rest1 << 16, 16_000_000_000L, out long rest2);
-        long z = Math.DivRem(rest2 << 12, 16_000_000_000L, out long _);
+        var x = Math.DivRem(ns, 16_000_000_000L, out var rest1);
+        var y = Math.DivRem(rest1 << 16, 16_000_000_000L, out var rest2);
+        var z = Math.DivRem(rest2 << 12, 16_000_000_000L, out var _);
 
         int seq;
         if (asOfNs != null)
@@ -113,6 +112,7 @@ public static class Uuid7
                 _y = y;
                 _z = z;
             }
+
             seq = _seq;
         }
         else
@@ -130,6 +130,7 @@ public static class Uuid7
                 _y_asOf = y;
                 _z_asOf = z;
             }
+
             seq = _seq_asOf;
         }
 
@@ -137,7 +138,7 @@ public static class Uuid7
         // then six bytes of randomness.
         var last8Bytes = new byte[8];
         RandomNumberGenerator.Fill(last8Bytes);
-        last8Bytes[0] = (byte)(uuidVariant << 6 | seq >> 8);
+        last8Bytes[0] = (byte)((uuidVariant << 6) | (seq >> 8));
         last8Bytes[1] = (byte)(seq & 0xFF);
 
         // Don't use Guid(bytes[]), which internally uses a mix of
@@ -147,7 +148,7 @@ public static class Uuid7
         return new Guid(
             (int)x,
             (short)y,
-            (short)((uuidVersion << 12) + z & 0xFFFF),
+            (short)(((uuidVersion << 12) + z) & 0xFFFF),
             last8Bytes
         );
     }
@@ -158,45 +159,42 @@ public static class Uuid7
     }
 
     /// <summary>
-    /// A UUIDv7 Guid transformed into a 25-character lower-case string which 
-    /// preserves the time-ordered property. This representation, called Id25,
-    /// is distinctive and reduces the chance that some v4 UUIDs end up 
-    /// in a collection meant to contain only v7 UUIDs.
-    /// 
-    /// As for the Uuid7.Guid(), the current time is used, unless overridden.
-    /// Consecutive calls using the same Uuid7 instance employ a 14-bit sequence
-    /// counter so their uuids/Id25s stay time-ordered. The lowest 48 bits are random.
-    /// 
-    /// The special value of 0 gives an all zero uuid.
+    ///     A UUIDv7 Guid transformed into a 25-character lower-case string which
+    ///     preserves the time-ordered property. This representation, called Id25,
+    ///     is distinctive and reduces the chance that some v4 UUIDs end up
+    ///     in a collection meant to contain only v7 UUIDs.
+    ///     As for the Uuid7.Guid(), the current time is used, unless overridden.
+    ///     Consecutive calls using the same Uuid7 instance employ a 14-bit sequence
+    ///     counter so their uuids/Id25s stay time-ordered. The lowest 48 bits are random.
+    ///     The special value of 0 gives an all zero uuid.
     /// </summary>
     /// <param name="asOfNs">Optional time to use, in integer nanoseconds since the Unix epoch.</param>
     /// <returns>
-    /// 25-character string like "0q974fmmvghw8qfathid7qekc" that is time-sortable.
+    ///     25-character string like "0q974fmmvghw8qfathid7qekc" that is time-sortable.
     /// </returns>
     public static string Id25(long? asOfNs = null)
     {
-        Guid guid = Guid(asOfNs);
+        var guid = Guid(asOfNs);
         return Id25(guid);
     }
 
     /// <summary>
-    /// A UUIDv7 Guid transformed into a 25-character lower-case string which 
-    /// preserves the time-ordered property. Using this distinct representation can
-    /// reduce the chance that some v4 UUIDs end up in a collection of v7 UUIDs.
-    /// 
-    /// As for the Uuid7.Guid(), the current time is used, unless overridden.
-    /// The special value of 0 gives an all zero uuid.
+    ///     A UUIDv7 Guid transformed into a 25-character lower-case string which
+    ///     preserves the time-ordered property. Using this distinct representation can
+    ///     reduce the chance that some v4 UUIDs end up in a collection of v7 UUIDs.
+    ///     As for the Uuid7.Guid(), the current time is used, unless overridden.
+    ///     The special value of 0 gives an all zero uuid.
     /// </summary>
     /// <param name="asOfNs">Optional time to use, in integer nanoseconds since the Unix epoch.</param>
     /// <returns>
-    /// 25-character string like "0q974fmmvghw8qfathid7qekc" that is time-sortable.
+    ///     25-character string like "0q974fmmvghw8qfathid7qekc" that is time-sortable.
     /// </returns>
     public static string Id25(Guid guid)
     {
         const string alphabet = "0123456789abcdefghijkmnopqrstuvwxyz"; // 35 chars - no "l"
-        char[] id25_chars = new char[25];
+        var id25_chars = new char[25];
 
-        byte[] arr = guid.ToByteArray();
+        var arr = guid.ToByteArray();
         // C# GUIDs use a mix of big endian and little ending ordering.
         // e.g. Guid  00010203-0405-0607-0809-0A0B0C0D0E0F becomes
         // byte array 030201000504070608090A0B0C0D0E0F.
@@ -216,12 +214,9 @@ public static class Uuid7
         arr[7] = b;
 
         var isZero = arr.All(b => b == 0);
-        int uuidVersion = arr[6] >> 4;
-        int uuidVariant = arr[8] >> 6;
-        if ((!isZero) && (uuidVersion != 7 || uuidVariant != 2))
-        {
-            throw new ArgumentException("Not v7 UUID");
-        }
+        var uuidVersion = arr[6] >> 4;
+        var uuidVariant = arr[8] >> 6;
+        if (!isZero && (uuidVersion != 7 || uuidVariant != 2)) throw new ArgumentException("Not v7 UUID");
 
         var rest = new BigInteger(arr, true, true);
         BigInteger rem;
@@ -231,17 +226,18 @@ public static class Uuid7
         {
             rem = rest % divisor;
             rest /= divisor;
-            char c = alphabet[(int)rem];
+            var c = alphabet[(int)rem];
             id25_chars[pos] = c;
         }
+
         return new string(id25_chars);
     }
 
 
     /// <summary>
-    /// Check whether the tick values on this system are being returned
-    /// with ~100ns precision. We should not see 15ms!
-    /// Typical values on Win11 seem to be 132ns.
+    ///     Check whether the tick values on this system are being returned
+    ///     with ~100ns precision. We should not see 15ms!
+    ///     Typical values on Win11 seem to be 132ns.
     /// </summary>
     /// <returns>String with description of timing analysis.</returns>
     public static string CheckTimingPrecision()
@@ -254,6 +250,7 @@ public static class Uuid7
             distinctValues.Add(TimeNs());
             numLoops += 1;
         }
+
         sw.Stop();
 
         var numSamples = distinctValues.Count;
@@ -261,8 +258,9 @@ public static class Uuid7
         var maxPrecisionNs = 1_000_000 * sw.Elapsed.TotalMilliseconds / numLoops;
 
         if (numSamples == numLoops)
-            return $"Precision is {actualPrecisionNs:0}ns with no repeats in {numLoops:N0} loops taking {sw.Elapsed.TotalMilliseconds}ms";
-        else
-            return $"Precision is {actualPrecisionNs:0}ns rather than {maxPrecisionNs:0}ns ({numSamples:N0} unique timestamps from {numLoops:N0} loops taking {sw.Elapsed.TotalMilliseconds}ms)";
+            return
+                $"Precision is {actualPrecisionNs:0}ns with no repeats in {numLoops:N0} loops taking {sw.Elapsed.TotalMilliseconds}ms";
+        return
+            $"Precision is {actualPrecisionNs:0}ns rather than {maxPrecisionNs:0}ns ({numSamples:N0} unique timestamps from {numLoops:N0} loops taking {sw.Elapsed.TotalMilliseconds}ms)";
     }
 }

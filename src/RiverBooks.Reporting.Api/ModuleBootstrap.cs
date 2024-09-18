@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RiverBooks.Reporting.Application;
-using Serilog;
-using System.Reflection;
 using RiverBooks.Reporting.Infrastructure.Data;
+using Serilog;
 
 namespace RiverBooks.Reporting.Api;
 
@@ -21,15 +21,15 @@ public static class ModuleBootstrap
     }
 
     public static IServiceCollection AddReportingModuleServices(
-          this IServiceCollection services,
-          ConfigurationManager config,
-          ILogger logger,
-          List<Assembly> mediatRAssemblies)
+        this IServiceCollection services,
+        ConfigurationManager config,
+        ILogger logger,
+        List<Assembly> mediatRAssemblies)
     {
-        
-        string? connectionString = config.GetConnectionString($"{ModuleDescriptor.Name}ConnectionString");
+        var connectionString = config.GetConnectionString($"{ModuleDescriptor.Name}ConnectionString");
 
-        services.AddDbContext<ReportingDbContext>(c => c.UseSqlServer(connectionString));
+        services.AddDbContext<ReportingDbContext>(options =>
+            options.UseSqlServer(connectionString, o => o.EnableRetryOnFailure()));
 
         // configure module services
         services.AddScoped<ISalesReportService, SalesReportService>();

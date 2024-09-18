@@ -13,4 +13,3 @@ public class BookSaleConfiguration : IEntityTypeConfiguration<BookSale>
         builder.HasIndex(b => b.SoldAtUtc);
     }
 }
-

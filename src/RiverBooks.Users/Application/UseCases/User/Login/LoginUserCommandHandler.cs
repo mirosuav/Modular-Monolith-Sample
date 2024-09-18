@@ -14,17 +14,11 @@ public class LoginUserCommandHandler(
     {
         var user = await userRepository.GetUserByEmailAsync(command.Email);
 
-        if (user == null)
-        {
-            return Error.NotFound();
-        }
+        if (user == null) return Error.NotFound();
 
         var loginSuccessful = user.CheckPassword(command.Password);
 
-        if (!loginSuccessful)
-        {
-            return Error.NotAuthorized;
-        }
+        if (!loginSuccessful) return Error.NotAuthorized;
 
         var token = jwtTokenHandler.CreateToken(user.Id.ToString(), user.Email);
 

@@ -42,7 +42,7 @@ internal static class BookEndpoints
         CancellationToken cancellationToken)
     {
         var books = await bookService.ListBooksAsync();
-        return TypedResults.Ok(new ListBooksResponse() { Books = books });
+        return TypedResults.Ok(new ListBooksResponse { Books = books });
     }
 
     internal static async Task<IResult> CreateBookAsync(
@@ -68,19 +68,19 @@ internal static class BookEndpoints
     }
 
     internal static async Task<IResult> UpdateBookPriceAsync(
-            Guid bookId,
-            [FromBody] decimal newPrice,
-            [FromServices] IBookService bookService,
-            CancellationToken cancellationToken)
+        Guid bookId,
+        [FromBody] decimal newPrice,
+        [FromServices] IBookService bookService,
+        CancellationToken cancellationToken)
     {
         return (await bookService.UpdateBookPriceAsync(bookId, newPrice))
             .ToHttpNoContent();
     }
 
     internal static async Task<IResult> DeleteBookAsync(
-            Guid bookId,
-            [FromServices] IBookService bookService,
-            CancellationToken cancellationToken)
+        Guid bookId,
+        [FromServices] IBookService bookService,
+        CancellationToken cancellationToken)
     {
         return (await bookService.DeleteBookAsync(bookId))
             .ToHttpNoContent();

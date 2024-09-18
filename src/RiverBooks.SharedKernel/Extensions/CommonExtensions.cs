@@ -2,8 +2,8 @@
 
 public static class CommonExtensions
 {
-    public static DateTime GetUtcDateTime(this TimeProvider timeProvider) =>
-        timeProvider.GetUtcNow().UtcDateTime;
-
+    public static DateTime GetUtcDateTime(this TimeProvider timeProvider)
+    {
+        return timeProvider.GetUtcNow().UtcDateTime;
+    }
 }
-

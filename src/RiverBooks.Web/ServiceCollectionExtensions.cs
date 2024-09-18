@@ -1,21 +1,19 @@
-﻿using Asp.Versioning;
+﻿using System.Reflection;
+using Asp.Versioning;
 using RiverBooks.Books.Api;
 using RiverBooks.EmailSending.Api;
+using RiverBooks.EventsProcessing.Api;
 using RiverBooks.OrderProcessing.Api;
 using RiverBooks.Reporting.Api;
 using RiverBooks.SharedKernel.Authentication;
 using RiverBooks.SharedKernel.Extensions;
 using RiverBooks.SharedKernel.Messaging.PipelineBehaviors;
+using RiverBooks.SharedKernel.Middlewares;
 using RiverBooks.Users.Api;
 using Serilog;
-using Serilog.Settings.Configuration;
-using Serilog.Sinks.OpenTelemetry;
-using System.Reflection;
-using RiverBooks.EventsProcessing.Api;
-using RiverBooks.SharedKernel.Events;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
-using Microsoft.Extensions.Configuration;
+using ILogger = Serilog.ILogger;
 
 namespace RiverBooks.Web;
 
@@ -23,6 +21,9 @@ internal static class ServiceCollectionExtensions
 {
     internal static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddProblemDetails();
+
         services.AddHttpContextAccessor();
         services.AddSingleton(TimeProvider.System);
 
@@ -31,7 +32,6 @@ internal static class ServiceCollectionExtensions
 
     internal static IServiceCollection AddOpenApi(this IServiceCollection services)
     {
-
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
 
@@ -61,8 +61,9 @@ internal static class ServiceCollectionExtensions
             .WriteTo.Console(
                 theme: AnsiConsoleTheme.Literate,
                 outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {ModuleName} {Message:lj} {NewLine}{Exception}"
-            // outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] ({ModuleName}) {Message:lj} <s:{SourceContext}>{NewLine}{Exception}"
+                // outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] ({ModuleName}) {Message:lj} <s:{SourceContext}>{NewLine}{Exception}"
             );
+           // .WriteTo.Seq();
         return configuration;
     }
 
@@ -111,7 +112,7 @@ internal static class ServiceCollectionExtensions
     internal static IServiceCollection AddModules(
         this IServiceCollection services,
         ConfigurationManager configuration,
-        Serilog.ILogger logger,
+        ILogger logger,
         List<Assembly> moduleAssemblies)
     {
         services.AddEventsProcessingModuleServices(configuration, logger, moduleAssemblies);
@@ -123,7 +124,8 @@ internal static class ServiceCollectionExtensions
         return services;
     }
 
-    internal static IServiceCollection AddMessaging(this IServiceCollection services, List<Assembly> messagingAssemblies)
+    internal static IServiceCollection AddMessaging(this IServiceCollection services,
+        List<Assembly> messagingAssemblies)
     {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies([.. messagingAssemblies]));
 

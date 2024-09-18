@@ -62,8 +62,8 @@ internal static class CartEndpoints
             return TypedResults.Unauthorized();
 
         var command = new CheckoutCartCommand(userId.Value,
-                                              request.ShippingAddressId,
-                                              request.BillingAddressId);
+            request.ShippingAddressId,
+            request.BillingAddressId);
 
         var result = await sender.Send(command, cancellationToken);
 

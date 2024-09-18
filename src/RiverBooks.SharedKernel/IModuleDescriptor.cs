@@ -2,5 +2,5 @@
 
 public interface IModuleDescriptor
 {
-    static string Name { get; } = String.Empty;
+    static string Name { get; } = string.Empty;
 }

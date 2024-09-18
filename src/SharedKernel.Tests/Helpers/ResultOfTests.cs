@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 using FluentAssertions;
 using RiverBooks.SharedKernel.Helpers;
 
@@ -11,60 +7,89 @@ namespace RiverBooks.SharedKernel.Tests.Helpers;
 public class ResultOfTests
 {
     [Fact]
-    public void ResulOfGuid_ShouldBeSerializable() =>
+    public void ResulOfGuid_ShouldBeSerializable()
+    {
         CreateAndAssertSuccessAndFailure(Guid.NewGuid());
+    }
 
     [Fact]
-    public void ResulOfGuidEmpty_ShouldBeSerializable() =>
+    public void ResulOfGuidEmpty_ShouldBeSerializable()
+    {
         CreateAndAssertSuccessAndFailure(Guid.Empty);
+    }
 
     [Fact]
-    public void ResulOfString_ShouldBeSerializable() =>
+    public void ResulOfString_ShouldBeSerializable()
+    {
         CreateAndAssertSuccessAndFailure("!@#$%^&* !@#$%^ASDFd frgh");
+    }
 
     [Fact]
-    public void ResulOfStringEmpty_ShouldBeSerializable() =>
+    public void ResulOfStringEmpty_ShouldBeSerializable()
+    {
         CreateAndAssertSuccessAndFailure(string.Empty);
+    }
 
     [Fact]
-    public void ResulOfStringNull_ShouldBeSerializable() =>
+    public void ResulOfStringNull_ShouldBeSerializable()
+    {
         CreateAndAssertSuccessAndFailure((string?)null);
+    }
 
     [Fact]
-    public void ResulOfDecimal_ShouldBeSerializable() =>
+    public void ResulOfDecimal_ShouldBeSerializable()
+    {
         CreateAndAssertSuccessAndFailure(decimal.MinValue);
+    }
 
     [Fact]
-    public void ResulOfDecimalNull_ShouldBeSerializable() =>
+    public void ResulOfDecimalNull_ShouldBeSerializable()
+    {
         CreateAndAssertSuccessAndFailure((decimal?)null);
+    }
 
     [Fact]
-    public void ResulOfArrayOfDecimal_ShouldBeSerializable() =>
+    public void ResulOfArrayOfDecimal_ShouldBeSerializable()
+    {
         CreateAndAssertSuccessAndFailure(new[] { decimal.MinValue, 0m, decimal.MaxValue });
+    }
 
     [Fact]
-    public void ResulOfArrayOfDecimalNull_ShouldBeSerializable() =>
+    public void ResulOfArrayOfDecimalNull_ShouldBeSerializable()
+    {
         CreateAndAssertSuccessAndFailure((decimal[]?)null);
+    }
 
     [Fact]
-    public void ResulOfEnum_ShouldBeSerializable() =>
+    public void ResulOfEnum_ShouldBeSerializable()
+    {
         CreateAndAssertSuccessAndFailure(ApartmentState.STA);
+    }
 
     [Fact]
-    public void ResulOfEnumNull_ShouldBeSerializable() =>
+    public void ResulOfEnumNull_ShouldBeSerializable()
+    {
         CreateAndAssertSuccessAndFailure((ApartmentState?)null);
+    }
 
     [Fact]
-    public void ResulOfObject_ShouldBeSerializable() =>
+    public void ResulOfObject_ShouldBeSerializable()
+    {
         CreateAndAssertSuccessAndFailure(new SampleDto());
+    }
 
     [Fact]
-    public void ResulOfObjectNull_ShouldBeSerializable() =>
+    public void ResulOfObjectNull_ShouldBeSerializable()
+    {
         CreateAndAssertSuccessAndFailure((SampleDto?)null);
+    }
 
     [Fact]
-    public void ResulOfObjectList_ShouldBeSerializable() =>
-        CreateAndAssertSuccessAndFailure(new[]{ new SampleDto(), new SampleDto() { Id = 2, State = ApartmentState.Unknown}});
+    public void ResulOfObjectList_ShouldBeSerializable()
+    {
+        CreateAndAssertSuccessAndFailure(new[]
+            { new SampleDto(), new SampleDto { Id = 2, State = ApartmentState.Unknown } });
+    }
 
     private void CreateAndAssertSuccessAndFailure<T>(T value)
     {
@@ -113,7 +138,7 @@ public class ResultOfTests
         recreated.Value.Should().BeEquivalentTo(sut.Value);
         recreated.Errors.Should().BeEquivalentTo(sut.Errors);
     }
-    
+
     [Fact]
     public void ResultOf_ShouldBeSerializable_WithFailure()
     {
@@ -134,7 +159,7 @@ public class ResultOfTests
         recreated.IsSuccess.Should().BeFalse();
         recreated.Errors.Should().BeEquivalentTo(sut.Errors);
     }
-    
+
     [Fact]
     public void ResultOf_ShouldBeSerializable_WithSuccess()
     {
@@ -164,4 +189,3 @@ public class ResultOfTests
         public int[] StateIds { get; set; } = Enumerable.Range(10, 10).ToArray();
     }
 }
-

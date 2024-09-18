@@ -3,7 +3,6 @@ using RiverBooks.EmailSending.Contracts;
 using RiverBooks.SharedKernel;
 using RiverBooks.SharedKernel.Helpers;
 using RiverBooks.Users.Application.Interfaces;
-using RiverBooks.Users.Domain;
 
 namespace RiverBooks.Users.Application.UseCases.User.Create;
 
@@ -18,9 +17,7 @@ public class CreateUserCommandHandler(
 
         // Some additional validation for user at db level
         if (await userRepository.GetUserByEmailAsync(userEmail) is not null)
-        {
             return Error.Conflict("User.Exists", $"User with email {userEmail} already exists.");
-        }
 
         var newUser = new Domain.User
         {

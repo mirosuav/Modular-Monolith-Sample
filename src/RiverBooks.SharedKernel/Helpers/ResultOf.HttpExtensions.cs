@@ -7,34 +7,46 @@ namespace RiverBooks.SharedKernel.Helpers;
 public static class ResultOfHttpExtensions
 {
     public static IResult ToHttpOk(this ResultOf result)
-        => result.IsSuccess
+    {
+        return result.IsSuccess
             ? TypedResults.Ok()
             : result.ToProblemHttpResult();
+    }
 
     public static IResult ToHttpNoContent(this IResultOf result)
-        => result.IsSuccess
+    {
+        return result.IsSuccess
             ? TypedResults.NoContent()
             : result.ToProblemHttpResult();
+    }
 
     public static IResult ToHttpCreated(this IResultOf result, string? uri = null)
-        => result.IsSuccess
+    {
+        return result.IsSuccess
             ? TypedResults.Created(uri)
             : result.ToProblemHttpResult();
+    }
 
     public static IResult ToHttpCreated<T>(this ResultOf<T> result, string? uri = null)
-        => result.IsSuccess
-            ? TypedResults.Created<T>(uri, result.Value)
+    {
+        return result.IsSuccess
+            ? TypedResults.Created(uri, result.Value)
             : result.ToProblemHttpResult();
+    }
 
     public static IResult ToHttpOk<T>(this ResultOf<T> result)
-        => result.IsSuccess
+    {
+        return result.IsSuccess
             ? TypedResults.Ok(result.Value)
             : result.ToProblemHttpResult();
+    }
 
     public static IResult ToHttpOk<T, TResult>(this ResultOf<T> result, Func<T, TResult> resultFactory)
-        => result.IsSuccess
+    {
+        return result.IsSuccess
             ? TypedResults.Ok(resultFactory(result.Value))
             : result.ToProblemHttpResult();
+    }
 
     public static ProblemHttpResult ToProblemHttpResult(this IResultOf result)
     {
@@ -49,7 +61,7 @@ public static class ResultOfHttpExtensions
         return TypedResults.Problem(errors.ToProblemDetails());
     }
 
-    /// <see href="https://datatracker.ietf.org/doc/html/rfc7807#section-3.1"/>
+    /// <see href="https://datatracker.ietf.org/doc/html/rfc7807#section-3.1" />
     public static ProblemDetails ToProblemDetails(this IResultOf result, string? instance = null)
     {
         if (result.Errors is null or [])
@@ -71,7 +83,7 @@ public static class ResultOfHttpExtensions
             Status = (int)errors[0].ErrorType,
             Extensions = new Dictionary<string, object?>
             {
-                {"errors", errors }
+                { "errors", errors }
             }
         };
 
@@ -82,7 +94,8 @@ public static class ResultOfHttpExtensions
     }
 
     public static string GetRFCUri(this ErrorType errorType)
-        => errorType switch
+    {
+        return errorType switch
         {
             ErrorType.Validation => "https://tools.ietf.org/html/rfc7231#section-6.5.1",
             ErrorType.NotFound => "https://tools.ietf.org/html/rfc7231#section-6.5.4",
@@ -90,5 +103,5 @@ public static class ResultOfHttpExtensions
             ErrorType.Unauthorized => "https://datatracker.ietf.org/doc/html/rfc7235#section-3.1",
             _ => "https://tools.ietf.org/html/rfc7231#section-6.6.1"
         };
+    }
 }
-

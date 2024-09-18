@@ -12,16 +12,20 @@ public class UserStreetAddress
         StreetAddress = PassOrThrowWhen.Null(streetAddress);
     }
 
-    private UserStreetAddress() { } // EF
+    private UserStreetAddress()
+    {
+        // EF
+    }
 
-    public Guid Id { get; private set; } = SequentialGuid.NewGuid();
+    public Guid Id { get; } = SequentialGuid.NewGuid();
 
     public Guid UserId { get; private set; }
 
     public Address StreetAddress { get; private set; } = default!;
 
-    public UserAddressDto ToDto() =>
-        new UserAddressDto(
+    public UserAddressDto ToDto()
+    {
+        return new UserAddressDto(
             UserId,
             Id,
             StreetAddress.Street1,
@@ -30,5 +34,5 @@ public class UserStreetAddress
             StreetAddress.State,
             StreetAddress.PostalCode,
             StreetAddress.Country);
+    }
 }
-

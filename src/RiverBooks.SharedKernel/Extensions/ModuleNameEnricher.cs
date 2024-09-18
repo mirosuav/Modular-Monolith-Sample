@@ -4,7 +4,7 @@ using Serilog.Events;
 namespace RiverBooks.SharedKernel.Extensions;
 
 /// <summary>
-/// A Serilog enricher that adds module name to the context properties
+///     A Serilog enricher that adds module name to the context properties
 /// </summary>
 public class ModuleNameEnricher : ILogEventEnricher
 {
@@ -13,7 +13,7 @@ public class ModuleNameEnricher : ILogEventEnricher
         var moduleName = RetreiveModuleName(logEvent);
         if (moduleName is not null)
             logEvent.AddOrUpdateProperty(propertyFactory.CreateProperty(
-                    "ModuleName", moduleName));
+                "ModuleName", moduleName));
     }
 
     private static string? RetreiveModuleName(LogEvent logEvent)
@@ -23,8 +23,7 @@ public class ModuleNameEnricher : ILogEventEnricher
             var sourceContext = sourceContextProp.ToString().Trim('"');
             if (sourceContext.StartsWith(nameof(RiverBooks)))
                 return sourceContext.Split('.')[1];
-            else
-                return sourceContext;
+            return sourceContext;
         }
 
         return null;

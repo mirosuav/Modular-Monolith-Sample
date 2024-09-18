@@ -1,5 +1,4 @@
-﻿
-using MediatR;
+﻿using MediatR;
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.Books.Contracts;

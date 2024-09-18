@@ -16,8 +16,8 @@ public abstract class ProcessSelfEventsCommandHandlerBase
     where TOutboxContext : TransactionalOutboxDbContext
 {
     protected readonly TOutboxContext DbContext = dbContext;
-    protected readonly IMediator Mediator = mediator;
     protected readonly ILogger Logger = logger;
+    protected readonly IMediator Mediator = mediator;
     protected readonly TimeProvider TimeProvider = timeProvider;
     protected abstract SemaphoreSlim AccessLocker { get; }
 
@@ -34,10 +34,7 @@ public abstract class ProcessSelfEventsCommandHandlerBase
                 return;
 
             // parse, deserialize and process events
-            foreach (var outboxEvent in outboxItems)
-            {
-                await ProcessOutboxEvent(outboxEvent, command.Id, ct);
-            }
+            foreach (var outboxEvent in outboxItems) await ProcessOutboxEvent(outboxEvent, command.Id, ct);
 
             // save changes to outbox events
             await DbContext.SaveChangesAsync(ct);
@@ -55,7 +52,8 @@ public abstract class ProcessSelfEventsCommandHandlerBase
         }
     }
 
-    private async Task ProcessOutboxEvent(TransactionalOutboxEvent transactionalOutbox, Guid processingId, CancellationToken cancellationToken)
+    private async Task ProcessOutboxEvent(TransactionalOutboxEvent transactionalOutbox, Guid processingId,
+        CancellationToken cancellationToken)
     {
         try
         {
@@ -90,14 +88,12 @@ public abstract class ProcessSelfEventsCommandHandlerBase
             Logger.LogInformation(
                 "Processing events [session={ProcessDomainEventsSession}] TransactionalOutboxEvent {TransactionalOutboxEvent.Id}, attempt {Attempt} succeeded.",
                 processingId, transactionalOutbox.Id, transactionalOutbox.Attempts);
-
         }
         catch (Exception ex)
         {
             Logger.LogError(ex,
                 "Processing events [session={ProcessDomainEventsSession}]: Could not publish DomainEvent of type `{DomainEvent}` and Id `{DomainEvent.Id}`.",
                 processingId, transactionalOutbox.EventType, transactionalOutbox.Id);
-            return;
         }
     }
 
@@ -108,4 +104,3 @@ public abstract class ProcessSelfEventsCommandHandlerBase
         await Mediator.Publish(domainEvent, cancellationToken);
     }
 }
-

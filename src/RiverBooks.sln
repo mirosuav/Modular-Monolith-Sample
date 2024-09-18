@@ -69,7 +69,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.EventsProcessing
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.EventsProcessing.Contracts", "RiverBooks.EventsProcessing.Contracts\RiverBooks.EventsProcessing.Contracts.csproj", "{1B89E342-3634-4F37-AB0F-4C4408FD90EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.Integration.Tests", "RiverBooks.Integration.Tests\RiverBooks.Integration.Tests.csproj", "{753EF1B0-DE85-4F97-A917-3AFADDA7455D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.Integration.Tests", "RiverBooks.Integration.Tests\RiverBooks.Integration.Tests.csproj", "{753EF1B0-DE85-4F97-A917-3AFADDA7455D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

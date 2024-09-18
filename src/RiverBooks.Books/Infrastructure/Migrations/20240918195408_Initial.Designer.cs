@@ -12,7 +12,7 @@ using RiverBooks.Books.Infrastructure;
 namespace RiverBooks.Books.Infrastructure.Migrations
 {
     [DbContext(typeof(BookDbContext))]
-    [Migration("20240912214259_Initial")]
+    [Migration("20240918195408_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -53,21 +53,21 @@ namespace RiverBooks.Books.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("066e3606-3083-735d-8000-d5ad646d009e"),
+                            Id = new Guid("066eb2fe-0aa7-71f0-8000-ca0e8dfaf9ee"),
                             Author = "J.R.R. Tolkien",
                             Price = 10.99m,
                             Title = "The Fellowship of the Ring"
                         },
                         new
                         {
-                            Id = new Guid("066e3606-3083-73e0-8000-d305fd8ca056"),
+                            Id = new Guid("066eb2fe-0aa7-7273-8000-a9a032fc6646"),
                             Author = "J.R.R. Tolkien",
                             Price = 11.99m,
                             Title = "The Two Towers"
                         },
                         new
                         {
-                            Id = new Guid("066e3606-3083-73e5-8000-1ffd1058c7e2"),
+                            Id = new Guid("066eb2fe-0aa7-727a-8000-dba7f3bf5c86"),
                             Author = "J.R.R. Tolkien",
                             Price = 12.99m,
                             Title = "The Return of the King"

@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RiverBooks.Books.Application;
 using RiverBooks.Books.Infrastructure;
+using Serilog;
 
 namespace RiverBooks.Books.Api;
 
@@ -17,13 +19,14 @@ public static class ModuleBootstrap
     }
 
     public static IServiceCollection AddBookModuleServices(
-      this IServiceCollection services,
-      ConfigurationManager config,
-      Serilog.ILogger logger,
-      List<System.Reflection.Assembly> mediatRAssemblies)
+        this IServiceCollection services,
+        ConfigurationManager config,
+        ILogger logger,
+        List<Assembly> mediatRAssemblies)
     {
-        string? connectionString = config.GetConnectionString($"{ModuleDescriptor.Name}ConnectionString");
-        services.AddDbContext<BookDbContext>(options => options.UseSqlServer(connectionString));
+        var connectionString = config.GetConnectionString($"{ModuleDescriptor.Name}ConnectionString");
+        services.AddDbContext<BookDbContext>(options =>
+            options.UseSqlServer(connectionString, o => o.EnableRetryOnFailure()));
 
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IBookService, BookService>();

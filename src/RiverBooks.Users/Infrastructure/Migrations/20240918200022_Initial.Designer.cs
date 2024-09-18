@@ -13,7 +13,7 @@ using RiverBooks.Users.Infrastructure.Data;
 namespace RiverBooks.Users.Infrastructure.Migrations
 {
     [DbContext(typeof(UsersDbContext))]
-    [Migration("20240912214221_Initial")]
+    [Migration("20240918200022_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -81,7 +81,7 @@ namespace RiverBooks.Users.Infrastructure.Migrations
                         .HasPrecision(18, 6)
                         .HasColumnType("decimal(18,6)");
 
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -165,7 +165,9 @@ namespace RiverBooks.Users.Infrastructure.Migrations
                 {
                     b.HasOne("RiverBooks.Users.Domain.User", null)
                         .WithMany("CartItems")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RiverBooks.Users.Domain.UserStreetAddress", b =>

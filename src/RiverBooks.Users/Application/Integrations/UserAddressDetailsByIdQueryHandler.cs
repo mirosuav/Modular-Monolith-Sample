@@ -4,12 +4,13 @@ using RiverBooks.Users.Application.Interfaces;
 using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.Users.Application.Integrations;
+
 public class UserAddressDetailsByIdQueryHandler(IReadOnlyUserStreetAddressRepository addressRepo) :
-  IRequestHandler<UserAddressDetailsByIdQuery, ResultOf<UserAddressDto>>
+    IRequestHandler<UserAddressDetailsByIdQuery, ResultOf<UserAddressDto>>
 {
     public async Task<ResultOf<UserAddressDto>> Handle(
-      UserAddressDetailsByIdQuery request,
-      CancellationToken ct)
+        UserAddressDetailsByIdQuery request,
+        CancellationToken ct)
     {
         var address = await addressRepo.GetById(request.AddressId);
 
@@ -18,5 +19,4 @@ public class UserAddressDetailsByIdQueryHandler(IReadOnlyUserStreetAddressReposi
 
         return address.ToDto();
     }
-
 }

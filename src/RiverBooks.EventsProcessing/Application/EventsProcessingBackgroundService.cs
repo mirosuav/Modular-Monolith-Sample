@@ -1,11 +1,11 @@
-﻿using MediatR;
+﻿using System.Diagnostics;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RiverBooks.SharedKernel;
 using RiverBooks.SharedKernel.Events;
 using RiverBooks.SharedKernel.Extensions;
-using System.Diagnostics;
 
 namespace RiverBooks.EventsProcessing.Application;
 
@@ -34,7 +34,8 @@ internal class EventsProcessingBackgroundService(
                     sessionId,
                     timeProvider.GetUtcDateTime());
 
-                logger.LogTrace("Dispatching ProcessSelfEventsCommand [session={ProcessDomainEventsSession}] at {ProcessDomainEventsSessionTimeStamp} ",
+                logger.LogTrace(
+                    "Dispatching ProcessSelfEventsCommand [session={ProcessDomainEventsSession}] at {ProcessDomainEventsSessionTimeStamp} ",
                     processingSession.Id, processingSession.CreatedUtc);
 
                 // Sends command to all modules using common mediator publisher
@@ -58,4 +59,3 @@ internal class EventsProcessingBackgroundService(
         logger.LogInformation("{ServiceName} exited.", ModuleDescriptor.Name);
     }
 }
-

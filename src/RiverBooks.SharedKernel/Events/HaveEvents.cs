@@ -4,15 +4,17 @@ namespace RiverBooks.SharedKernel.Events;
 
 public abstract class HaveEvents
 {
-    [NotMapped]
-    private readonly List<IEvent> _events = [];
+    [NotMapped] private readonly List<IEvent> _events = [];
 
-    [NotMapped]
-    public IEnumerable<IEvent> Events => _events.AsReadOnly();
+    [NotMapped] public IEnumerable<IEvent> Events => _events.AsReadOnly();
 
-    public void ClearEvents() => _events.Clear();
+    public void ClearEvents()
+    {
+        _events.Clear();
+    }
 
-    protected void RegisterEvent(IEvent @event) => _events.Add(@event);
-
+    protected void RegisterEvent(IEvent @event)
+    {
+        _events.Add(@event);
+    }
 }
-

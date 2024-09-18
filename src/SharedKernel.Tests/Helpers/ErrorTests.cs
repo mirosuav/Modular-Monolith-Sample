@@ -1,6 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Text.Json;
+using FluentAssertions;
 using RiverBooks.SharedKernel.Helpers;
-using System.Text.Json;
 
 namespace RiverBooks.SharedKernel.Tests.Helpers;
 
@@ -29,6 +29,4 @@ public class ErrorTests
 
         recreated.Should().Be(sut);
     }
-
 }
-

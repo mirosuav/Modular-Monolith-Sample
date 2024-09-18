@@ -25,7 +25,7 @@ internal static class EmailSendingEndpoints
         CancellationToken cancellationToken = default)
     {
         return (await getEmailsFromOutboxService
-            .GetAllUnprocessedEmailsEntities(cancellationToken))
+                .GetAllUnprocessedEmailsEntities(cancellationToken))
             .ToHttpOk();
     }
 

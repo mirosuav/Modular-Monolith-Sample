@@ -1,12 +1,11 @@
-﻿using FluentValidation;
+﻿using System.Reflection;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RiverBooks.SharedKernel.Messaging.PipelineBehaviors;
 using RiverBooks.Users.Application.Interfaces;
-using RiverBooks.Users.Domain;
 using RiverBooks.Users.Infrastructure.Data;
 using Serilog;
 
@@ -23,14 +22,16 @@ public static class ModuleBootstrap
     }
 
     public static IServiceCollection AddUserModuleServices(
-      this IServiceCollection services,
-      ConfigurationManager config,
-      ILogger logger,
-      List<System.Reflection.Assembly> modulesAssemblies)
+        this IServiceCollection services,
+        ConfigurationManager config,
+        ILogger logger,
+        List<Assembly> modulesAssemblies)
     {
-        string? connectionString = config.GetConnectionString("UsersConnectionString");
+        var connectionString = config.GetConnectionString("UsersConnectionString");
 
-        services.AddDbContext<UsersDbContext>(c => c.UseSqlServer(connectionString));
+        services.AddDbContext<UsersDbContext>(options =>
+            options.UseSqlServer(connectionString, o => o.EnableRetryOnFailure()));
+
         services.AddSingleton(TimeProvider.System);
 
         // Add User Services

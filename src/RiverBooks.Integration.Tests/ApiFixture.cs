@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RiverBooks.Books.Infrastructure;
 using RiverBooks.EmailSending.Infrastructure;
@@ -13,14 +11,13 @@ using RiverBooks.OrderProcessing.Infrastructure.Data;
 using RiverBooks.Reporting.Infrastructure.Data;
 using RiverBooks.Users.Infrastructure.Data;
 using RiverBooks.Web;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace RiverBooks.Integration.Tests;
 
 public class ApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly MSSqlContainer _dbContainer;
     public const string DatabaseName = "RiverBooksTests";
+    private readonly MSSqlContainer _dbContainer;
 
     public ApiFixture()
     {
@@ -30,6 +27,11 @@ public class ApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
+    }
+
+    async Task IAsyncLifetime.DisposeAsync()
+    {
+        await _dbContainer.DisposeAsync();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -73,7 +75,8 @@ public class ApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         });
     }
 
-    private static void ReplaceDbContextRegistrationFor<TDbContext>(IServiceCollection services, string dbConnection) where TDbContext : DbContext
+    private static void ReplaceDbContextRegistrationFor<TDbContext>(IServiceCollection services, string dbConnection)
+        where TDbContext : DbContext
     {
         services.RemoveAll<DbContextOptions<TDbContext>>();
         services.RemoveAll<TDbContext>();
@@ -91,10 +94,4 @@ public class ApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     {
         return Services.GetRequiredService<TDbContext>();
     }
-
-    async Task IAsyncLifetime.DisposeAsync()
-    {
-        await _dbContainer.DisposeAsync();
-    }
 }
-

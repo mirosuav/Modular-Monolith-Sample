@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace RiverBooks.SharedKernel.Authentication;
 
@@ -12,9 +12,13 @@ public class UserClaimsProvider(IHttpContextAccessor httpContextAccessor) : IUse
         return _user?.FindFirstValue(claimType);
     }
 
-    public string? GetEmailAddress() =>
-        GetClaim(UserClaims.Email);
+    public string? GetEmailAddress()
+    {
+        return GetClaim(UserClaims.Email);
+    }
 
-    public Guid? GetId() =>
-        Guid.TryParse(GetClaim(UserClaims.Id), out var id) ? id : null;
+    public Guid? GetId()
+    {
+        return Guid.TryParse(GetClaim(UserClaims.Id), out var id) ? id : null;
+    }
 }

@@ -1,8 +1,6 @@
-﻿
-namespace RiverBooks.SharedKernel.Authentication
+﻿namespace RiverBooks.SharedKernel.Authentication;
+
+public interface IJwtTokenHandler
 {
-    public interface IJwtTokenHandler
-    {
-        AuthToken CreateToken(string userId, string userEmailAddress);
-    }
+    AuthToken CreateToken(string userId, string userEmailAddress);
 }

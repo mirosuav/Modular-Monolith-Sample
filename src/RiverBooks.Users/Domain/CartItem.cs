@@ -2,11 +2,13 @@
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.Users.Domain;
+
 public class CartItem
 {
-    public CartItem(Guid bookId, string description, int quantity, decimal unitPrice)
+    public CartItem(Guid bookId, Guid userId, string description, int quantity, decimal unitPrice)
     {
         BookId = PassOrThrowWhen.Empty(bookId);
+        UserId = PassOrThrowWhen.Empty(userId);
         Description = PassOrThrowWhen.NullOrWhiteSpace(description);
         Quantity = PassOrThrowWhen.Negative(quantity);
         UnitPrice = PassOrThrowWhen.Negative(unitPrice);
@@ -19,6 +21,7 @@ public class CartItem
 
     public Guid Id { get; private set; } = SequentialGuid.NewGuid();
     public Guid BookId { get; private set; }
+    public Guid UserId { get; private set; }
     public string Description { get; private set; } = string.Empty;
     public int Quantity { get; private set; }
     public decimal UnitPrice { get; private set; }
@@ -38,4 +41,3 @@ public class CartItem
         UnitPrice = PassOrThrowWhen.Negative(unitPrice);
     }
 }
-

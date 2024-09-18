@@ -16,25 +16,22 @@ public class AddAddressToUserHandler(
     {
         var user = await userRepository.GetUserWithAddressesAsync(request.UserId);
 
-        if (user is null)
-        {
-            return Error.NotAuthorized;
-        }
+        if (user is null) return Error.NotAuthorized;
 
         var addressToAdd = new Address(request.Street1,
-                                       request.Street2,
-                                       request.City,
-                                       request.State,
-                                       request.PostalCode,
-                                       request.Country);
+            request.Street2,
+            request.City,
+            request.State,
+            request.PostalCode,
+            request.Country);
 
         var userAddress = user.AddAddress(addressToAdd, timeProvider);
 
         await userRepository.SaveChangesAsync(ct);
 
         logger.LogInformation("Added address {StreetAddress} to user {UserId}",
-          userAddress.StreetAddress,
-          request.UserId);
+            userAddress.StreetAddress,
+            request.UserId);
 
         return userAddress.Id;
     }

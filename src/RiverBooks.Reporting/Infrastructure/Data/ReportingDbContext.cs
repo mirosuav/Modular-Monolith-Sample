@@ -1,7 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using RiverBooks.Reporting.Domain;
-using System.Reflection;
-using RiverBooks.SharedKernel.Events;
 
 namespace RiverBooks.Reporting.Infrastructure.Data;
 
@@ -26,4 +25,3 @@ internal class ReportingDbContext(DbContextOptions<ReportingDbContext> options)
             .HavePrecision(18, 6);
     }
 }
-

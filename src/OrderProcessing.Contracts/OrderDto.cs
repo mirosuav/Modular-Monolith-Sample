@@ -8,7 +8,8 @@ public class OrderDto
     public List<OrderItemDto> OrderItems { get; set; } = [];
 }
 
-public record OrderItemDto(Guid BookId,
+public record OrderItemDto(
+    Guid BookId,
     int Quantity,
     decimal UnitPrice,
     string Description);
