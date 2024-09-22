@@ -17,19 +17,7 @@ Modular Monoliths course
 - Replaced MongoDB based outbox pattern with SqlServer based
 - Use client generate incrementa UUIDv7 as guids see `RiverBooks.SharedKernel.Extensions.Uuid7` class
 - Simplify events, no need to have separate DomainEvents and IntegrationEvents as we are not using DDD
-- Implement Integration tests with Docker db
-
-TODO:
-- Separate Modules IoC i.e. each modules has its own ServiceProvider, Logger etc
-- Use strongly typed Ids, so instead `Guid UserId` define a typed `record struct UserId(Guid Value)` and use `UserId Id`
-- Use MediatR in modules internally but Service Bus to communicate between modules
-- Use https://www.keycloak.org/ as IdentityProvider
-- Check Seq for OpenTelemetry
-- Check Azure ApplicationInsights for OpenTelemetry
-- Check Jaeger for OpenTelemetry
-- Check Grafana for OpenTelemetry
-- Implement Unit tests
-- ...
+- Implemented Integration tests with Docker db
 
 # Features
 
@@ -49,14 +37,15 @@ TODO:
 - Then hosted service: `EmailSendingBackgroundService` calls `ISendEmailsFromOutboxService` implementation every second to process emails
 - `DefaultSendEmailsFromOutboxService` implementing `ISendEmailsFromOutboxService` picks up emails and attempts to sends them
 
-### Domain events Transactional Outbox pattern
+### Transactional Outbox pattern for handling events (both domain and integration)
 
-- Domain entities are enriched with domain events to perform **eventual consistency** operations
-- Domain events are persisted in `EventsOutbox` table of each module's DbContext
-- `EventProcessing` periodically triggers a `ProcessDomainEventsCommand` command on each module to asynchronously process its domain events
+- Domain entities are enriched with events to perform **eventual consistency** operations
+- Events are persisted in `EventsOutbox` table of each module's DbContext
+- `EventProcessing` module periodically triggers a `ProcessSelfEventsCommand` command on each module to asynchronously process its domain events
 - For example a ``User`` entity generates the ``AddressAddedDomainEvent`` which is translated to ``NewUserAddressAddedIntegrationEvent`` to notify the ``OrderProcessing`` module to updates its cache of users adresses
 - Or ``Order`` domain entity generates the ``OrderCreatedDomainEvent`` to trigger the ``OrderCreatedIntegrationEvent`` to notify the ``Reporting`` module to store the order reporting tailored data in its table.
-
+- For consistent implementation every module's DbContext derives from `TransactionalOutboxDbContext`
+- Every module that uses transactional outbox events also registers its own handler implementing `ProcessSelfEventsCommandHandlerBase`
 
 # Operations
 
@@ -86,7 +75,16 @@ dotnet sql-cache create "Server=(local);Integrated Security=true;Initial Catalog
 # Todo
 
 - Implement Domain events to be dispatched *offline* when client is waiting online, inspired by Amichai Mantinband approach
-
+- Separate Modules IoC i.e. each modules has its own ServiceProvider, Logger etc
+- Use strongly typed Ids, so instead `Guid UserId` define a typed `record struct UserId(Guid Value)` and use `UserId Id`
+- Use MediatR in modules internally but Service Bus to communicate between modules
+- Use https://www.keycloak.org/ as IdentityProvider
+- Check Seq for OpenTelemetry
+- Check Azure ApplicationInsights for OpenTelemetry
+- Check Jaeger for OpenTelemetry
+- Check Grafana for OpenTelemetry
+- Implement Unit tests
+- ...
 
 ## Idea: EventsModule - Asynchronously processes all domain event by sending `ProcessDomainEvents` command to each individual module
 

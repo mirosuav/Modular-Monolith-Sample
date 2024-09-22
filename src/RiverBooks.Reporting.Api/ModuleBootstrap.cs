@@ -42,4 +42,11 @@ public static class ModuleBootstrap
         logger.Information("{Module} module services registered", ModuleDescriptor.Name);
         return services;
     }
+
+    public static void MigrateDatabase(
+        this IServiceProvider services)
+    {
+        var dbContext = services.GetRequiredService<ReportingDbContext>();
+        dbContext.Database.Migrate();
+    }
 }

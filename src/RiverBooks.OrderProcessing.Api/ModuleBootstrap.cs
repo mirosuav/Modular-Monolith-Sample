@@ -50,4 +50,11 @@ public static class ModuleBootstrap
 
         return services;
     }
+
+    public static void MigrateDatabase(
+        this IServiceProvider services)
+    {
+        var dbContext = services.GetRequiredService<OrderProcessingDbContext>();
+        dbContext.Database.Migrate();
+    }
 }

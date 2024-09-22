@@ -1,0 +1,31 @@
+services:
+
+  riverbooks.web:
+    image: ${DOCKER_REGISTRY-}riverbooksweb
+    build:
+      context: .
+      dockerfile: RiverBooks.Web/Dockerfile
+    depends_on:
+      riverbooks.db:
+        condition: service_started
+        # condition: service_healthy
+
+  riverbooks.db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: riverbooks.db
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${SA_PASSWORD}
+    ports:
+      - "1433:1433"
+    # healthcheck:
+    #   test: [ "CMD", "/opt/mssql-tools18/bin/sqlcmd", "-U sa -P $${MSSQL_SA_PASSWORD} -C -b -I -Q 'SELECT 1;" ]
+    #   start_period: 3s
+    #   interval: 10s
+    #   timeout: 3s
+    #   retries: 1
+    volumes:
+      - sqlvolume:/var/opt/mssql
+
+volumes:
+  sqlvolume:
