@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RiverBooks.Books.Application;
 using RiverBooks.Books.Infrastructure;
 using Serilog;
+using System.Reflection;
 
 namespace RiverBooks.Books.Api;
 
@@ -41,9 +41,14 @@ public static class ModuleBootstrap
     }
 
     public static void MigrateDatabase(
-        this IServiceProvider services)
+        this IServiceProvider services,
+        Serilog.ILogger logger)
     {
         var dbContext = services.GetRequiredService<BookDbContext>();
-        dbContext.Database.Migrate();
+        if (dbContext.Database.HasPendingModelChanges())
+        {
+            logger.Information("Migrating database for {Module}.", ModuleDescriptor.Name);
+            dbContext.Database.Migrate();
+        }
     }
 }

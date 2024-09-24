@@ -34,7 +34,7 @@ public class Program
 
             var app = builder.Build();
             {
-                app.MigrateDatabase();
+                app.MigrateDatabase(Log.Logger);
                 app.UseAuthentication();
                 app.UseAuthorization();
                 app.UseExceptionHandler();

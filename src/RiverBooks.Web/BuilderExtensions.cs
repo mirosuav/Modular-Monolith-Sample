@@ -10,14 +10,17 @@ namespace RiverBooks.Web;
 
 public static class BuilderExtensions
 {
-    public static IEndpointRouteBuilder MigrateDatabase(this IEndpointRouteBuilder app)
+    public static IEndpointRouteBuilder MigrateDatabase(
+        this IEndpointRouteBuilder app,
+        Serilog.ILogger logger)
     {
         using var scope = app.ServiceProvider.CreateScope();
-        Books.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider);
-        Users.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider);
-        Reporting.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider);
-        EmailSending.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider);
-        OrderProcessing.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider);
+        Books.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
+        Users.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
+        Reporting.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
+        EmailSending.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
+        OrderProcessing.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
+        logger.Information("Database up to date.");
         return app;
     }
 

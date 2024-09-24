@@ -49,9 +49,13 @@ public static class ModuleBootstrap
     }
 
     public static void MigrateDatabase(
-        this IServiceProvider services)
+        this IServiceProvider services, Serilog.ILogger logger)
     {
         var dbContext = services.GetRequiredService<UsersDbContext>();
-        dbContext.Database.Migrate();
+        if (dbContext.Database.HasPendingModelChanges())
+        {
+            logger.Information("Migrating database for {Module}.", ModuleDescriptor.Name);
+            dbContext.Database.Migrate();
+        }
     }
 }

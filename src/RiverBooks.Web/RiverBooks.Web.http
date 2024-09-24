@@ -1,7 +1,7 @@
 
-@RootAddress=https://localhost:7179
+@RootAddress=https://localhost:52507
 @UserEmail=customer@riverbooks.com
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6ImN1c3RvbWVyQHJpdmVyYm9va3MuY29tIiwiSWQiOiIwNjZlNjIyOC1mNTAyLTdiNWYtODAwMC0zMDY1NTMxOGUyOTMiLCJzaWQiOiIwNjZlODhkZC00MWZhLTc4YTUtODAwMC00OGUwYmFhZGEzMjQiLCJhdWQiOiJSaXZlckJvb2tzIiwiaXNzIjoiUml2ZXJCb29rcyIsImV4cCI6MTcyNjUyMzg5MiwiaWF0IjoxNzI2NTE2NjkyLCJuYmYiOjE3MjY1MTY2OTJ9.kpEGmf5JXWL9e9l9nzwIHMTI82xx3MY8D8WhEvkKqFo
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6ImN1c3RvbWVyQHJpdmVyYm9va3MuY29tIiwiSWQiOiIwNjZmMzA3ZC0wNTM5LTcxMTYtODAwMC1iZTljYzhjMjk0YjIiLCJzaWQiOiIwNjZmMzA3ZC1mNzk2LTczZjgtODAwMC05MmQxMzFhNjFhYTciLCJhdWQiOiJSaXZlckJvb2tzIiwiaXNzIjoiUml2ZXJCb29rcyIsImV4cCI6MTcyNzIxMDQ5NSwiaWF0IjoxNzI3MjAzMjk1LCJuYmYiOjE3MjcyMDMyOTV9.JmYBwu_7MHyqYgYxWk_FlOg0vKap4IHJpS6ECj3nK_8
 
 # CREATE USER
 
@@ -37,7 +37,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-@BookID=066e3606-3083-73e5-8000-1ffd1058c7e2
+@BookID=066eb2fe-0aa7-7273-8000-a9a032fc6646
 
 # GET BOOK By ID
 
@@ -116,8 +116,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "shippingAddressId":"066e72b8-a0de-7076-8000-4443ad10d075",
-  "billingAddressId":"066e72b8-a0de-7076-8000-4443ad10d075"
+  "shippingAddressId":"066f3081-dcba-74a1-8000-147c491abd6c",
+  "billingAddressId":"066f3082-c892-74ed-8000-aafd53f44c0e"
 }
 
 ###
@@ -137,7 +137,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "street1": "Officestreet",
+  "street1": "Officestreet2",
   "street2": "",
   "city":"City name",
   "state":"State name",
