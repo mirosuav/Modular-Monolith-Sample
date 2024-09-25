@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
 using RiverBooks.EmailSending.Application;
 using RiverBooks.EmailSending.Domain;
 using RiverBooks.EmailSending.Infrastructure;
-using Serilog;
 
 namespace RiverBooks.EmailSending.Api;
 
@@ -23,10 +23,10 @@ public static class ModuleBootstrap
         return app;
     }
 
-    public static IServiceCollection AddEmailSendingModuleServices(
+    public static IServiceCollection AddEmailSendingModule(
         this IServiceCollection services,
         ConfigurationManager config,
-        ILogger logger,
+        Serilog.ILogger logger,
         List<Assembly> mediatRAssemblies)
     {
         // configure EF db context
@@ -77,13 +77,10 @@ public static class ModuleBootstrap
     }
 
     public static void MigrateDatabase(
-        this IServiceProvider services, Serilog.ILogger logger)
+        this IServiceProvider services, ILogger logger)
     {
         var dbContext = services.GetRequiredService<EmailSendingDbContext>();
-        if (dbContext.Database.HasPendingModelChanges())
-        {
-            logger.Information("Migrating database for {Module}.", ModuleDescriptor.Name);
-            dbContext.Database.Migrate();
-        }
+        logger.LogInformation("Migrating database for {Module}.", ModuleDescriptor.Name);
+        dbContext.Database.Migrate();
     }
 }

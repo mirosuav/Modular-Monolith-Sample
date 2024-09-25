@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RiverBooks.Reporting.Application;
 using RiverBooks.Reporting.Infrastructure.Data;
-using Serilog;
 
 namespace RiverBooks.Reporting.Api;
 
@@ -20,10 +20,10 @@ public static class ModuleBootstrap
         return app;
     }
 
-    public static IServiceCollection AddReportingModuleServices(
+    public static IServiceCollection AddReportingModule(
         this IServiceCollection services,
         ConfigurationManager config,
-        ILogger logger,
+        Serilog.ILogger logger,
         List<Assembly> mediatRAssemblies)
     {
         var connectionString = config.GetConnectionString($"{ModuleDescriptor.Name}ConnectionString");
@@ -44,13 +44,10 @@ public static class ModuleBootstrap
     }
 
     public static void MigrateDatabase(
-        this IServiceProvider services, Serilog.ILogger logger)
+        this IServiceProvider services, ILogger logger)
     {
         var dbContext = services.GetRequiredService<ReportingDbContext>();
-        if (dbContext.Database.HasPendingModelChanges())
-        {
-            logger.Information("Migrating database for {Module}.", ModuleDescriptor.Name);
-            dbContext.Database.Migrate();
-        }
+        logger.LogInformation("Migrating database for {Module}.", ModuleDescriptor.Name);
+        dbContext.Database.Migrate();
     }
 }

@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RiverBooks.Users.Application.Interfaces;
 using RiverBooks.Users.Infrastructure.Data;
-using Serilog;
 
 namespace RiverBooks.Users.Api;
 
@@ -21,10 +21,10 @@ public static class ModuleBootstrap
         return app;
     }
 
-    public static IServiceCollection AddUserModuleServices(
+    public static IServiceCollection AddUserModule(
         this IServiceCollection services,
         ConfigurationManager config,
-        ILogger logger,
+        Serilog.ILogger logger,
         List<Assembly> modulesAssemblies)
     {
         var connectionString = config.GetConnectionString("UsersConnectionString");
@@ -48,14 +48,10 @@ public static class ModuleBootstrap
         return services;
     }
 
-    public static void MigrateDatabase(
-        this IServiceProvider services, Serilog.ILogger logger)
+    public static void MigrateDatabase(this IServiceProvider services, ILogger logger)
     {
         var dbContext = services.GetRequiredService<UsersDbContext>();
-        if (dbContext.Database.HasPendingModelChanges())
-        {
-            logger.Information("Migrating database for {Module}.", ModuleDescriptor.Name);
-            dbContext.Database.Migrate();
-        }
+        logger.LogInformation("Migrating database for {Module}.", ModuleDescriptor.Name);
+        dbContext.Database.Migrate();
     }
 }

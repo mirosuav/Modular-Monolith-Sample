@@ -2,7 +2,7 @@
 
 namespace RiverBooks.OrderProcessing;
 
-internal class ModuleDescriptor : IModuleDescriptor
+internal class ModuleDescriptor
 {
     public const string Name = "OrderProcessing";
 }

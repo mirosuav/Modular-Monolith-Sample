@@ -1,7 +1,7 @@
 
-@RootAddress=https://localhost:52507
+@RootAddress=https://localhost:55532
 @UserEmail=customer@riverbooks.com
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6ImN1c3RvbWVyQHJpdmVyYm9va3MuY29tIiwiSWQiOiIwNjZmMzA3ZC0wNTM5LTcxMTYtODAwMC1iZTljYzhjMjk0YjIiLCJzaWQiOiIwNjZmMzA3ZC1mNzk2LTczZjgtODAwMC05MmQxMzFhNjFhYTciLCJhdWQiOiJSaXZlckJvb2tzIiwiaXNzIjoiUml2ZXJCb29rcyIsImV4cCI6MTcyNzIxMDQ5NSwiaWF0IjoxNzI3MjAzMjk1LCJuYmYiOjE3MjcyMDMyOTV9.JmYBwu_7MHyqYgYxWk_FlOg0vKap4IHJpS6ECj3nK_8
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6ImN1c3RvbWVyQHJpdmVyYm9va3MuY29tIiwiSWQiOiIwNjZmNDY5Ny03NmMzLTcwM2YtODAwMC1kNGE3NTlhMDRlMzAiLCJzaWQiOiIwNjZmNDZjYy1kZmE2LTdjN2ItODAwMC03NDQ2MWVmOGExNGQiLCJhdWQiOiJSaXZlckJvb2tzIiwiaXNzIjoiUml2ZXJCb29rcyIsImV4cCI6MTcyNzMwMTg2OSwiaWF0IjoxNzI3Mjk0NjY5LCJuYmYiOjE3MjcyOTQ2Njl9.X7ysCBI6gXR6wMbgzC_t3Yy55vkLMI9clmXZQkIRJQQ
 
 # CREATE USER
 
@@ -137,7 +137,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "street1": "Officestreet2",
+  "street1": "Officestreet",
   "street2": "",
   "city":"City name",
   "state":"State name",

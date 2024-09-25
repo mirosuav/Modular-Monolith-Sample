@@ -1,31 +1,51 @@
 services:
 
+  # WebAapi application
   riverbooks.web:
     image: ${DOCKER_REGISTRY-}riverbooksweb
+    container_name: riverbooks-web
     build:
       context: .
       dockerfile: RiverBooks.Web/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
     depends_on:
       riverbooks.db:
-        # condition: service_started
-        condition: service_healthy
+        condition: service_started
+        # condition: service_healthy
+      riverbooks.log:
+        condition: service_started
 
+  # SqlServer database
   riverbooks.db:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: riverbooks.db
+    container_name: riverbooks-db
     environment:
       - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=${SA_PASSWORD}
+      # Move secrets to secure place before deploying to production
+      - MSSQL_SA_PASSWORD=YourStrong!Passw0rd%123
     ports:
-      - "1433:1433"
-    healthcheck:
-      test: [ "CMD", "/opt/mssql-tools18/bin/sqlcmd", "-U sa -P $${SA_PASSWORD} -C -b -I -Q 'SELECT 1;" ]
-      start_period: 3s
-      interval: 10s
-      timeout: 3s
-      retries: 1
-    volumes:
-      - sqlvolume:/var/opt/mssql
+      - "1444:1433"
+    # healthcheck:
+    #   test: [ "CMD", "/opt/mssql-tools18/bin/sqlcmd", "-U sa -P $${MSSQL_SA_PASSWORD} -C -b -I -Q 'SELECT 1;" ]
+    #   start_period: 3s
+    #   interval: 10s
+    #   timeout: 3s
+    #   retries: 1
+    #volumes:
+    #  - sqlvolume:/var/opt/mssql
 
-volumes:
-  sqlvolume:
+  # Seq Log monitoring
+  riverbooks.log:
+    image: datalust/seq:latest
+    container_name: riverbooks-log
+    environment:
+      - ACCEPT_EULA=Y
+      #- SEQ_FIRSTRUN_ADMINPASSWORDHASH=<your_password_hash>
+    ports:
+      - "8090:80"
+      - "5341:5341"
+
+# volumes:
+#   sqlvolume:

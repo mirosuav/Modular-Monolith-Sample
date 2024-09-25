@@ -2,7 +2,7 @@
 
 namespace RiverBooks.EventsProcessing;
 
-internal class ModuleDescriptor : IModuleDescriptor
+internal class ModuleDescriptor
 {
     public const string Name = "EventsProcessing";
 }

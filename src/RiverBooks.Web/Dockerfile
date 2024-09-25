@@ -26,7 +26,7 @@ COPY ["RiverBooks.EventsProcessing.Api/RiverBooks.EventsProcessing.Api.csproj", 
 COPY ["RiverBooks.EventsProcessing/RiverBooks.EventsProcessing.csproj", "RiverBooks.EventsProcessing/"]
 COPY ["RiverBooks.EventsProcessing.Contracts/RiverBooks.EventsProcessing.Contracts.csproj", "RiverBooks.EventsProcessing.Contracts/"]
 COPY ["RiverBooks.OrderProcessing.Api/RiverBooks.OrderProcessing.Api.csproj", "RiverBooks.OrderProcessing.Api/"]
-COPY ["OrderProcessing.Contracts/RiverBooks.OrderProcessing.Contracts.csproj", "OrderProcessing.Contracts/"]
+COPY ["RiverBooks.OrderProcessing.Contracts/RiverBooks.OrderProcessing.Contracts.csproj", "RiverBooks.OrderProcessing.Contracts/"]
 COPY ["RiverBooks.OrderProcessing/RiverBooks.OrderProcessing.csproj", "RiverBooks.OrderProcessing/"]
 COPY ["RiverBooks.Users.Contracts/RiverBooks.Users.Contracts.csproj", "RiverBooks.Users.Contracts/"]
 COPY ["RiverBooks.Reporting.Api/RiverBooks.Reporting.Api.csproj", "RiverBooks.Reporting.Api/"]

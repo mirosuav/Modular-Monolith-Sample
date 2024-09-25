@@ -15,30 +15,29 @@ public class Program
 
         try
         {
-            Log.Logger.Information("Starting web host");
-
-            // Collect modules assemblies
-            List<Assembly> moduleAssemblies = [typeof(IMarker).Assembly];
-
+            Log.Logger.Information("Configuring web host");
+            
             var builder = WebApplication.CreateBuilder(args);
             {
-                builder.Services
-                    .AddModules(builder.Configuration, Log.Logger, moduleAssemblies)
-                    .AddLogging(builder.Configuration, moduleAssemblies)
-                    .AddAuth(builder.Configuration, builder.Environment)
-                    .AddApplicationServices()
-                    .AddMessaging(moduleAssemblies)
-                    .AddApiVersioning(new ApiVersion(1, 0))
-                    .AddOpenApi();
+                builder.AddLogging();
+                builder.AddModules();
+                builder.AddAuth();
+                builder.AddApplicationServices();
+                builder.AddMessaging();
+                builder.AddApiVersioning(new ApiVersion(1, 0));
+                builder.AddOpenApi();
             }
+            
+            Log.Logger.Information("Starting web host");
 
             var app = builder.Build();
             {
-                app.MigrateDatabase(Log.Logger);
+                app.MigrateDatabase();
                 app.UseAuthentication();
                 app.UseAuthorization();
                 app.UseExceptionHandler();
                 app.MapVersionPrompt("/").AllowAnonymous();
+                app.MapLogAppRedirect("/logs").AllowAnonymous();
                 app.MapModulesEndpoints();
                 app.UseSwaggerDevelopmentUI();
                 app.Run();

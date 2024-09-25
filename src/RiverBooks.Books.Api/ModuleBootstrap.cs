@@ -5,8 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RiverBooks.Books.Application;
 using RiverBooks.Books.Infrastructure;
-using Serilog;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 
 namespace RiverBooks.Books.Api;
 
@@ -18,10 +18,10 @@ public static class ModuleBootstrap
         return app;
     }
 
-    public static IServiceCollection AddBookModuleServices(
+    public static IServiceCollection AddBooksModule(
         this IServiceCollection services,
         ConfigurationManager config,
-        ILogger logger,
+        Serilog.ILogger logger,
         List<Assembly> mediatRAssemblies)
     {
         var connectionString = config.GetConnectionString($"{ModuleDescriptor.Name}ConnectionString");
@@ -42,13 +42,10 @@ public static class ModuleBootstrap
 
     public static void MigrateDatabase(
         this IServiceProvider services,
-        Serilog.ILogger logger)
+        ILogger logger)
     {
         var dbContext = services.GetRequiredService<BookDbContext>();
-        if (dbContext.Database.HasPendingModelChanges())
-        {
-            logger.Information("Migrating database for {Module}.", ModuleDescriptor.Name);
-            dbContext.Database.Migrate();
-        }
+        logger.LogInformation("Migrating database for {Module}.", ModuleDescriptor.Name);
+        dbContext.Database.Migrate();
     }
 }

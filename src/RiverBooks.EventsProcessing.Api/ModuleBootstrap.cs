@@ -8,7 +8,7 @@ namespace RiverBooks.EventsProcessing.Api;
 
 public static class ModuleBootstrap
 {
-    public static IServiceCollection AddEventsProcessingModuleServices(
+    public static IServiceCollection AddEventsProcessingModule(
         this IServiceCollection services,
         ConfigurationManager config,
         ILogger logger,

@@ -2,7 +2,7 @@
 
 namespace RiverBooks.Books;
 
-internal class ModuleDescriptor : IModuleDescriptor
+internal class ModuleDescriptor
 {
     public const string Name = "Books";
 }

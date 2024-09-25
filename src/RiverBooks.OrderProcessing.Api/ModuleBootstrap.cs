@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RiverBooks.OrderProcessing.Application.Interfaces;
 using RiverBooks.OrderProcessing.Infrastructure;
 using RiverBooks.OrderProcessing.Infrastructure.Data;
-using Serilog;
 
 namespace RiverBooks.OrderProcessing.Api;
 
@@ -20,10 +20,10 @@ public static class ModuleBootstrap
         return app;
     }
 
-    public static IServiceCollection AddOrderProcessingModuleServices(
+    public static IServiceCollection AddOrderProcessingModule(
         this IServiceCollection services,
         ConfigurationManager config,
-        ILogger logger,
+        Serilog.ILogger logger,
         List<Assembly> mediatRAssemblies)
     {
         var connectionString = config.GetConnectionString($"{ModuleDescriptor.Name}ConnectionString");
@@ -52,13 +52,10 @@ public static class ModuleBootstrap
     }
 
     public static void MigrateDatabase(
-        this IServiceProvider services, Serilog.ILogger logger)
+        this IServiceProvider services, ILogger logger)
     {
         var dbContext = services.GetRequiredService<OrderProcessingDbContext>();
-        if (dbContext.Database.HasPendingModelChanges())
-        {
-            logger.Information("Migrating database for {Module}.", ModuleDescriptor.Name);
-            dbContext.Database.Migrate();
-        }
+        logger.LogInformation("Migrating database for {Module}.", ModuleDescriptor.Name);
+        dbContext.Database.Migrate();
     }
 }
