@@ -1,38 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <UserSecretsId>ef8df185-02cb-48fc-8566-7bbb42c390d9</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
-  </PropertyGroup>
+	<PropertyGroup>
+		<UserSecretsId>ef8df185-02cb-48fc-8566-7bbb42c390d9</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-    <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.1.1" />
-    <PackageReference Include="Serilog.Sinks.Seq" Version="8.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+		<PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+		<PackageReference Include="Serilog.Enrichers.Process" Version="3.0.0" />
+		<PackageReference Include="Serilog.Enrichers.Sensitive" Version="1.7.3" />
+		<PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.1.1" />
+		<PackageReference Include="Serilog.Sinks.Seq" Version="8.0.0" />
+		<PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\RiverBooks.Books.Api\RiverBooks.Books.Api.csproj" />
-    <ProjectReference Include="..\RiverBooks.EmailSending.Api\RiverBooks.EmailSending.Api.csproj" />
-    <ProjectReference Include="..\RiverBooks.EventsProcessing.Api\RiverBooks.EventsProcessing.Api.csproj" />
-    <ProjectReference Include="..\RiverBooks.OrderProcessing.Api\RiverBooks.OrderProcessing.Api.csproj" />
-    <ProjectReference Include="..\RiverBooks.Reporting.Api\RiverBooks.Reporting.Api.csproj" />
-    <ProjectReference Include="..\RiverBooks.Users.Api\RiverBooks.Users.Api.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\RiverBooks.Books.Api\RiverBooks.Books.Api.csproj" />
+		<ProjectReference Include="..\RiverBooks.EmailSending.Api\RiverBooks.EmailSending.Api.csproj" />
+		<ProjectReference Include="..\RiverBooks.EventsProcessing.Api\RiverBooks.EventsProcessing.Api.csproj" />
+		<ProjectReference Include="..\RiverBooks.OrderProcessing.Api\RiverBooks.OrderProcessing.Api.csproj" />
+		<ProjectReference Include="..\RiverBooks.Reporting.Api\RiverBooks.Reporting.Api.csproj" />
+		<ProjectReference Include="..\RiverBooks.Users.Api\RiverBooks.Users.Api.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="MediatR" Version="12.3.0" />
-    <PackageReference Update="Serilog.AspNetCore" Version="8.0.2" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Update="MediatR" Version="12.3.0" />
+		<PackageReference Update="Serilog.AspNetCore" Version="8.0.2" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="RiverBooks.Integration.Tests" />

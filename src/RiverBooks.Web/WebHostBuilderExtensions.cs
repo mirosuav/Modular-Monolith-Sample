@@ -13,6 +13,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System.Reflection;
+using Serilog.Enrichers.Sensitive;
 
 namespace RiverBooks.Web;
 
@@ -44,7 +45,8 @@ internal static class WebHostBuilderExtensions
     }
     public static void AddLogging(this WebApplicationBuilder builder)
     {
-        Log.Logger = new LoggerConfiguration()
+        builder.Services.AddSerilog(loggerConfig =>
+            loggerConfig
             .ReadFrom.Configuration(builder.Configuration)
             .UseCommonSerilogConfiguration()
             // Add Open telemetry with Sec
@@ -61,26 +63,27 @@ internal static class WebHostBuilderExtensions
             //    //    ["module.name"] = "RiversBook.Users"
             //    //};
             //})
-            .WriteToSeq(builder.Configuration)
-            .CreateLogger();
-
-        builder.Services.AddSerilog();
+            .WriteToSeq(builder.Configuration));
     }
 
     public static LoggerConfiguration UseCommonSerilogConfiguration(this LoggerConfiguration configuration)
     {
-        configuration
-            .MinimumLevel.Information()
+        return configuration
+            .MinimumLevel.Verbose()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .MinimumLevel.Override("System", LogEventLevel.Error)
             .Enrich.FromLogContext()
+            .Enrich.WithThreadId()
+            .Enrich.WithThreadName()
+            .Enrich.WithEnvironmentName()
             .Enrich.With(new ModuleNameEnricher())
             .WriteTo.Console(
                 theme: AnsiConsoleTheme.Literate,
-                outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {ModuleName} {Message:lj} {NewLine}{Exception}"
-            // outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] ({ModuleName}) {Message:lj} <s:{SourceContext}>{NewLine}{Exception}"
-            );
-        return configuration;
+                outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {ModuleName} {Message:lj} {NewLine}{Exception}",
+                // outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] ({ModuleName}) {Message:lj} <s:{SourceContext}>{NewLine}{Exception}"
+                restrictedToMinimumLevel: LogEventLevel.Information)
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                .MinimumLevel.Override("System", LogEventLevel.Error);
     }
 
     public static LoggerConfiguration WriteToSeq(this LoggerConfiguration loggerConfiguration, IConfiguration configuration)
@@ -88,7 +91,9 @@ internal static class WebHostBuilderExtensions
         var seqIngestionUrl = configuration["LogMonitoringIngestionUrl"];
 
         if (seqIngestionUrl is not null)
-            loggerConfiguration.WriteTo.Seq(seqIngestionUrl);
+            loggerConfiguration
+                .WriteTo
+                .Seq(seqIngestionUrl, restrictedToMinimumLevel:LogEventLevel.Debug);
 
         return loggerConfiguration;
     }

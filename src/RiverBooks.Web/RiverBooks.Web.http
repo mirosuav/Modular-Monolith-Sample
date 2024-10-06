@@ -1,7 +1,8 @@
 
-@RootAddress=https://localhost:55532
+@RootAddress=https://localhost:8081
 @UserEmail=customer@riverbooks.com
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6ImN1c3RvbWVyQHJpdmVyYm9va3MuY29tIiwiSWQiOiIwNjZmNDY5Ny03NmMzLTcwM2YtODAwMC1kNGE3NTlhMDRlMzAiLCJzaWQiOiIwNjZmNDZjYy1kZmE2LTdjN2ItODAwMC03NDQ2MWVmOGExNGQiLCJhdWQiOiJSaXZlckJvb2tzIiwiaXNzIjoiUml2ZXJCb29rcyIsImV4cCI6MTcyNzMwMTg2OSwiaWF0IjoxNzI3Mjk0NjY5LCJuYmYiOjE3MjcyOTQ2Njl9.X7ysCBI6gXR6wMbgzC_t3Yy55vkLMI9clmXZQkIRJQQ
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6ImN1c3RvbWVyQHJpdmVyYm9va3MuY29tIiwiSWQiOiIwNjZmODViOC05ZTg2LTdiYzctODAwMC00MTU4YmZmMzcwOTgiLCJzaWQiOiIwNjZmODVjZi1lYzhkLTdlZWEtODAwMC02NjcwYTI1NWI5ODQiLCJhdWQiOiJSaXZlckJvb2tzIiwiaXNzIjoiUml2ZXJCb29rcyIsImV4cCI6MTcyNzU1OTk2NiwiaWF0IjoxNzI3NTUyNzY2LCJuYmYiOjE3Mjc1NTI3NjZ9.VqVIWVN4LjIvu2DiwPAw_5oy6JMNgV7zCpZrxyyFaXI
+
 
 # CREATE USER
 
@@ -37,7 +38,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-@BookID=066eb2fe-0aa7-7273-8000-a9a032fc6646
+@BookID=066f85d2-d8f5-7d42-8000-96d79cc4b32d
 
 # GET BOOK By ID
 
@@ -55,9 +56,9 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "title": "Clean Coder",
+  "title": "Clean Code",
   "author": "Robert C. Martin",
-  "price": 29.99
+  "price": 39.99
 }
 
 ###
@@ -77,7 +78,7 @@ Accept: application/json
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
- 52.00
+ 42.00
 
 
 ###
@@ -116,8 +117,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "shippingAddressId":"066f3081-dcba-74a1-8000-147c491abd6c",
-  "billingAddressId":"066f3082-c892-74ed-8000-aafd53f44c0e"
+  "shippingAddressId":"066f85e0-5c39-754d-8000-85a06b8289d9",
+  "billingAddressId":"066f85e0-5c39-754d-8000-85a06b8289d9"
 }
 
 ###

@@ -11,15 +11,23 @@ public class LoggingBehavior<TRequest, TResponse>(ILogger<LoggingBehavior<TReque
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken ct)
     {
         ArgumentNullException.ThrowIfNull(request);
-        logger.LogInformation("Handling {RequestName}", typeof(TRequest).Name);
+
+        if (!logger.IsEnabled(LogLevel.Debug))
+            return await next();
+
+        logger.LogDebug("Handling {RequestName}", typeof(TRequest).Name);
 
         var sw = Stopwatch.StartNew();
 
         var response = await next();
 
-        logger.LogInformation("Handled {RequestName} with {Response} in {ms} ms", typeof(TRequest).Name, response,
+        logger.LogDebug("Handled {RequestName} with {ResponseType} in {ms} ms",
+            typeof(TRequest).Name,
+            response?.GetType().Name,
             sw.ElapsedMilliseconds);
+
         sw.Stop();
+
         return response;
     }
 }

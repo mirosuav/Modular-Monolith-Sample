@@ -12,8 +12,8 @@ services:
       - "8081:8081"
     depends_on:
       riverbooks.db:
-        condition: service_started
-        # condition: service_healthy
+        # condition: service_started
+        condition: service_healthy
       riverbooks.log:
         condition: service_started
 
@@ -27,12 +27,12 @@ services:
       - MSSQL_SA_PASSWORD=YourStrong!Passw0rd%123
     ports:
       - "1444:1433"
-    # healthcheck:
-    #   test: [ "CMD", "/opt/mssql-tools18/bin/sqlcmd", "-U sa -P $${MSSQL_SA_PASSWORD} -C -b -I -Q 'SELECT 1;" ]
-    #   start_period: 3s
-    #   interval: 10s
-    #   timeout: 3s
-    #   retries: 1
+    healthcheck:
+        test: [ "CMD", "/opt/mssql-tools18/bin/sqlcmd", "-U sa -P $${MSSQL_SA_PASSWORD} -C -b -I -Q 'SELECT 1;'" ]
+        start_period: 3s
+        interval: 10s
+        timeout: 3s
+        retries: 1
     #volumes:
     #  - sqlvolume:/var/opt/mssql
 
