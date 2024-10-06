@@ -9,17 +9,13 @@ services:
       dockerfile: RiverBooks.Web/Dockerfile
     ports:
       - "8080:8080"
-      - "8081:8081"
     depends_on:
-      riverbooks.db:
-        # condition: service_started
-        condition: service_healthy
-      riverbooks.log:
-        condition: service_started
+      - riverbooks.db
+      - riverbooks.log
 
   # SqlServer database
   riverbooks.db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: mcr.microsoft.com/mssql/server:2022-CU10-ubuntu-20.04
     container_name: riverbooks-db
     environment:
       - ACCEPT_EULA=Y
@@ -28,13 +24,13 @@ services:
     ports:
       - "1444:1433"
     healthcheck:
-        test: [ "CMD", "/opt/mssql-tools18/bin/sqlcmd", "-U sa -P $${MSSQL_SA_PASSWORD} -C -b -I -Q 'SELECT 1;'" ]
-        start_period: 3s
+        test: [ "CMD", "/opt/mssql-tools18/bin/sqlcmd", "-U sa -P ${MSSQL_SA_PASSWORD} -C -b -I -Q 'SELECT 1;'" ]
+        start_period: 30s
         interval: 10s
         timeout: 3s
-        retries: 1
-    #volumes:
-    #  - sqlvolume:/var/opt/mssql
+        retries: 3
+    volumes:
+     - sqlvolume:/var/opt/mssql
 
   # Seq Log monitoring
   riverbooks.log:
@@ -47,5 +43,5 @@ services:
       - "8090:80"
       - "5341:5341"
 
-# volumes:
-#   sqlvolume:
+volumes:
+  sqlvolume:

@@ -45,9 +45,9 @@ internal static class WebHostBuilderExtensions
     }
     public static void AddLogging(this WebApplicationBuilder builder)
     {
-        builder.Services.AddSerilog(loggerConfig =>
+        builder.Host.UseSerilog((context, services, loggerConfig) =>
             loggerConfig
-            .ReadFrom.Configuration(builder.Configuration)
+            .ReadFrom.Configuration(context.Configuration)
             .UseCommonSerilogConfiguration()
             // Add Open telemetry with Sec
             //.WriteTo.OpenTelemetry(x =>
@@ -63,7 +63,7 @@ internal static class WebHostBuilderExtensions
             //    //    ["module.name"] = "RiversBook.Users"
             //    //};
             //})
-            .WriteToSeq(builder.Configuration));
+            .WriteToSeq(context.Configuration));
     }
 
     public static LoggerConfiguration UseCommonSerilogConfiguration(this LoggerConfiguration configuration)
@@ -124,10 +124,9 @@ internal static class WebHostBuilderExtensions
         return moduleAssemblies;
     }
 
-    internal static void AddModules(this WebApplicationBuilder builder)
+    internal static void AddModules(this WebApplicationBuilder builder, Serilog.ILogger logger)
     {
         var configuration = builder.Configuration;
-        var logger = Log.Logger;
 
         // Collect modules assemblies
         var moduleAssemblies = builder.GetModuleAssemblies();
@@ -139,6 +138,18 @@ internal static class WebHostBuilderExtensions
         builder.Services.AddReportingModule(configuration, logger, moduleAssemblies);
         builder.Services.AddOrderProcessingModule(configuration, logger, moduleAssemblies);
         builder.Services.AddUserModule(configuration, logger, moduleAssemblies);
+    }
+    
+    public static void MigrateDatabase(this WebApplicationBuilder app, Serilog.ILogger logger)
+    {
+        using var serviceProvider = app.Services.BuildServiceProvider();
+        using var scope = serviceProvider.CreateScope();
+        Books.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
+        Users.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
+        Reporting.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
+        EmailSending.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
+        OrderProcessing.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
+        logger.Information("Database up to date.");
     }
 
     internal static void AddMessaging(this WebApplicationBuilder builder)

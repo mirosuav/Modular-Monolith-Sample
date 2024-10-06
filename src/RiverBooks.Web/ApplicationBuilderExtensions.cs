@@ -10,19 +10,6 @@ namespace RiverBooks.Web;
 
 public static class ApplicationBuilderExtensions
 {
-    public static IEndpointRouteBuilder MigrateDatabase(this IEndpointRouteBuilder app)
-    {
-        using var scope = app.ServiceProvider.CreateScope();
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<ApplicationBuilder>>();
-        Books.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
-        Users.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
-        Reporting.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
-        EmailSending.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
-        OrderProcessing.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
-        logger.LogInformation("Database up to date.");
-        return app;
-    }
-
     public static IEndpointRouteBuilder MapModulesEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapBookModuleEndpoints();

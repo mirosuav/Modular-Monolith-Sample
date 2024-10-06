@@ -11,7 +11,7 @@ public class Program
         // BootstrapLogger
         Log.Logger = new LoggerConfiguration()
             .UseCommonSerilogConfiguration()
-            .CreateBootstrapLogger();
+            .CreateLogger();
 
         try
         {
@@ -20,19 +20,19 @@ public class Program
             var builder = WebApplication.CreateBuilder(args);
             {
                 builder.AddLogging();
-                builder.AddModules();
+                builder.AddModules(Log.Logger);
                 builder.AddAuth();
                 builder.AddApplicationServices();
                 builder.AddMessaging();
                 builder.AddApiVersioning(new ApiVersion(1, 0));
                 builder.AddOpenApi();
+                builder.MigrateDatabase(Log.Logger);
             }
             
             Log.Logger.Information("Starting web host");
 
             var app = builder.Build();
             {
-                app.MigrateDatabase();
                 app.UseAuthentication();
                 app.UseAuthorization();
                 app.UseExceptionHandler();
@@ -45,7 +45,7 @@ public class Program
         }
         catch (Exception ex)
         {
-            Log.Fatal(ex, "Application startup failed");
+            Log.Fatal(ex, "Host terminated unexpectedly");
         }
         finally
         {

@@ -42,10 +42,10 @@ public static class ModuleBootstrap
 
     public static void MigrateDatabase(
         this IServiceProvider services,
-        ILogger logger)
+        Serilog.ILogger logger)
     {
         var dbContext = services.GetRequiredService<BookDbContext>();
-        logger.LogInformation("Migrating database for {Module}.", ModuleDescriptor.Name);
+        logger.Information("Migrating database for {Module}.", ModuleDescriptor.Name);
         dbContext.Database.Migrate();
     }
 }

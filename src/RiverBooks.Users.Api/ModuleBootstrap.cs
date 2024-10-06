@@ -48,10 +48,10 @@ public static class ModuleBootstrap
         return services;
     }
 
-    public static void MigrateDatabase(this IServiceProvider services, ILogger logger)
+    public static void MigrateDatabase(this IServiceProvider services, Serilog.ILogger logger)
     {
         var dbContext = services.GetRequiredService<UsersDbContext>();
-        logger.LogInformation("Migrating database for {Module}.", ModuleDescriptor.Name);
+        logger.Information("Migrating database for {Module}.", ModuleDescriptor.Name);
         dbContext.Database.Migrate();
     }
 }
