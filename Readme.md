@@ -18,6 +18,7 @@ Modular Monoliths course
 - Use client generate incrementa UUIDv7 as guids see `RiverBooks.SharedKernel.Extensions.Uuid7` class
 - Simplify events, no need to have separate DomainEvents and IntegrationEvents as we are not using DDD
 - Implemented Integration tests with Docker db
+- Check Seq for OpenTelemetry POC on git:feature/Logging-with-Seq
 
 # Features
 
@@ -42,10 +43,30 @@ Modular Monoliths course
 - Domain entities are enriched with events to perform **eventual consistency** operations
 - Events are persisted in `EventsOutbox` table of each module's DbContext
 - `EventProcessing` module periodically triggers a `ProcessSelfEventsCommand` command on each module to asynchronously process its domain events
-- For example a ``User`` entity generates the ``AddressAddedDomainEvent`` which is translated to ``NewUserAddressAddedIntegrationEvent`` to notify the ``OrderProcessing`` module to updates its cache of users adresses
-- Or ``Order`` domain entity generates the ``OrderCreatedDomainEvent`` to trigger the ``OrderCreatedIntegrationEvent`` to notify the ``Reporting`` module to store the order reporting tailored data in its table.
+- For example a `User` entity generates the `AddressAddedDomainEvent` which is translated to `NewUserAddressAddedIntegrationEvent` to notify the `OrderProcessing` module to updates its cache of users adresses
+- Or `Order` domain entity generates the `OrderCreatedDomainEvent` to trigger the `OrderCreatedIntegrationEvent` to notify the `Reporting` module to store the order reporting tailored data in its table.
 - For consistent implementation every module's DbContext derives from `TransactionalOutboxDbContext`
 - Every module that uses transactional outbox events also registers its own handler implementing `ProcessSelfEventsCommandHandlerBase`
+
+### EventsModule - Asynchronously processes all domain event by sending `ProcessDomainEvents` command to each individual module
+
+`EventsModule` periodically sends commands to individual modules for processing their own domain events:
+
+#### Advantages:
+- Transactional: Each module saves its `DomainEvents` in one transaction along with the associated business process
+- Modularity: Each module remains responsible for its own domain events, which aligns with the modular monolith architecture.
+- Decoupling: The `EventsModule` doesn’t need to know the specifics of event processing in each module. It simply triggers the process.
+- Scalability: As your application grows, you can add more modules without affecting the `EventsModule`.
+- 
+#### Implementation:
+- Define a `ProcessDomainEventsCommand` that the `EventsModule` sends to each module.
+- Each module (e.g., `OrderProcessing`, `Books`) should handle this command and process its own domain events.
+- The EventsModule can schedule these commands periodically (e.g., every minute) or based on specific triggers (e.g., after a batch of events is persisted).
+
+#### Considerations:
+- Idempotency: Ensure that processing domain events remains idempotent, even if the command is sent multiple times.
+- Retry Mechanism: Handle transient failures during command execution (e.g., network issues, database unavailability).
+
 
 # Operations
 
@@ -79,26 +100,10 @@ dotnet sql-cache create "Server=(local);Integrated Security=true;Initial Catalog
 - Use strongly typed Ids, so instead `Guid UserId` define a typed `record struct UserId(Guid Value)` and use `UserId Id`
 - Use MediatR in modules internally but Service Bus to communicate between modules
 - Use https://www.keycloak.org/ as IdentityProvider
-- Check Seq for OpenTelemetry
 - Check Azure ApplicationInsights for OpenTelemetry
 - Check Jaeger for OpenTelemetry
 - Check Grafana for OpenTelemetry
 - Implement Unit tests
 - ...
 
-## Idea: EventsModule - Asynchronously processes all domain event by sending `ProcessDomainEvents` command to each individual module
 
-EventsModule periodically sends commands to individual modules for processing their own domain events:
-
-### Advantages:
-- Transactional: Each module saves its DomainEvents in one transaction along with the associated business process
-- Modularity: Each module remains responsible for its own domain events, which aligns with the modular monolith architecture.
-- Decoupling: The EventsModule doesn’t need to know the specifics of event processing in each module. It simply triggers the process.
-- Scalability: As your application grows, you can add more modules without affecting the EventsModule.
-### Implementation:
-- Define a ProcessDomainEvents command (or similar) that the EventsModule sends to each module.
-- Each module (e.g., OrderManagementModule, InventoryModule) should handle this command and process its own domain events.
-- The EventsModule can schedule these commands periodically (e.g., every minute) or based on specific triggers (e.g., after a batch of events is persisted).
-### Considerations:
-- Idempotency: Ensure that processing domain events remains idempotent, even if the command is sent multiple times.
-- Retry Mechanism: Handle transient failures during command execution (e.g., network issues, database unavailability).
