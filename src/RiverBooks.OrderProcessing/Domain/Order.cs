@@ -39,7 +39,7 @@ internal class Order : HaveEvents
 
         foreach (var item in orderItems) order.AddOrderItem(item);
 
-        order.RegisterEvent(new PrepareReportForOrderEvent(order.Id, order.DateCreated));
+        order.RegisterEvent(new GenerateOrderReportEvent(order.Id, order.DateCreated));
         order.RegisterEvent(new SendOrderConfirmationEmailEvent(order.Id, order.DateCreated));
 
         return order;

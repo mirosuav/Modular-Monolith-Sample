@@ -9,9 +9,11 @@ namespace RiverBooks.SharedKernel.Helpers;
 ///     Optional <see cref="ResultOf" />. Is either successful or 'Error'
 /// </summary>
 [DebuggerStepThrough]
-public readonly record struct ResultOf : IResultOf
+public record ResultOf : IResultOf
 {
     private readonly IList<Error>? _errors;
+
+    private ResultOf() { }
 
     [JsonConstructor]
     private ResultOf(bool isSuccess, IReadOnlyList<Error>? errors)
@@ -42,32 +44,22 @@ public readonly record struct ResultOf : IResultOf
 
     public string AsJson()
     {
-        return IsSuccess
-            ? "Success"
-            : JsonSerializer.Serialize(Errors);
+        return IsSuccess ? "Success" : JsonSerializer.Serialize(Errors);
     }
 
-    public TMatchedResult Match<TMatchedResult>(
-        Func<TMatchedResult> successProcessor,
+    public TMatchedResult Match<TMatchedResult>(Func<TMatchedResult> successProcessor,
         Func<IReadOnlyList<Error>, TMatchedResult> errorProcessor)
     {
-        return IsSuccess
-            ? successProcessor()
-            : errorProcessor(Errors);
+        return IsSuccess ? successProcessor() : errorProcessor(Errors);
     }
 
-    public Task<TMatchedResult> MatchAsync<TMatchedResult>(
-        Func<Task<TMatchedResult>> successProcessor,
+    public Task<TMatchedResult> MatchAsync<TMatchedResult>(Func<Task<TMatchedResult>> successProcessor,
         Func<IReadOnlyList<Error>, Task<TMatchedResult>> errorProcessor)
     {
-        return IsSuccess
-            ? successProcessor()
-            : errorProcessor(Errors);
+        return IsSuccess ? successProcessor() : errorProcessor(Errors);
     }
 
-    public void Switch(
-        Action onSuccess,
-        Action<IReadOnlyList<Error>> onError)
+    public void Switch(Action onSuccess, Action<IReadOnlyList<Error>> onError)
     {
         if (IsSuccess)
             onSuccess();
@@ -75,13 +67,9 @@ public readonly record struct ResultOf : IResultOf
             onError(Errors);
     }
 
-    public Task SwitchAsync(
-        Func<Task> onSuccessAsync,
-        Func<IReadOnlyList<Error>, Task> onErrorAsync)
+    public Task SwitchAsync(Func<Task> onSuccessAsync, Func<IReadOnlyList<Error>, Task> onErrorAsync)
     {
-        return IsSuccess
-            ? onSuccessAsync()
-            : onErrorAsync(Errors);
+        return IsSuccess ? onSuccessAsync() : onErrorAsync(Errors);
     }
 
     public static ResultOf Success()

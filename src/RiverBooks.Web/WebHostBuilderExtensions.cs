@@ -45,25 +45,13 @@ internal static class WebHostBuilderExtensions
     }
     public static void AddLogging(this WebApplicationBuilder builder)
     {
+        builder.Services.AddApplicationInsightsTelemetry();
+
         builder.Host.UseSerilog((context, services, loggerConfig) =>
-            loggerConfig
-            .ReadFrom.Configuration(context.Configuration)
-            .UseCommonSerilogConfiguration()
-            // Add Open telemetry with Sec
-            //.WriteTo.OpenTelemetry(x =>
-            //{
-            //    x.Endpoint = "http://localhost:5341/ingest/otlp/v1/logs";
-            //    x.Protocol = OtlpProtocol.HttpProtobuf;
-            //    x.Headers = new Dictionary<string, string>
-            //    {
-            //        ["X-Seq-ApiKey"] = "gD9YQ2yDYfU4JD5uHT9H"
-            //    };
-            //    //x.ResourceAttributes = new Dictionary<string, object>
-            //    //{
-            //    //    ["module.name"] = "RiversBook.Users"
-            //    //};
-            //})
-            .WriteToSeq(context.Configuration));
+                loggerConfig
+                    .ReadFrom.Configuration(context.Configuration)
+                    .UseCommonSerilogConfiguration()
+                );
     }
 
     public static LoggerConfiguration UseCommonSerilogConfiguration(this LoggerConfiguration configuration)
@@ -84,18 +72,6 @@ internal static class WebHostBuilderExtensions
                 restrictedToMinimumLevel: LogEventLevel.Information)
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
                 .MinimumLevel.Override("System", LogEventLevel.Error);
-    }
-
-    public static LoggerConfiguration WriteToSeq(this LoggerConfiguration loggerConfiguration, IConfiguration configuration)
-    {
-        var seqIngestionUrl = configuration["LogMonitoringIngestionUrl"];
-
-        if (seqIngestionUrl is not null)
-            loggerConfiguration
-                .WriteTo
-                .Seq(seqIngestionUrl, restrictedToMinimumLevel:LogEventLevel.Debug);
-
-        return loggerConfiguration;
     }
 
     internal static void AddAuth(this WebApplicationBuilder builder)

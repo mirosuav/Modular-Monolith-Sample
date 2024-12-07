@@ -26,7 +26,7 @@ internal class ProcessSelfEventsCommandHandler(
         // Enrich, transform and process events
         switch (domainEvent)
         {
-            case PrepareReportForOrderEvent reportingEvent:
+            case GenerateOrderReportEvent reportingEvent:
             {
                 var order = await FetchOrder(cancellationToken, reportingEvent.OrderId);
 

@@ -113,7 +113,8 @@ public class ResultOfTests
 
         // Assert recreated
         recreatedJson.Should().Be(json);
-        recreated.IsSuccess.Should().BeTrue();
+        recreated.Should().NotBeNull();
+        recreated!.IsSuccess.Should().BeTrue();
         recreated.Value.Should().BeEquivalentTo(sut.Value);
         recreated.Errors.Should().BeEquivalentTo(sut.Errors);
     }
@@ -134,7 +135,8 @@ public class ResultOfTests
 
         // Assert recreated
         recreatedJson.Should().Be(json);
-        recreated.IsSuccess.Should().BeFalse();
+        recreated.Should().NotBeNull();
+        recreated!.IsSuccess.Should().BeFalse();
         recreated.Value.Should().BeEquivalentTo(sut.Value);
         recreated.Errors.Should().BeEquivalentTo(sut.Errors);
     }
@@ -156,7 +158,8 @@ public class ResultOfTests
 
         // Assert recreated
         recreatedJson.Should().Be(json);
-        recreated.IsSuccess.Should().BeFalse();
+        recreated.Should().NotBeNull();
+        recreated!.IsSuccess.Should().BeFalse();
         recreated.Errors.Should().BeEquivalentTo(sut.Errors);
     }
 
@@ -177,7 +180,8 @@ public class ResultOfTests
 
         // Assert recreated
         recreatedJson.Should().Be(json);
-        recreated.IsSuccess.Should().BeTrue();
+        recreated.Should().NotBeNull();
+        recreated!.IsSuccess.Should().BeTrue();
         recreated.Errors.Should().BeNull();
     }
 

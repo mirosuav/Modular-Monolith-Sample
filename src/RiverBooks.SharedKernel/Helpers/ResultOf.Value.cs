@@ -10,9 +10,11 @@ namespace RiverBooks.SharedKernel.Helpers;
 /// </summary>
 /// <typeparam name="T"></typeparam>
 [DebuggerStepThrough]
-public readonly record struct ResultOf<T> : IResultOf
+public record ResultOf<T> : IResultOf
 {
     private readonly IList<Error>? _errors;
+
+    private ResultOf() { }
 
     [JsonConstructor]
     private ResultOf(bool isSuccess, T? value, IReadOnlyList<Error>? errors)

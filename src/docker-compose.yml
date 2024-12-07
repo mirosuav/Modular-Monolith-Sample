@@ -11,7 +11,6 @@ services:
       - "8080:8080"
     depends_on:
       - riverbooks.db
-      - riverbooks.log
 
   # SqlServer database
   riverbooks.db:
@@ -31,17 +30,6 @@ services:
         retries: 3
     volumes:
      - sqlvolume:/var/opt/mssql
-
-  # Seq Log monitoring
-  riverbooks.log:
-    image: datalust/seq:latest
-    container_name: riverbooks-log
-    environment:
-      - ACCEPT_EULA=Y
-      #- SEQ_FIRSTRUN_ADMINPASSWORDHASH=<your_password_hash>
-    ports:
-      - "8090:80"
-      - "5341:5341"
 
 volumes:
   sqlvolume:

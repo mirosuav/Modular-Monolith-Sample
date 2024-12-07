@@ -8,9 +8,10 @@
 
 	<ItemGroup>
 		<PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
@@ -19,9 +20,8 @@
 		<PackageReference Include="Serilog.Enrichers.Process" Version="3.0.0" />
 		<PackageReference Include="Serilog.Enrichers.Sensitive" Version="1.7.3" />
 		<PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.1.1" />
-		<PackageReference Include="Serilog.Sinks.Seq" Version="8.0.0" />
 		<PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -31,11 +31,6 @@
 		<ProjectReference Include="..\RiverBooks.OrderProcessing.Api\RiverBooks.OrderProcessing.Api.csproj" />
 		<ProjectReference Include="..\RiverBooks.Reporting.Api\RiverBooks.Reporting.Api.csproj" />
 		<ProjectReference Include="..\RiverBooks.Users.Api\RiverBooks.Users.Api.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Update="MediatR" Version="12.3.0" />
-		<PackageReference Update="Serilog.AspNetCore" Version="8.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>

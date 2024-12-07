@@ -55,7 +55,7 @@ Modular Monoliths course
 #### Advantages:
 - Transactional: Each module saves its `DomainEvents` in one transaction along with the associated business process
 - Modularity: Each module remains responsible for its own domain events, which aligns with the modular monolith architecture.
-- Decoupling: The `EventsModule` doesn’t need to know the specifics of event processing in each module. It simply triggers the process.
+- Decoupling: The `EventsModule` doesnï¿½t need to know the specifics of event processing in each module. It simply triggers the process.
 - Scalability: As your application grows, you can add more modules without affecting the `EventsModule`.
 - 
 #### Implementation:
@@ -97,7 +97,6 @@ dotnet sql-cache create "Server=(local);Integrated Security=true;Initial Catalog
 
 - Implement Domain events to be dispatched *offline* when client is waiting online, inspired by Amichai Mantinband approach
 - Separate Modules IoC i.e. each modules has its own ServiceProvider, Logger etc
-- Use strongly typed Ids, so instead `Guid UserId` define a typed `record struct UserId(Guid Value)` and use `UserId Id`
 - Use MediatR in modules internally but Service Bus to communicate between modules
 - Use https://www.keycloak.org/ as IdentityProvider
 - Check Azure ApplicationInsights for OpenTelemetry
