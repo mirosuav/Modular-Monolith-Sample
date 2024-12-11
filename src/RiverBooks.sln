@@ -57,10 +57,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedKernel", "SharedKerne
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.SharedKernel.Tests", "RiverBooks.SharedKernel.Tests\RiverBooks.SharedKernel.Tests.csproj", "{A157B4A2-020A-4595-9895-EE3C8A84486D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BenchmarksProjects", "BenchmarksProjects", "{E2177BDE-10C0-4467-9CE8-F6E2FC6385CB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.Benchmarks.Console", "RiverBooks.Benchmarks.Console\RiverBooks.Benchmarks.Console.csproj", "{8E089958-A6EF-42CE-9182-E1D5A87B51F8}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Events Module", "Events Module", "{73D42889-CCD3-4337-9A44-6AD3C827A190}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.EventsProcessing", "RiverBooks.EventsProcessing\RiverBooks.EventsProcessing.csproj", "{94356B62-3300-4422-B0CA-F66FDEB80B24}"
@@ -72,6 +68,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.Integration.Tests", "RiverBooks.Integration.Tests\RiverBooks.Integration.Tests.csproj", "{753EF1B0-DE85-4F97-A917-3AFADDA7455D}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{C8030692-3A6D-4C12-952C-C4DB1C04E00E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.AppHost", "RiverBooks.AppHost\RiverBooks.AppHost.csproj", "{66B83586-6F56-443C-AB26-ADA363DEF1EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.ServiceDefaults", "RiverBooks.ServiceDefaults\RiverBooks.ServiceDefaults.csproj", "{C22B642C-830F-4ECF-A473-DC2385CC420C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -151,10 +151,6 @@ Global
 		{A157B4A2-020A-4595-9895-EE3C8A84486D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A157B4A2-020A-4595-9895-EE3C8A84486D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A157B4A2-020A-4595-9895-EE3C8A84486D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8E089958-A6EF-42CE-9182-E1D5A87B51F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8E089958-A6EF-42CE-9182-E1D5A87B51F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8E089958-A6EF-42CE-9182-E1D5A87B51F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8E089958-A6EF-42CE-9182-E1D5A87B51F8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{94356B62-3300-4422-B0CA-F66FDEB80B24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{94356B62-3300-4422-B0CA-F66FDEB80B24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94356B62-3300-4422-B0CA-F66FDEB80B24}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -175,6 +171,14 @@ Global
 		{C8030692-3A6D-4C12-952C-C4DB1C04E00E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8030692-3A6D-4C12-952C-C4DB1C04E00E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8030692-3A6D-4C12-952C-C4DB1C04E00E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66B83586-6F56-443C-AB26-ADA363DEF1EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66B83586-6F56-443C-AB26-ADA363DEF1EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66B83586-6F56-443C-AB26-ADA363DEF1EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66B83586-6F56-443C-AB26-ADA363DEF1EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C22B642C-830F-4ECF-A473-DC2385CC420C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C22B642C-830F-4ECF-A473-DC2385CC420C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C22B642C-830F-4ECF-A473-DC2385CC420C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C22B642C-830F-4ECF-A473-DC2385CC420C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -197,7 +201,6 @@ Global
 		{A7C2E986-53D6-41F4-9EE0-D421029FAEDB} = {ED16DF5F-8BD0-42E4-ABE0-C46D506A7101}
 		{58C565B7-12FC-4E24-9CCE-E07E1EC01592} = {ED16DF5F-8BD0-42E4-ABE0-C46D506A7101}
 		{A157B4A2-020A-4595-9895-EE3C8A84486D} = {96BA459C-166D-4BEB-A440-5C5AF4D787D6}
-		{8E089958-A6EF-42CE-9182-E1D5A87B51F8} = {E2177BDE-10C0-4467-9CE8-F6E2FC6385CB}
 		{94356B62-3300-4422-B0CA-F66FDEB80B24} = {73D42889-CCD3-4337-9A44-6AD3C827A190}
 		{AD0D22EE-7C42-4E96-BF76-BE5B3C09925D} = {73D42889-CCD3-4337-9A44-6AD3C827A190}
 		{1B89E342-3634-4F37-AB0F-4C4408FD90EA} = {73D42889-CCD3-4337-9A44-6AD3C827A190}

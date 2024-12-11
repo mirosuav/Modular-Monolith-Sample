@@ -5,25 +5,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.11" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
-		<PackageReference Include="Serilog.AspNetCore" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\RiverBooks.OrderProcessing.Contracts\RiverBooks.OrderProcessing.Contracts.csproj" />
 		<ProjectReference Include="..\RiverBooks.Books.Contracts\RiverBooks.Books.Contracts.csproj" />
 		<ProjectReference Include="..\RiverBooks.Reporting.Contracts\RiverBooks.Reporting.Contracts.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Update="MediatR" Version="12.3.0" />
-	  <PackageReference Update="Serilog.AspNetCore" Version="8.0.3" />
+		<ProjectReference Include="..\RiverBooks.SharedKernel\RiverBooks.SharedKernel.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Asp.Versioning;
 using Serilog;
 
@@ -18,7 +18,9 @@ public class Program
             Log.Logger.Information("Configuring web host");
             
             var builder = WebApplication.CreateBuilder(args);
+            
             {
+                builder.AddServiceDefaults();
                 builder.AddLogging();
                 builder.AddModules(Log.Logger);
                 builder.AddAuth();
@@ -32,6 +34,8 @@ public class Program
             Log.Logger.Information("Starting web host");
 
             var app = builder.Build();
+
+            app.MapDefaultEndpoints();
             {
                 app.UseAuthentication();
                 app.UseAuthorization();

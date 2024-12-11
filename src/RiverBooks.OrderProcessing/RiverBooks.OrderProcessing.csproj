@@ -6,30 +6,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.11" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
-		<PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="8.0.11" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
-		<PackageReference Include="Serilog.AspNetCore" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\RiverBooks.OrderProcessing.Contracts\RiverBooks.OrderProcessing.Contracts.csproj" />
 		<ProjectReference Include="..\RiverBooks.EmailSending.Contracts\RiverBooks.EmailSending.Contracts.csproj" />
 		<ProjectReference Include="..\RiverBooks.Users.Contracts\RiverBooks.Users.Contracts.csproj" />
+		<ProjectReference Include="..\RiverBooks.SharedKernel\RiverBooks.SharedKernel.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Folder Include="Infrastructure\Migrations\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Update="MediatR" Version="12.3.0" />
-	  <PackageReference Update="Serilog.AspNetCore" Version="8.0.3" />
 	</ItemGroup>
 
 </Project>
