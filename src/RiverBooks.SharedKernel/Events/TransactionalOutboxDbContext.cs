@@ -12,7 +12,7 @@ public abstract class TransactionalOutboxDbContext(DbContextOptions options)
 {
     public static int TransactionalOutboxMaxAttempts = 3;
 
-    public DbSet<TransactionalOutboxEvent> OutboxEvents { get; set; }
+    public DbSet<TransactionalOutboxEvent> OutboxEvents { get; set; } = null!;
 
     public virtual IQueryable<TransactionalOutboxEvent> FetchNextTransactionalOutboxEvents()
     {

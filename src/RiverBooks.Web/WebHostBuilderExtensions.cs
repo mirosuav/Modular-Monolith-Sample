@@ -115,16 +115,25 @@ internal static class WebHostBuilderExtensions
         builder.Services.AddOrderProcessingModule(configuration, logger, moduleAssemblies);
         builder.Services.AddUserModule(configuration, logger, moduleAssemblies);
     }
-    
+
     public static void MigrateDatabase(this WebApplicationBuilder app, Serilog.ILogger logger)
     {
-        using var serviceProvider = app.Services.BuildServiceProvider();
-        using var scope = serviceProvider.CreateScope();
-        Books.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
-        Users.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
-        Reporting.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
-        EmailSending.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
-        OrderProcessing.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
+        try
+        {
+            using var serviceProvider = app.Services.BuildServiceProvider();
+            using var scope = serviceProvider.CreateScope();
+            Books.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
+            Users.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
+            Reporting.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
+            EmailSending.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
+            OrderProcessing.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
+        }
+        catch (Exception e)
+        {
+            logger.Error(e, "Migrating database failed.");
+            throw;
+        }
+
         logger.Information("Database up to date.");
     }
 
