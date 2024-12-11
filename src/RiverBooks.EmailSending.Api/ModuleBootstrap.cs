@@ -30,7 +30,7 @@ public static class ModuleBootstrap
         List<Assembly> mediatRAssemblies)
     {
         // configure EF db context
-        var connectionString = config.GetConnectionString($"{ModuleDescriptor.Name}ConnectionString");
+        var connectionString = config.GetConnectionString("riverbooks-db");
         services.AddDbContext<EmailSendingDbContext>(options =>
             options.UseSqlServer(connectionString, o => o.EnableRetryOnFailure()));
 

@@ -26,7 +26,7 @@ public static class ModuleBootstrap
         Serilog.ILogger logger,
         List<Assembly> mediatRAssemblies)
     {
-        var connectionString = config.GetConnectionString($"{ModuleDescriptor.Name}ConnectionString");
+        var connectionString = config.GetConnectionString("riverbooks-db");
         services.AddDbContext<OrderProcessingDbContext>(options =>
             options.UseSqlServer(connectionString, o => o.EnableRetryOnFailure()));
 
