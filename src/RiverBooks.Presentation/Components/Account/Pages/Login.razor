@@ -4,7 +4,7 @@
 
 @inject NavigationManager NavigationManager
 @inject IApiCaller ApiCaller
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject JwtAuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Log in</PageTitle>
 
@@ -55,7 +55,7 @@
     {
         if (HttpMethods.IsGet(HttpContext.Request.Method))
         {
-            await ((JwtAuthenticationStateProvider)AuthenticationStateProvider).SignOut(HttpContext);
+            await AuthenticationStateProvider.SignOut();
         }
     }
 
@@ -65,11 +65,11 @@
         
         if (!result.IsSuccess)
         {
-            errorMessage = result.Errors[0].Description;
+            errorMessage = result.ToErrorString();
             return;
         }
         
-        await ((JwtAuthenticationStateProvider)AuthenticationStateProvider).SignIn(HttpContext, result.Value);
+        await AuthenticationStateProvider.SignIn(result.Value);
         
         if (string.IsNullOrWhiteSpace(ReturnUrl))
             ReturnUrl = "/";

@@ -51,6 +51,12 @@ public record ResultOf<T> : IResultOf
     {
         return AsJson();
     }
+    public string ToErrorString(string separator = "/n")
+    {
+        if (IsSuccess || Errors is null)
+            return string.Empty;
+        return string.Join(separator, Errors.Select(e => e.Description));
+    }
 
     public string AsJson()
     {

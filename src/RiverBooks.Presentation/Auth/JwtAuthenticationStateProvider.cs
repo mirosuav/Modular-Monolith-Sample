@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
@@ -9,33 +10,39 @@ using RiverBooks.SharedKernel.Authentication;
 namespace RiverBooks.Presentation.Auth;
 
 public class JwtAuthenticationStateProvider(
-    AuthenticationStore tokenStore,
+    IHttpContextAccessor httpContextAccessor,
     JwtSecurityTokenHandler jwtSecurityTokenHandler,
     ILogger<JwtAuthenticationStateProvider> logger) 
     : ServerAuthenticationStateProvider
 {
-    public async Task SignIn(HttpContext httpContext, AuthToken token)
+    public async Task SignIn(AuthToken token)
     {
+        var httpContext = httpContextAccessor.HttpContext;
+        if (httpContext is null)
+            throw new ApplicationException("HttpContext is not available");
+
         var principal = CreateClaimsPrincipal(token);
         if (principal is null)
         {
             SetAuthenticationState(Task.FromResult(CreateEmptyAuthenticationState()));
-            tokenStore.ClearToken();
             return;
         }
 
         SetAuthenticationState(Task.FromResult(new AuthenticationState(principal)));
+        
         await httpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal);
-        tokenStore.SetToken(token);
         logger.LogInformation("User {User} logged in", principal.Identity?.Name ?? "Unknown");
     }
 
-    public async Task SignOut(HttpContext httpContext)
+    public async Task SignOut()
     {
+        var httpContext = httpContextAccessor.HttpContext;
+        if (httpContext is null)
+            throw new ApplicationException("HttpContext is not available");
+        
         var user = httpContext.User.Identity?.Name;
         await httpContext.SignOutAsync();
         SetAuthenticationState(Task.FromResult(CreateEmptyAuthenticationState()));
-        tokenStore.ClearToken();
         if (user != null)
             logger.LogInformation("User {User} logged out", user);
     }
@@ -49,7 +56,8 @@ public class JwtAuthenticationStateProvider(
             return null;
         }
         
-        var claims = jwtToken.Claims;
+        var claims = jwtToken.Claims.ToList();
+        claims.Add(new Claim("jwt", JsonSerializer.Serialize(token)));
         var identity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
         return new ClaimsPrincipal(identity);
     }

@@ -36,7 +36,7 @@ public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiC
         {
             logger.LogDebug("RegisterNewUser failed with status code {RegisterUserStatusCode}", response.StatusCode);
             var details = await response.Content.ReadFromJsonAsync<ProblemDetails>();
-            return Error.Unauthorized(details?.Detail ?? "User login failed");
+            return Error.Validation("Invalid.Credentials", "User login failed");
         }
 
         var authToken = await response.Content.ReadFromJsonAsync<AuthToken>();
@@ -56,7 +56,7 @@ public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiC
             var details = await response.Content.ReadFromJsonAsync<ProblemDetails>();
             return Error.NotFound(details?.Detail ?? "Books not found");
         }
-        
+
         var booksResponse = await response.Content.ReadFromJsonAsync<ListBooksResponse>();
 
         if (booksResponse is null)
