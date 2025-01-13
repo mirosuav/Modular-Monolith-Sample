@@ -13,7 +13,6 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System.Reflection;
-using Serilog.Enrichers.Sensitive;
 
 namespace RiverBooks.Web;
 

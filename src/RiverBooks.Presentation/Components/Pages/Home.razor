@@ -1,0 +1,28 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject IHttpClientFactory HttpClientFactory
+
+<PageTitle>River Books</PageTitle>
+
+<h1>Welcome to River Books </h1>
+
+<p class="lead">
+    This is a sample application that consists of:
+    <ul>
+        <li>Modular backend API</li>
+        <li>SQL database</li>
+        <li>Presentation client <em>(this app)</em></li>
+    </ul>
+</p>
+
+<AuthorizeView>
+    <NotAuthorized>
+        <p><strong>First Login with your credentials or register to the system</strong></p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+}

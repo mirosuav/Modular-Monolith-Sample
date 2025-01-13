@@ -177,9 +177,9 @@ public class End2EndTests : IClassFixture<ApiFixture>
         result.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var authToken = await result.Content.ReadFromJsonAsync<AuthToken>();
-        authToken.Token.Should().NotBeNullOrWhiteSpace();
+        authToken?.Token.Should().NotBeNullOrWhiteSpace();
 
-        return authToken;
+        return authToken!;
     }
 
     private async Task<List<BookDto>> GetAllBooks()

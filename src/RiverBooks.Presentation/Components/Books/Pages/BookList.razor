@@ -1,0 +1,52 @@
+﻿@page "/books"
+@using RiverBooks.Books.Contracts
+
+@inject IApiCaller ApiCaller
+
+@attribute [StreamRendering]
+@attribute [Authorize]
+
+<PageTitle>Books</PageTitle>
+
+@if (_books == null)
+{
+    <p><em>Loading books...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Author</th>
+                <th scope="col">Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var (idx, book) in _books.Select((b, i) => (i, b)))
+            {
+                <tr>
+                    <th scope="row">@idx</th>
+                    <td>@book.Title</td>
+                    <td>@book.Author</td>
+                    <td>@book.Price</td>
+                    <td><a class="nav-link" href="#">Update price</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    
+    private List<BookDto>? _books;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var booksResponse = await ApiCaller.ListBooksAsync();
+        _books = booksResponse.Match(x => x.Books, _ => [] );
+    }
+}

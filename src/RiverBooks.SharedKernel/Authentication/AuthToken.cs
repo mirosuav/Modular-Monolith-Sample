@@ -2,7 +2,7 @@
 
 namespace RiverBooks.SharedKernel.Authentication;
 
-public readonly struct AuthToken()
+public sealed class AuthToken()
 {
     [JsonPropertyName("token")] public string Token { get; init; } = string.Empty;
 

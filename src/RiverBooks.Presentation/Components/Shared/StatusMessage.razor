@@ -1,5 +1,12 @@
-﻿<h3>StatusMessage</h3>
+﻿@if (!string.IsNullOrEmpty(Message))
+{
+    <div class="alert alert-@StatusMessageClass" role="alert">
+        @Message
+    </div>
+}
 
 @code {
-    
+
+    [Parameter] public string? Message { get; set; }
+    [Parameter] public string? StatusMessageClass { get; set; } = "danger";
 }

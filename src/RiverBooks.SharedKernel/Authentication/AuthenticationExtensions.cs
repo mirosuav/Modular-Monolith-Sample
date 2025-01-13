@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,7 +41,7 @@ public static class AuthenticationExtensions
         return services.AddAuthorization(authOpt =>
             authOpt.FallbackPolicy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .RequireClaim(UserClaims.Id)
+                .RequireClaim(ClaimTypes.NameIdentifier)
                 .Build());
     }
 }

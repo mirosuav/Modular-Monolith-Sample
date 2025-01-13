@@ -1,8 +1,10 @@
-﻿using System.Text;
+﻿using System.Security.Claims;
+using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using RiverBooks.SharedKernel.Helpers;
+using JwtConstants = System.IdentityModel.Tokens.Jwt.JwtConstants;
 
 namespace RiverBooks.SharedKernel.Authentication;
 
@@ -16,9 +18,10 @@ public class JwtTokenHandler(IConfiguration configuration, TimeProvider timeProv
 
         var claims = new Dictionary<string, object>
         {
-            [UserClaims.Email] = userEmailAddress,
-            [UserClaims.Id] = userId,
-            [UserClaims.TokenId] = SequentialGuid.NewGuid().ToString()
+            [ClaimTypes.Name] = userEmailAddress,
+            [ClaimTypes.Email] = userEmailAddress,
+            [ClaimTypes.NameIdentifier] = userId,
+            [ClaimTypes.Sid] = SequentialGuid.NewGuid().ToString()
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor

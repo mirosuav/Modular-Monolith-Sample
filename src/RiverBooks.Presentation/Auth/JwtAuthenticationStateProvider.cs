@@ -1,73 +1,59 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server;
+using Microsoft.AspNetCore.Identity;
+using RiverBooks.SharedKernel.Authentication;
 
 namespace RiverBooks.Presentation.Auth;
 
-public class AppAuthenticationStateProvider : AuthenticationStateProvider
+public class JwtAuthenticationStateProvider(
+    AuthenticationStore tokenStore,
+    JwtSecurityTokenHandler jwtSecurityTokenHandler,
+    ILogger<JwtAuthenticationStateProvider> logger) 
+    : ServerAuthenticationStateProvider
 {
-    private readonly ILocalStorageService _localStorageService;
-    private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler = new();
-
-    public AppAuthenticationStateProvider(ILocalStorageService localStorageService)
+    public async Task SignIn(HttpContext httpContext, AuthToken token)
     {
-        _localStorageService = localStorageService;
-    }
-
-    public async override Task<AuthenticationState> GetAuthenticationStateAsync()
-    {
-        try
+        var principal = CreateClaimsPrincipal(token);
+        if (principal is null)
         {
-            string savedToken = await _localStorageService.GetItemAsync<string>("bearerToken");
-
-            if (string.IsNullOrWhiteSpace(savedToken))
-            {
-                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
-            }
-
-            JwtSecurityToken jwtSecurityToken = _jwtSecurityTokenHandler.ReadJwtToken(savedToken);
-            DateTime expiry = jwtSecurityToken.ValidTo;
-
-            if (expiry < DateTime.UtcNow)
-            {
-                await _localStorageService.RemoveItemAsync("bearerToken");
-                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
-            }
-
-            // Get claims from token and build authenticated user object
-            IList<Claim> claims = ParseClaims(jwtSecurityToken);
-            var user = new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt"));
-            return new AuthenticationState(user);
+            SetAuthenticationState(Task.FromResult(CreateEmptyAuthenticationState()));
+            tokenStore.ClearToken();
+            return;
         }
-        catch (Exception)
+
+        SetAuthenticationState(Task.FromResult(new AuthenticationState(principal)));
+        await httpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal);
+        tokenStore.SetToken(token);
+        logger.LogInformation("User {User} logged in", principal.Identity?.Name ?? "Unknown");
+    }
+
+    public async Task SignOut(HttpContext httpContext)
+    {
+        var user = httpContext.User.Identity?.Name;
+        await httpContext.SignOutAsync();
+        SetAuthenticationState(Task.FromResult(CreateEmptyAuthenticationState()));
+        tokenStore.ClearToken();
+        if (user != null)
+            logger.LogInformation("User {User} logged out", user);
+    }
+
+    private ClaimsPrincipal? CreateClaimsPrincipal(AuthToken token)
+    {
+        var jwtToken = jwtSecurityTokenHandler.ReadJwtToken(token.Token);
+        
+        if (jwtToken.ValidTo < DateTime.UtcNow)
         {
-            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+            return null;
         }
+        
+        var claims = jwtToken.Claims;
+        var identity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
+        return new ClaimsPrincipal(identity);
     }
 
-    private IList<Claim> ParseClaims(JwtSecurityToken jwtSecurityToken)
-    {
-        IList<Claim> claims = jwtSecurityToken.Claims.ToList();
-        // The value of tokenContent.Subject is the user's email.
-        claims.Add(new Claim(ClaimTypes.Name, jwtSecurityToken.Subject));
-        return claims;
-    }
-
-    internal async Task SignIn()
-    {
-        string savedToken = await _localStorageService.GetItemAsync<string>("bearerToken");
-        JwtSecurityToken jwtSecurityToken = _jwtSecurityTokenHandler.ReadJwtToken(savedToken);
-        var claims = ParseClaims(jwtSecurityToken);
-        var user = new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt"));
-
-        Task<AuthenticationState> authenticationState = Task.FromResult(new AuthenticationState(user));
-        NotifyAuthenticationStateChanged(authenticationState);
-    }
-
-    internal void SignOut()
-    {
-        ClaimsPrincipal nobody = new ClaimsPrincipal(new ClaimsIdentity());
-        Task<AuthenticationState> authenticationState = Task.FromResult(new AuthenticationState(nobody));
-        NotifyAuthenticationStateChanged(authenticationState);
-    }
+    private AuthenticationState CreateEmptyAuthenticationState() =>
+        new(new ClaimsPrincipal(new ClaimsIdentity()));
 }

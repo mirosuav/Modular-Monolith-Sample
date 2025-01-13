@@ -14,11 +14,11 @@ public class UserClaimsProvider(IHttpContextAccessor httpContextAccessor) : IUse
 
     public string? GetEmailAddress()
     {
-        return GetClaim(UserClaims.Email);
+        return GetClaim(ClaimTypes.Email);
     }
 
     public Guid? GetId()
     {
-        return Guid.TryParse(GetClaim(UserClaims.Id), out var id) ? id : null;
+        return Guid.TryParse(GetClaim(ClaimTypes.NameIdentifier), out var id) ? id : null;
     }
 }

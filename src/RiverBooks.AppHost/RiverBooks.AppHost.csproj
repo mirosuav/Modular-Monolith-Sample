@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RiverBooks.Presentation\RiverBooks.Presentation.csproj" />
     <ProjectReference Include="..\RiverBooks.Web\RiverBooks.Web.csproj" />
   </ItemGroup>
 

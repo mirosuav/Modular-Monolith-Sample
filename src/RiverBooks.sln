@@ -73,6 +73,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.AppHost", "River
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.ServiceDefaults", "RiverBooks.ServiceDefaults\RiverBooks.ServiceDefaults.csproj", "{C22B642C-830F-4ECF-A473-DC2385CC420C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.Presentation", "RiverBooks.Presentation\RiverBooks.Presentation.csproj", "{D5F7BA2F-C7FC-4557-ADB0-41EA1917132F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -179,6 +181,10 @@ Global
 		{C22B642C-830F-4ECF-A473-DC2385CC420C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C22B642C-830F-4ECF-A473-DC2385CC420C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C22B642C-830F-4ECF-A473-DC2385CC420C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5F7BA2F-C7FC-4557-ADB0-41EA1917132F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5F7BA2F-C7FC-4557-ADB0-41EA1917132F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5F7BA2F-C7FC-4557-ADB0-41EA1917132F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5F7BA2F-C7FC-4557-ADB0-41EA1917132F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

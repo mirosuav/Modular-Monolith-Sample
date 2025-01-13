@@ -1,36 +1,26 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.InteropServices.JavaScript;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Mvc;
+using RiverBooks.Books.Contracts;
 using RiverBooks.SharedKernel.Authentication;
 using RiverBooks.SharedKernel.Helpers;
 
 namespace RiverBooks.Presentation.ApiClient;
 
-public class ApiAuthenticator
+public interface IApiCaller
 {
-    private readonly HttpClient _httpClient;
-    private readonly HttpContextAccessor _httpContextAccessor;
-    private ILogger<ApiAuthenticator> _logger;
+    Task<ResultOf> RegisterNewUser(string email, string password);
+    Task<ResultOf<AuthToken>> LoginUser(string email, string password);
+    Task<ResultOf<ListBooksResponse>> ListBooksAsync();
+}
 
-    public ApiAuthenticator(ILogger<ApiAuthenticator> logger, HttpClient httpClient,
-        HttpContextAccessor httpContextAccessor)
-    {
-        _logger = logger;
-        _httpClient = httpClient;
-        _httpContextAccessor = httpContextAccessor;
-    }
-
+public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiCaller
+{
     public async Task<ResultOf> RegisterNewUser(string email, string password)
     {
-        var response = await _httpClient.PostAsJsonAsync("/users", new { email, password });
+        var response = await httpClient.PostAsJsonAsync("/users", new { email, password });
 
         if (!response.IsSuccessStatusCode)
         {
-            _logger.LogDebug("RegisterNewUser failed with status code {RegisterUserStatusCode}", response.StatusCode);
+            logger.LogDebug("RegisterNewUser failed with status code {RegisterUserStatusCode}", response.StatusCode);
             var details = await response.Content.ReadFromJsonAsync<ProblemDetails>();
             return Error.Validation(details?.Title ?? "User registration failed", details?.Detail ?? "UnexpectedError");
         }
@@ -38,34 +28,40 @@ public class ApiAuthenticator
         return ResultOf.Success();
     }
 
-    public async Task<ResultOf> LoginUser(string email, string password)
+    public async Task<ResultOf<AuthToken>> LoginUser(string email, string password)
     {
-        var response = await _httpClient.PostAsJsonAsync("/users/login", new { email, password });
+        var response = await httpClient.PostAsJsonAsync("/users/login", new { email, password });
 
         if (!response.IsSuccessStatusCode)
         {
-            _logger.LogDebug("RegisterNewUser failed with status code {RegisterUserStatusCode}", response.StatusCode);
+            logger.LogDebug("RegisterNewUser failed with status code {RegisterUserStatusCode}", response.StatusCode);
             var details = await response.Content.ReadFromJsonAsync<ProblemDetails>();
-            return Error.Unauthorized(details?.Title ?? "User login failed");
+            return Error.Unauthorized(details?.Detail ?? "User login failed");
         }
 
         var authToken = await response.Content.ReadFromJsonAsync<AuthToken>();
 
-        if (string.IsNullOrWhiteSpace(authToken.Token) || _httpContextAccessor.HttpContext is null)
+        if (string.IsNullOrWhiteSpace(authToken?.Token))
             return Error.ServerError;
 
-        var userIdentity = new ClaimsIdentity(IdentityConstants.ApplicationScheme);
-        userIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, authToken.Token));
-        userIdentity.AddClaim(new Claim(ClaimTypes.Name, email));
-        userIdentity.AddClaim(new Claim(ClaimTypes.Email, email));
-        var userPrincipal = new ClaimsPrincipal(userIdentity);
+        return authToken;
+    }
 
-        await _httpContextAccessor.HttpContext
-            .SignInAsync(IdentityConstants.ApplicationScheme, userPrincipal,
-                new AuthenticationProperties());
+    public async Task<ResultOf<ListBooksResponse>> ListBooksAsync()
+    {
+        var response = await httpClient.GetAsync("/books");
+        if (!response.IsSuccessStatusCode)
+        {
+            logger.LogDebug("ListBooksAsync failed with status code {ListBooksStatusCode}", response.StatusCode);
+            var details = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+            return Error.NotFound(details?.Detail ?? "Books not found");
+        }
+        
+        var booksResponse = await response.Content.ReadFromJsonAsync<ListBooksResponse>();
 
-        _httpContextAccessor.HttpContext.User = userPrincipal;
+        if (booksResponse is null)
+            return Error.ServerError;
 
-        return ResultOf.Success();
+        return booksResponse;
     }
 }
