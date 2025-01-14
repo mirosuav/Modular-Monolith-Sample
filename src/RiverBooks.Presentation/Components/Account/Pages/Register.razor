@@ -51,7 +51,7 @@
 
     public async Task RegisterUser(EditContext editContext)
     {
-        var result = await ApiCaller.RegisterNewUser(Input.Email, Input.Password);
+        var result = await ApiCaller.RegisterUser(Input.Email, Input.Password);
 
         if (!result.IsSuccess)
         {

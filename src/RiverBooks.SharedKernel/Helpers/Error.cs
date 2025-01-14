@@ -8,7 +8,7 @@ namespace RiverBooks.SharedKernel.Helpers;
 /// <param name="Code">Short error code</param>
 /// <param name="Description">Error human readable description</param>
 /// <param name="ErrorType">Error type mapped to HttpStatusCode</param>
-public readonly record struct Error(string Code, string Description, ErrorType ErrorType)
+public readonly record struct Error(string Code, string Description, ErrorType ErrorType, object? Data = null)
 {
     public static readonly Error None =
         Failure(string.Empty, string.Empty);

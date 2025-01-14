@@ -1,10 +1,10 @@
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RiverBooks.Presentation.ApiClient;
 using RiverBooks.Presentation.Auth;
 using RiverBooks.Presentation.Components;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace RiverBooks.Presentation
 {

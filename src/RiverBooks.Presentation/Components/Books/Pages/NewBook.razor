@@ -1,0 +1,82 @@
+﻿@page "/books/new"
+@rendermode InteractiveServer
+
+@using System.ComponentModel.DataAnnotations
+@using RiverBooks.Books.Contracts
+
+@inject IApiCaller ApiCaller
+@inject NavigationManager NavigationManager
+
+<PageTitle>New book</PageTitle>
+
+
+<div class="row">
+    <div class="col-lg-6 col-sm-10">
+        <h2>Add new book</h2>
+        <StatusMessage Message="@Message" StatusMessageClass="danger" />
+        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="CreateBook" FormName="createBook">
+            <DataAnnotationsValidator />
+            <hr />
+            <ValidationSummary class="text-danger" role="alert" />
+            <div class="form-floating mb-3">
+                <InputText id="title" @bind-Value="Input.Title" class="form-control" autocomplete="title" aria-required="true" placeholder="Book title..." />
+                <label for="title">Title</label>
+                <ValidationMessage For="() => Input.Title" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText id="author" @bind-Value="Input.Author" class="form-control" autocomplete="author" aria-required="true" placeholder="Author..." />
+                <label for="author">Author</label>
+                <ValidationMessage For="() => Input.Author" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputNumber id="price" @bind-Value="Input.Price" class="form-control" autocomplete="price" aria-required="true" placeholder="Price" />
+                <label for="price">Price</label>
+                <ValidationMessage For="() => Input.Price" class="text-danger" />
+            </div>
+
+            <div class="form-floating mb-3">
+                <NavLink href="@ReturnUrl" class="btn w-25 btn-secondary">Cancel</NavLink>
+                <button type="submit" class="btn w-25 btn-primary">Add</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private InputModel Input { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    private string? Message { get; set; }
+
+    private async Task CreateBook(EditContext editContext)
+    {
+        var result = await ApiCaller.CreateBook(new CreateBookRequest
+            { Author = Input.Author, Title = Input.Title, Price = Input.Price });
+
+        if (!result.IsSuccess)
+        {
+            Message = result.Errors[0].Description;
+            return;
+        }
+
+        NavigationManager.RedirectTo(ReturnUrl);
+    }
+
+    private sealed class InputModel
+    {
+        [Required]
+        [Display(Name = "Title")]
+        public string Title { get; set; } = "";
+
+        [Required]
+        [Display(Name = "Author")]
+        public string Author { get; set; } = "";
+
+        [Range(0.1, 999999999)]
+        [Display(Name = "Price")]
+        public decimal Price { get; set; }
+    }
+}

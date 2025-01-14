@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using RiverBooks.Presentation.Extensions;
-using RiverBooks.SharedKernel.Authentication;
+﻿using System.Net.Http.Headers;
 using System.Text.Json;
+using RiverBooks.SharedKernel.Authentication;
 
 namespace RiverBooks.Presentation.Auth;
 
@@ -14,7 +13,7 @@ public class ApiAuthorizationHandler(IHttpContextAccessor httpContextAccessor)
 
         if (token is not null)
         {
-            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(token.TokenType, token.Token);
+            request.Headers.Authorization = new AuthenticationHeaderValue(token.TokenType, token.Token);
         }
 
         return await base.SendAsync(request, cancellationToken);
