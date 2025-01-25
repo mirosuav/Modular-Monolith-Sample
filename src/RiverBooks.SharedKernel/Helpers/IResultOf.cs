@@ -3,6 +3,5 @@
 public interface IResultOf
 {
     bool IsSuccess { get; }
-
     IReadOnlyList<Error>? Errors { get; }
 }

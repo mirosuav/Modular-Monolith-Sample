@@ -1,5 +1,43 @@
-﻿<h3>Modal</h3>
+﻿@if (IsActive)
+{
+    <div class="modal fade show" id="@(Guid.NewGuid().ToString("N"))" style="display:block" aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">@Title</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="@Hide"></button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    @BodyContent
+                    <StatusMessage Message="@ErrorMessage" StatusMessageClass="danger" />
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    @FooterContent
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
-    
+    [Parameter] public bool IsActive { get; set; }
+    public string? ErrorMessage { get; set; }
+    [Parameter, EditorRequired] public required string Title { get; set; }
+    [Parameter, EditorRequired] public required RenderFragment BodyContent { get; set; }
+    [Parameter, EditorRequired] public required RenderFragment? FooterContent { get; set; }
+
+    public void Hide()
+    {
+        ErrorMessage = null;
+        IsActive = false;
+    }
+
+    public void Show()
+    {
+        ErrorMessage = null;
+        IsActive = true;
+    }
 }

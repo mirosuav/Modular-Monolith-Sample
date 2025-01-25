@@ -58,7 +58,7 @@
 
         if (!result.IsSuccess)
         {
-            Message = result.Errors[0].Description;
+            Message = result.Error?.Description;
             return;
         }
 

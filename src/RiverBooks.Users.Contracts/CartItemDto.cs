@@ -5,4 +5,7 @@ public record CartItemDto(
     Guid BookId,
     string Description,
     int Quantity,
-    decimal UnitPrice);
+    decimal UnitPrice)
+{
+    public decimal TotalPrice => Quantity * UnitPrice;
+}

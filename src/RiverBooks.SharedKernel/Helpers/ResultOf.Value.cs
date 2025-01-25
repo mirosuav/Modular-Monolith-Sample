@@ -13,6 +13,8 @@ namespace RiverBooks.SharedKernel.Helpers;
 public record ResultOf<T> : IResultOf
 {
     private readonly IList<Error>? _errors;
+    
+    public Error? Error => Errors?.FirstOrDefault(); 
 
     private ResultOf() { }
 
@@ -46,7 +48,7 @@ public record ResultOf<T> : IResultOf
     public bool IsSuccess { get; }
 
     public IReadOnlyList<Error>? Errors => _errors?.AsReadOnly();
-
+    
     public override string ToString()
     {
         return AsJson();

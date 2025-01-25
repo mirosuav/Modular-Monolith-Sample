@@ -5,7 +5,7 @@
 @inject IApiCaller ApiCaller
 @inject NavigationManager NavigationManager
 
-@* @attribute [StreamRendering] *@
+@attribute [StreamRendering]
 @attribute [Authorize]
 
 <PageTitle>Books</PageTitle>
@@ -35,21 +35,25 @@ else
                 <th scope="col">Price</th>
                 <th></th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var (idx, book) in _books.Select((b, i) => (i, b)))
             {
                 <tr>
-                    <td scope="row">@(idx + 1)</td>
+                    <td>@(idx + 1)</td>
                     <td>@book.Title</td>
                     <td>@book.Author</td>
-                    <td>@book.Price</td>
+                    <td>@book.Price.ToString("C")</td>
                     <td>
-                        <a class="nav-link" href="#">Update price</a>
+                        <button type="button" class="btn btn-link" @onclick="_ => EditPrice(book)">Update price</button>
                     </td>
                     <td>
-                        <button type="button" class="btn" @onclick="_ => ConfirmDelete(book)">Delete</button>
+                        <button type="button" class="btn btn-link" @onclick="_ => ConfirmDelete(book)">Delete book</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-link" @onclick="_ => ConfirmAddToCart(book)">Add to cart</button>
                     </td>
                 </tr>
             }
@@ -57,39 +61,47 @@ else
     </table>
 }
 
-@if (_showModal)
-{
-    <div class="modal fade show" id="myModal" style="display:block" aria-modal="true" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
+<Modal @ref="_deleteBookModal" Title="Deleting book ?">
+    <BodyContent>
+        <p>Are you sure you want to delete book: '@_book?.Title' ?</p>
+    </BodyContent>
+    <FooterContent>
+        <button type="button" class="btn" data-bs-dismiss="modal" @onclick="@_deleteBookModal.Hide">Cancel</button>
+        <button type="button" class="btn btn-success" @onclick=DeleteBook>Delete</button>
+    </FooterContent>
+</Modal>
 
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Deleting book</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="@HideModal"></button>
-                </div>
+<Modal @ref="_updatePriceModal" Title="Update book price">
+    <BodyContent>
+        <p>Provide new price for book: '@_book?.Title' ?</p>
+        <InputNumber id="price" @bind-Value="@_updatedPrice" class="form-control" autocomplete="price" aria-required="true" placeholder="Price" />
+    </BodyContent>
+    <FooterContent>
+        <button type="button" class="btn" data-bs-dismiss="modal" @onclick="@_updatePriceModal.Hide">Cancel</button>
+        <button type="button" class="btn btn-success" @onclick=UpdatePrice>Update</button>
+    </FooterContent>
+</Modal>
 
-                <!-- Modal body -->
-                <div class="modal-body">
-                    <p>Are you sure you want to delete book: '@_bookToDelete?.Title' ?</p>
-                </div>
-
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn" data-bs-dismiss="modal" @onclick="@HideModal">Cancel</button>
-                    <button type="button" class="btn btn-success" @onclick=@DeleteBook>Delete</button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-}
+<Modal @ref="_addToCartModal" Title="Add book to cart">
+    <BodyContent>
+        <p>Add book: '@_book?.Title' to cart?</p>
+        <InputNumber id="quantity" @bind-Value="@_bookQuantity" class="form-control" autocomplete="quantity" aria-required="true" placeholder="Quantity" />
+    </BodyContent>
+    <FooterContent>
+        <button type="button" class="btn" data-bs-dismiss="modal" @onclick="@_updatePriceModal.Hide">Cancel</button>
+        <button type="button" class="btn btn-success" @onclick=AddToCart>Add</button>
+    </FooterContent>
+</Modal>
 
 @code {
 
+    private Modal _deleteBookModal = null!;
+    private Modal _updatePriceModal = null!;
+    private Modal _addToCartModal = null!;
     private List<BookDto>? _books;
-    private BookDto? _bookToDelete;
-    bool _showModal;
+    private BookDto? _book;
+    private decimal _updatedPrice;
+    private int _bookQuantity = 1;
 
     protected override async Task OnInitializedAsync()
     {
@@ -104,23 +116,71 @@ else
         _books = booksResponse.Match(x => x.Books, _ => []);
     }
 
-    private void HideModal() => _showModal = false;
-
-    protected void ConfirmDelete(BookDto book)
+    private void ConfirmDelete(BookDto book)
     {
-        _bookToDelete = book;
-        _showModal = true;
+        _book = book;
+        _deleteBookModal.Show();
     }
 
     private async Task DeleteBook()
     {
-        if (_bookToDelete is not null)
+        if (_book is not null)
         {
-            await ApiCaller.DeleteBook(_bookToDelete.Id);
+            await ApiCaller.DeleteBook(_book.Id);
             await ReloadBookList();
         }
 
-        HideModal();
-        _bookToDelete = null;
+        _deleteBookModal.Hide();
+        _book = null;
     }
+
+    private void EditPrice(BookDto book)
+    {
+        _book = book;
+        _updatedPrice = _book.Price;
+        _updatePriceModal.Show();
+    }
+
+    private async Task UpdatePrice()
+    {
+        if (_book is not null)
+        {
+            var result = await ApiCaller.UpdateBookPrice(_book.Id, _updatedPrice);
+            if (!result.IsSuccess)
+            {
+                _updatePriceModal.ErrorMessage = result.Error?.Description;
+                return;
+            }
+            await ReloadBookList();
+        }
+
+        _updatedPrice = 0;
+        _updatePriceModal.Hide();
+        _book = null;
+    }
+
+    private void ConfirmAddToCart(BookDto book)
+    {
+        _book = book;
+        _bookQuantity = 1;
+        _addToCartModal.Show();
+    }
+
+    private async Task AddToCart()
+    {
+        if (_book is not null)
+        {
+            var result = await ApiCaller.AddBookToCart(_book.Id, _bookQuantity);
+            if (!result.IsSuccess)
+            {
+                _addToCartModal.ErrorMessage = result.Error?.Description;
+                return;
+            }
+            await ReloadBookList();
+        }
+
+        _addToCartModal.Hide();
+        _book = null;
+    }
+
 }

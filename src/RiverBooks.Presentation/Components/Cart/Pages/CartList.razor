@@ -1,0 +1,65 @@
+﻿@page "/cart"
+@rendermode InteractiveServer
+@using RiverBooks.Users.Contracts
+
+@inject IApiCaller ApiCaller
+@inject NavigationManager NavigationManager
+
+@attribute [StreamRendering]
+@attribute [Authorize]
+
+<PageTitle>Cart</PageTitle>
+
+<h1>Your cart</h1>
+
+@if (_cartItems == null)
+{
+    <p>
+        <em>Loading cart...</em>
+    </p>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Description</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Unit price</th>
+                <th scope="col">Total price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var (idx, item) in _cartItems.Select((b, i) => (i, b)))
+            {
+                <tr>
+                    <td>@(idx + 1)</td>
+                    <td>@item.Description</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.UnitPrice.ToString("C")</td>
+                    <td>@item.TotalPrice.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private List<CartItemDto>? _cartItems;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ReloadCartItems();
+    }
+
+    private async Task ReloadCartItems()
+    {
+        _cartItems = null;
+        StateHasChanged();
+        var booksResponse = await ApiCaller.ListCartItems();
+        _cartItems = booksResponse.Match(x => x, _ => []);
+    }
+
+}

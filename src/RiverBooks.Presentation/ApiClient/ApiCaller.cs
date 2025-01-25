@@ -1,8 +1,14 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using RiverBooks.Books.Contracts;
+using RiverBooks.OrderProcessing.Contracts;
+using RiverBooks.Presentation.Auth;
 using RiverBooks.SharedKernel.Authentication;
 using RiverBooks.SharedKernel.Helpers;
+using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.Presentation.ApiClient;
 
@@ -13,7 +19,13 @@ public interface IApiCaller
     Task<ResultOf<ListBooksResponse>> GetAllBooks();
     Task<ResultOf<BookDto>> CreateBook(CreateBookRequest bookRequest);
     Task<ResultOf<BookDto>> GetBook(Guid bookId);
+    Task<ResultOf> UpdateBookPrice(Guid bookId, decimal newPrice);
     Task<ResultOf> DeleteBook(Guid bookId);
+    Task<ResultOf> AddBookToCart(Guid bookId, int quantity);
+    Task<ResultOf<List<CartItemDto>>> ListCartItems();
+    Task<ResultOf<List<OrderSummary>>> ListOrdersForUser();
+    Task<ResultOf> CheckoutCart(Guid shippingAddressId, Guid billingAddressId);
+
 }
 
 public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiCaller
@@ -106,13 +118,79 @@ public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiC
         return ResultOf.Success();
     }
 
+    public async Task<ResultOf> UpdateBookPrice(Guid bookId, decimal newPrice)
+    {
+        var response = await httpClient.PostAsJsonAsync($"/books/{bookId}/pricehistory", newPrice);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return await CreateError(response);
+        }
+
+        return ResultOf.Success();
+    }
+
+    public async Task<ResultOf> AddBookToCart(Guid bookId, int quantity)
+    {
+        var response = await httpClient.PostAsJsonAsync($"/cart", new { bookId, quantity });
+        if (!response.IsSuccessStatusCode)
+        {
+            return await CreateError(response);
+        }
+        return ResultOf.Success();
+    }
+
+    public async Task<ResultOf<List<CartItemDto>>> ListCartItems()
+    {
+        var response = await httpClient.GetAsync($"/cart");
+        if (!response.IsSuccessStatusCode)
+        {
+            return await CreateError(response);
+        }
+        var cartResponse = await response.Content.ReadFromJsonAsync<CartResponse>();
+        if (cartResponse is null)
+            return Error.ServerError;
+        return cartResponse.CartItems;
+    }
+
+    public async Task<ResultOf<List<OrderSummary>>> ListOrdersForUser()
+    {
+        var response = await httpClient.GetAsync($"/orders");
+        if (!response.IsSuccessStatusCode)
+        {
+            return await CreateError(response);
+        }
+        var ordersResponse = await response.Content.ReadFromJsonAsync<ListOrdersForUserResponse>();
+        if (ordersResponse is null)
+            return Error.ServerError;
+        return ordersResponse.Orders;
+    }
+
+    public async Task<ResultOf> CheckoutCart(Guid shippingAddressId, Guid billingAddressId)
+    {
+        var response = await httpClient.PostAsJsonAsync($"/cart/checkout", new CheckoutRequest(shippingAddressId, billingAddressId));
+        if (!response.IsSuccessStatusCode)
+        {
+            return await CreateError(response);
+        }
+        return ResultOf.Success();
+    }
+
+
     private async Task<Error> CreateError(HttpResponseMessage response, [CallerMemberName] string methodName = "")
     {
         logger.LogDebug("{ApiMethod} failed with status code {ApiResponseStatusCode}", methodName, response.StatusCode);
-        var details = await response.Content.ReadFromJsonAsync<ProblemDetails>();
-        if (details is null)
-            return Error.Failure(response.StatusCode.ToString(), methodName);
+        try
+        {
+            var details = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+            if (details is not null)
+                return Errors.Create(methodName, response.StatusCode, details);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Unexpected error occured when deserializing ProblemDetails from API response of {ApiMethod}", methodName);
+        }
 
-        return Errors.Create(methodName, response.StatusCode, details);
+        return Error.Failure(response.StatusCode.ToString(), $"Calling {methodName} resulted with {response.StatusCode}");
     }
 }
