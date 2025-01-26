@@ -25,6 +25,8 @@ public interface IApiCaller
     Task<ResultOf<List<CartItemDto>>> ListCartItems();
     Task<ResultOf<List<OrderSummary>>> ListOrdersForUser();
     Task<ResultOf> CheckoutCart(Guid shippingAddressId, Guid billingAddressId);
+    Task<ResultOf<List<UserAddressDto>>> ListUserAddresses();
+    Task<ResultOf<Guid>> AddUserAddress(AddAddressRequest addressRequest);
 
 }
 
@@ -164,6 +166,35 @@ public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiC
         if (ordersResponse is null)
             return Error.ServerError;
         return ordersResponse.Orders;
+    }
+
+    public async Task<ResultOf<List<UserAddressDto>>> ListUserAddresses()
+    {
+        var response = await httpClient.GetAsync($"/users/addresses");
+        if (!response.IsSuccessStatusCode)
+        {
+            return await CreateError(response);
+        }
+        var addressesResponse = await response.Content.ReadFromJsonAsync<AddressListResponse>();
+        if (addressesResponse is null)
+            return Error.ServerError;
+        return addressesResponse.Addresses;
+    }
+
+    public async Task<ResultOf<Guid>> AddUserAddress(AddAddressRequest addressRequest)
+    {
+        var response = await httpClient.PostAsJsonAsync($"/users/addresses", addressRequest);
+        if (!response.IsSuccessStatusCode)
+        {
+            return await CreateError(response);
+        }
+
+        var addressId = await response.Content.ReadFromJsonAsync<Guid?>();
+
+        if (addressId is null)
+            return Error.ServerError;
+
+        return addressId;
     }
 
     public async Task<ResultOf> CheckoutCart(Guid shippingAddressId, Guid billingAddressId)
