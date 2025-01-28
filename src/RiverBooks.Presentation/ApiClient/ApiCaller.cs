@@ -1,14 +1,13 @@
-﻿using System.Globalization;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.Json;
+﻿using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RiverBooks.Books.Contracts;
 using RiverBooks.OrderProcessing.Contracts;
-using RiverBooks.Presentation.Auth;
 using RiverBooks.SharedKernel.Authentication;
 using RiverBooks.SharedKernel.Helpers;
 using RiverBooks.Users.Contracts;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
 
 namespace RiverBooks.Presentation.ApiClient;
 
@@ -30,10 +29,43 @@ public interface IApiCaller
 
 }
 
-public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiCaller
+public class ApiCaller(
+    ILogger<ApiCaller> logger, 
+    IHttpClientFactory httpClientFactory, 
+    AuthenticationStateProvider authenticationStateProvider) 
+    : IApiCaller
 {
+    private async Task<HttpClient> GetHttpClient()
+    {
+        var httpClient = httpClientFactory.CreateClient("RiverBooksApi");
+        var token = await GetAuthenticatedUserApiToken();
+
+        if (token is not null)
+        {
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.TokenType, token.Token);
+        }
+
+        return httpClient;
+    }
+
+    private async Task<AuthToken?> GetAuthenticatedUserApiToken()
+    {
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+
+        if (authState?.User is null)
+            return null;
+
+        var tokenJson = authState.User.FindFirst("jwt")?.Value;
+
+        if (tokenJson is null)
+            return null;
+
+        return JsonSerializer.Deserialize<AuthToken>(tokenJson);
+    }
+
     public async Task<ResultOf> RegisterUser(string email, string password)
     {
+        var httpClient = await GetHttpClient();
         var response = await httpClient.PostAsJsonAsync("/users", new { email, password });
 
         if (!response.IsSuccessStatusCode)
@@ -46,6 +78,7 @@ public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiC
 
     public async Task<ResultOf<AuthToken>> LoginUser(string email, string password)
     {
+        var httpClient = await GetHttpClient();
         var response = await httpClient.PostAsJsonAsync("/users/login", new { email, password });
 
         if (!response.IsSuccessStatusCode)
@@ -63,6 +96,7 @@ public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiC
 
     public async Task<ResultOf<ListBooksResponse>> GetAllBooks()
     {
+        var httpClient = await GetHttpClient();
         var response = await httpClient.GetAsync("/books");
         if (!response.IsSuccessStatusCode)
         {
@@ -79,6 +113,7 @@ public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiC
 
     public async Task<ResultOf<BookDto>> GetBook(Guid bookId)
     {
+        var httpClient = await GetHttpClient();
         var response = await httpClient.GetAsync($"/books/{bookId}");
         if (!response.IsSuccessStatusCode)
         {
@@ -95,6 +130,7 @@ public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiC
 
     public async Task<ResultOf<BookDto>> CreateBook(CreateBookRequest bookRequest)
     {
+        var httpClient = await GetHttpClient();
         var response = await httpClient.PostAsJsonAsync($"/books", bookRequest);
         if (!response.IsSuccessStatusCode)
         {
@@ -111,6 +147,7 @@ public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiC
 
     public async Task<ResultOf> DeleteBook(Guid bookId)
     {
+        var httpClient = await GetHttpClient();
         var response = await httpClient.DeleteAsync($"/books/{bookId}");
         if (!response.IsSuccessStatusCode)
         {
@@ -122,6 +159,7 @@ public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiC
 
     public async Task<ResultOf> UpdateBookPrice(Guid bookId, decimal newPrice)
     {
+        var httpClient = await GetHttpClient();
         var response = await httpClient.PostAsJsonAsync($"/books/{bookId}/pricehistory", newPrice);
 
         if (!response.IsSuccessStatusCode)
@@ -134,6 +172,7 @@ public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiC
 
     public async Task<ResultOf> AddBookToCart(Guid bookId, int quantity)
     {
+        var httpClient = await GetHttpClient();
         var response = await httpClient.PostAsJsonAsync($"/cart", new { bookId, quantity });
         if (!response.IsSuccessStatusCode)
         {
@@ -144,6 +183,7 @@ public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiC
 
     public async Task<ResultOf<List<CartItemDto>>> ListCartItems()
     {
+        var httpClient = await GetHttpClient();
         var response = await httpClient.GetAsync($"/cart");
         if (!response.IsSuccessStatusCode)
         {
@@ -157,6 +197,7 @@ public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiC
 
     public async Task<ResultOf<List<OrderSummary>>> ListOrdersForUser()
     {
+        var httpClient = await GetHttpClient();
         var response = await httpClient.GetAsync($"/orders");
         if (!response.IsSuccessStatusCode)
         {
@@ -170,6 +211,7 @@ public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiC
 
     public async Task<ResultOf<List<UserAddressDto>>> ListUserAddresses()
     {
+        var httpClient = await GetHttpClient();
         var response = await httpClient.GetAsync($"/users/addresses");
         if (!response.IsSuccessStatusCode)
         {
@@ -183,6 +225,7 @@ public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiC
 
     public async Task<ResultOf<Guid>> AddUserAddress(AddAddressRequest addressRequest)
     {
+        var httpClient = await GetHttpClient();
         var response = await httpClient.PostAsJsonAsync($"/users/addresses", addressRequest);
         if (!response.IsSuccessStatusCode)
         {
@@ -199,6 +242,7 @@ public class ApiCaller(ILogger<ApiCaller> logger, HttpClient httpClient) : IApiC
 
     public async Task<ResultOf> CheckoutCart(Guid shippingAddressId, Guid billingAddressId)
     {
+        var httpClient = await GetHttpClient();
         var response = await httpClient.PostAsJsonAsync($"/cart/checkout", new CheckoutRequest(shippingAddressId, billingAddressId));
         if (!response.IsSuccessStatusCode)
         {

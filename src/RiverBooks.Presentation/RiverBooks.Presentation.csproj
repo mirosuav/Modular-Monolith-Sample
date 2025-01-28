@@ -1,28 +1,36 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\RiverBooks.Books.Contracts\RiverBooks.Books.Contracts.csproj" />
-    <ProjectReference Include="..\RiverBooks.OrderProcessing.Contracts\RiverBooks.OrderProcessing.Contracts.csproj" />
-    <ProjectReference Include="..\RiverBooks.ServiceDefaults\RiverBooks.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\RiverBooks.SharedKernel\RiverBooks.SharedKernel.csproj" />
-    <ProjectReference Include="..\RiverBooks.Users.Contracts\RiverBooks.Users.Contracts.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\RiverBooks.Books.Contracts\RiverBooks.Books.Contracts.csproj" />
+		<ProjectReference Include="..\RiverBooks.OrderProcessing.Contracts\RiverBooks.OrderProcessing.Contracts.csproj" />
+		<ProjectReference Include="..\RiverBooks.ServiceDefaults\RiverBooks.ServiceDefaults.csproj" />
+		<ProjectReference Include="..\RiverBooks.SharedKernel\RiverBooks.SharedKernel.csproj" />
+		<ProjectReference Include="..\RiverBooks.Users.Contracts\RiverBooks.Users.Contracts.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Blazor.Bootstrap" Version="3.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.11" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="Components\Cart\Pages\UserAdresses.razor">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </Content>
-  </ItemGroup>
+	<ItemGroup>
+		<Content Update="Components\Cart\Pages\UserAdresses.razor">
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Blazor.Bootstrap" Version="3.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.11" />
+		<PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
+		<PackageReference Update="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.12" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.12" />
+		<PackageReference Update="Microsoft.EntityFrameworkCore" Version="8.0.12" />
+		<PackageReference Update="Microsoft.EntityFrameworkCore.Relational" Version="8.0.12" />
+		<PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.12" />
+		<PackageReference Update="Microsoft.Extensions.Caching.SqlServer" Version="8.0.12" />
+	</ItemGroup>
 
 </Project>

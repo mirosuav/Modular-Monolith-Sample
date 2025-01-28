@@ -1,9 +1,7 @@
 ﻿@page "/Account/Register"
 
 @using System.ComponentModel.DataAnnotations
-@using RiverBooks.Presentation.ApiClient
-@using RiverBooks.Presentation.Components.Shared
-@using RiverBooks.Presentation.Extensions
+@rendermode InteractiveServer
 
 @inject IApiCaller ApiCaller
 @inject NavigationManager NavigationManager
@@ -16,24 +14,25 @@
     <div class="col-lg-6 col-sm-10">
         <StatusMessage Message="@Message" StatusMessageClass="danger"/>
         <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
-            <DataAnnotationsValidator />
+            <AntiforgeryToken/>
+            <DataAnnotationsValidator/>
             <h2>Create a new account.</h2>
-            <hr />
-            <ValidationSummary class="text-danger" role="alert" />
+            <hr/>
+            <ValidationSummary class="text-danger" role="alert"/>
             <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com"/>
                 <label for="email">Email</label>
-                <ValidationMessage For="() => Input.Email" class="text-danger" />
+                <ValidationMessage For="() => Input.Email" class="text-danger"/>
             </div>
             <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password"/>
                 <label for="password">Password</label>
-                <ValidationMessage For="() => Input.Password" class="text-danger" />
+                <ValidationMessage For="() => Input.Password" class="text-danger"/>
             </div>
             <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password"/>
                 <label for="confirm-password">Confirm Password</label>
-                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
+                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger"/>
             </div>
             <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </EditForm>

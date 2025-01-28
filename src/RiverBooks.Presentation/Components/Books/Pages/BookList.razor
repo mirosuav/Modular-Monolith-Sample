@@ -1,5 +1,4 @@
 ﻿@page "/books"
-@rendermode InteractiveServer
 @using RiverBooks.Books.Contracts
 
 @inject IApiCaller ApiCaller
@@ -18,13 +17,7 @@
     </div>
 </div>
 
-@if (_books == null)
-{
-    <p>
-        <em>Loading books...</em>
-    </p>
-}
-else
+@if (_books is not null)
 {
     <table class="table table-hover">
         <thead>
@@ -61,7 +54,7 @@ else
     </table>
 }
 
-<Modal @ref="_deleteBookModal" Title="Deleting book ?">
+<EditableModal @ref="_deleteBookModal" Title="Deleting book ?">
     <BodyContent>
         <p>Are you sure you want to delete book: '@_book?.Title' ?</p>
     </BodyContent>
@@ -69,9 +62,9 @@ else
         <button type="button" class="btn" data-bs-dismiss="modal" @onclick="@_deleteBookModal.Hide">Cancel</button>
         <button type="button" class="btn btn-success" @onclick=DeleteBook>Delete</button>
     </FooterContent>
-</Modal>
+</EditableModal>
 
-<Modal @ref="_updatePriceModal" Title="Update book price">
+<EditableModal @ref="_updatePriceModal" Title="Update book price">
     <BodyContent>
         <p>Provide new price for book: '@_book?.Title' ?</p>
         <InputNumber id="price" @bind-Value="@_updatedPrice" class="form-control" autocomplete="price" aria-required="true" placeholder="Price" />
@@ -80,9 +73,9 @@ else
         <button type="button" class="btn" data-bs-dismiss="modal" @onclick="@_updatePriceModal.Hide">Cancel</button>
         <button type="button" class="btn btn-success" @onclick=UpdatePrice>Update</button>
     </FooterContent>
-</Modal>
+</EditableModal>
 
-<Modal @ref="_addToCartModal" Title="Add book to cart">
+<EditableModal @ref="_addToCartModal" Title="Add book to cart">
     <BodyContent>
         <p>Add book: '@_book?.Title' to cart?</p>
         <InputNumber id="quantity" @bind-Value="@_bookQuantity" class="form-control" autocomplete="quantity" aria-required="true" placeholder="Quantity" />
@@ -91,13 +84,16 @@ else
         <button type="button" class="btn" data-bs-dismiss="modal" @onclick="@_updatePriceModal.Hide">Cancel</button>
         <button type="button" class="btn btn-success" @onclick=AddToCart>Add</button>
     </FooterContent>
-</Modal>
+</EditableModal>
 
 @code {
 
-    private Modal _deleteBookModal = null!;
-    private Modal _updatePriceModal = null!;
-    private Modal _addToCartModal = null!;
+    [Inject] protected ToastService ToastService { get; set; } = default!;
+    [Inject] protected PreloadService PreloadService { get; set; } = default!;
+
+    private EditableModal _deleteBookModal = null!;
+    private EditableModal _updatePriceModal = null!;
+    private EditableModal _addToCartModal = null!;
     private List<BookDto>? _books;
     private BookDto? _book;
     private decimal _updatedPrice;
@@ -106,14 +102,33 @@ else
     protected override async Task OnInitializedAsync()
     {
         await ReloadBookList();
+        ToastService.Notify(new(ToastType.Primary, "Hello in RiverBooks on initialized"));
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        ToastService.Notify(new(ToastType.Secondary, IconName.Exclamation, "River books", $"{DateTime.Now}", "After render called"));
     }
 
     private async Task ReloadBookList()
     {
-        _books = null;
-        StateHasChanged();
-        var booksResponse = await ApiCaller.GetAllBooks();
-        _books = booksResponse.Match(x => x.Books, _ => []);
+        try
+        {
+            PreloadService.Show(SpinnerColor.Secondary, "Loading books...");
+            StateHasChanged();
+            var booksResponse = await ApiCaller.GetAllBooks();
+            _books = booksResponse.Match(x => x.Books, _ => []);
+        }
+        catch (Exception ex)
+        {
+            ToastService.Notify(new(ToastType.Danger, "Unexpected error", ex.Message));
+        }
+        finally
+        {
+            PreloadService.Hide();
+            StateHasChanged();
+        }
     }
 
     private void ConfirmDelete(BookDto book)

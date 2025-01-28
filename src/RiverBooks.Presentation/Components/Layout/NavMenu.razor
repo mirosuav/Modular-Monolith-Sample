@@ -13,33 +13,28 @@
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="flex-column">
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            <NavLink class="nav-link p-3" href="" Match="NavLinkMatch.All">
+                <Icon Name="IconName.HouseDoorFill" Class="me-3" /> Home
             </NavLink>
         </div>
         <AuthorizeView>
             <Authorized>
+
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="counter">
-                        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+                    <NavLink class="nav-link p-3" href="books">
+                        <Icon Name="IconName.Bookshelf" Class="me-3" /> Books
                     </NavLink>
                 </div>
 
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="books">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Books
+                    <NavLink class="nav-link p-3" href="cart">
+                        <Icon Name="IconName.Cart" Class="me-3" /> Cart
                     </NavLink>
                 </div>
 
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="cart">
-                        <span class="bi bi-basket align-content-center" aria-hidden="true"></span> Cart
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="addresses">
-                        <span class="bi bi-basket" aria-hidden="true"></span> Addresses
+                    <NavLink class="nav-link p-3" href="addresses">
+                        <Icon Name="IconName.PinMap" Class="me-3" /> Addresses
                     </NavLink>
                 </div>
 
@@ -47,21 +42,21 @@
                     <form action="Account/Logout" method="post">
                         <AntiforgeryToken/>
                         <input type="hidden" name="ReturnUrl" value="@currentUrl"/>
-                        <button type="submit" class="nav-link">
-                            <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
+                        <button type="submit" class="nav-link p-3">
+                            <Icon Name="IconName.DoorOpen" Class="me-3" /> Logout
                         </button>
                     </form>
                 </div>
             </Authorized>
             <NotAuthorized>
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Register">
-                        <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
+                    <NavLink class="nav-link p-3" href="Account/Register">
+                        <Icon Name="IconName.PersonAdd" Class="me-3" /> Register
                     </NavLink>
                 </div>
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Login">
-                        <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
+                    <NavLink class="nav-link p-3" href="Account/Login">
+                        <Icon Name="IconName.Person" Class="me-3" /> Login
                     </NavLink>
                 </div>
             </NotAuthorized>

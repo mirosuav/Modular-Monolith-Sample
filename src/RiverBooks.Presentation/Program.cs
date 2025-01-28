@@ -1,12 +1,10 @@
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using RiverBooks.Presentation.ApiClient;
 using RiverBooks.Presentation.Auth;
 using RiverBooks.Presentation.Components;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace RiverBooks.Presentation
 {
@@ -18,18 +16,18 @@ namespace RiverBooks.Presentation
 
             // Aspire and OTL
             builder.AddServiceDefaults();
-            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddAntiforgery();
 
             // Components
             builder.Services.AddRazorComponents()
-                .AddInteractiveServerComponents();
+                .AddInteractiveServerComponents()
+                .AddInteractiveWebAssemblyComponents();
+            builder.Services.AddBlazorBootstrap();
             builder.Services.AddCascadingAuthenticationState();
 
             // Auth
-            builder.Services.AddTransient<ApiAuthorizationHandler>();
             builder.Services.AddTransient<JwtSecurityTokenHandler>();
-            builder.Services.AddScoped<JwtAuthenticationStateProvider>();
-            builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<JwtAuthenticationStateProvider>());
+            builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStateProvider>();
             builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
                 .AddCookie(IdentityConstants.ApplicationScheme, o =>
                 {
@@ -38,13 +36,12 @@ namespace RiverBooks.Presentation
                 });
 
             // API client
-            builder.Services.AddHttpClient<IApiCaller, ApiCaller>(client =>
+            builder.Services.AddHttpClient("RiverBooksApi", client =>
                 {
                     client.BaseAddress = new("https+http://riverbooks-api");
                 })
-                .AddHttpMessageHandler<ApiAuthorizationHandler>()
                 .AddStandardResilienceHandler();
-
+            builder.Services.AddScoped<IApiCaller, ApiCaller>();
 
             var app = builder.Build();
 
@@ -58,13 +55,14 @@ namespace RiverBooks.Presentation
             app.UseStaticFiles();
             app.UseAntiforgery();
             app.MapRazorComponents<App>()
-                .AddInteractiveServerRenderMode();
+                .AddInteractiveServerRenderMode()
+                .AddInteractiveWebAssemblyRenderMode();
 
             app.Map("/Account/Logout", async (
-                JwtAuthenticationStateProvider authenticationStateProvider,
+                AuthenticationStateProvider authenticationStateProvider,
                 [FromForm] string returnUrl) =>
             {
-                await authenticationStateProvider.SignOut();
+                await ((JwtAuthenticationStateProvider)authenticationStateProvider).SignOut();
                 return TypedResults.LocalRedirect($"~/{returnUrl}");
             });
 

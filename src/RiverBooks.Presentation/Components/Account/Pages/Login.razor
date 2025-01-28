@@ -1,10 +1,9 @@
 ﻿@page "/Account/Login"
-
 @using System.ComponentModel.DataAnnotations
 
 @inject NavigationManager NavigationManager
 @inject IApiCaller ApiCaller
-@inject JwtAuthenticationStateProvider AuthenticationStateProvider
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Log in</PageTitle>
 
@@ -12,8 +11,9 @@
 <div class="row">
     <div class="col-lg-6 col-sm-10">
         <section>
-            <StatusMessage Message="@errorMessage" StatusMessageClass="danger"/>
+            <StatusMessage Message="@errorMessage" StatusMessageClass="danger" />
             <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
+                <AntiforgeryToken/>
                 <DataAnnotationsValidator/>
                 <h2>Use your credentials to log in.</h2>
                 <hr/>
@@ -45,41 +45,37 @@
 
     private string? errorMessage = null;
 
-    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
-
     [SupplyParameterFromForm] private InputModel Input { get; set; } = new();
 
     [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        if (HttpMethods.IsGet(HttpContext.Request.Method))
-        {
-            await AuthenticationStateProvider.SignOut();
-        }
-    }
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     await base.OnInitializedAsync();
+    //     await ((JwtAuthenticationStateProvider)AuthenticationStateProvider).SignOut();
+    // }
 
     public async Task LoginUser()
     {
         var result = await ApiCaller.LoginUser(Input.Email, Input.Password);
-        
+
         if (!result.IsSuccess)
         {
             errorMessage = result.ToErrorString();
             return;
         }
-        
-        await AuthenticationStateProvider.SignIn(result.Value);
-        
+
+        await ((JwtAuthenticationStateProvider)AuthenticationStateProvider).SignIn(result.Value);
+
         if (string.IsNullOrWhiteSpace(ReturnUrl))
             ReturnUrl = "/";
-        
+
         NavigationManager.RedirectTo(ReturnUrl);
     }
 
     private sealed class InputModel
     {
-        [Required] [EmailAddress] public string Email { get; set; } = "";
+        [Required][EmailAddress] public string Email { get; set; } = "";
 
         [Required]
         [DataType(DataType.Password)]
