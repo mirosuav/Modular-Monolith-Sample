@@ -1,0 +1,77 @@
+﻿@page "/addresses"
+@using RiverBooks.Users.Contracts
+
+@inject IApiCaller ApiCaller
+@inject NavigationManager NavigationManager
+
+@attribute [StreamRendering]
+@attribute [Authorize]
+
+<PageTitle>Addresses</PageTitle>
+
+
+<h1>Your addresses</h1>
+
+<div class="row mb-2">
+    <div class="col-7">
+        <NavLink href="@NavigationManager.GetUriWithReturn("/addresses/new")" class="btn btn-outline-primary">Add new</NavLink>
+    </div>
+</div>
+
+@if (_addresses != null)
+{
+    <div class="row">
+        <div class="col-12 d-flex flex-wrap gap-3">
+            @foreach (var item in _addresses)
+            {
+                <Card Style="width: 18rem;">
+                    <CardBody>
+                        <CardTitle>@item.City</CardTitle>
+                        <CardSubTitle Class="mb-2 text-muted">@item.Country, @item.State</CardSubTitle>
+                        <CardText>@item.Street1 @item.Street2 @item.PostalCode</CardText>
+                    </CardBody>
+                    <CardFooter>
+                        <Button Color="ButtonColor.Danger" Size="ButtonSize.Small" TooltipTitle="Delete"><Icon Name="IconName.Trash"></Icon></Button>
+                    </CardFooter>
+                </Card>
+            }
+        </div>
+    </div>
+}
+
+
+@code {
+
+    [Inject] protected ToastService ToastService { get; set; } = default!;
+    [Inject] protected PreloadService PreloadService { get; set; } = default!;
+
+    private List<UserAddressDto>? _addresses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ReloadCartItems();
+    }
+
+    private async Task ReloadCartItems()
+    {
+
+        try
+        {
+            PreloadService.Show(SpinnerColor.Secondary, "Loading books...");
+            StateHasChanged();
+            var response = await ApiCaller.ListUserAddresses();
+            _addresses = response.Match(x => x, _ => []);
+        }
+        catch (Exception ex)
+        {
+            ToastService.Notify(new(ToastType.Danger, "Unexpected error", ex.Message));
+        }
+        finally
+        {
+            PreloadService.Hide();
+            StateHasChanged();
+        }
+
+    }
+
+}

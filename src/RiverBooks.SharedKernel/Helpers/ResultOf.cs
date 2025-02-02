@@ -12,8 +12,8 @@ namespace RiverBooks.SharedKernel.Helpers;
 public record ResultOf : IResultOf
 {
     private readonly IList<Error>? _errors;
-    
-    public Error? Error => Errors?.FirstOrDefault(); 
+
+    public Error Error => Errors?.FirstOrDefault() ?? Error.None;
 
     private ResultOf() { }
 

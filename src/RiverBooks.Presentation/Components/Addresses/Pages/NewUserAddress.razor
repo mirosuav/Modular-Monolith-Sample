@@ -1,0 +1,112 @@
+﻿@page "/addresses/new"
+@using System.ComponentModel.DataAnnotations
+@using RiverBooks.Users.Contracts
+
+@inject IApiCaller ApiCaller
+@inject NavigationManager NavigationManager
+
+<PageTitle>New address</PageTitle>
+
+
+<div class="row">
+    <div class="col-lg-6 col-sm-10">
+        <h2>Address details</h2>
+        <StatusMessage Message="@Message" StatusMessageClass="danger" />
+        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="AddUserAddress" FormName="addUserAddress">
+            <DataAnnotationsValidator />
+            <hr />
+            <ValidationSummary class="text-danger" role="alert" />
+
+            <div class="form-floating mb-3">
+                <InputText id="city" @bind-Value="Input.City" class="form-control" autocomplete="city" aria-required="true" placeholder="City..." />
+                <label for="city">City</label>
+                <ValidationMessage For="() => Input.City" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText id="street1" @bind-Value="Input.Street1" class="form-control" autocomplete="street1" aria-required="true" placeholder="Street1..." />
+                <label for="street1">Street1</label>
+                <ValidationMessage For="() => Input.Street1" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText id="street2" @bind-Value="Input.Street2" class="form-control" autocomplete="street2" aria-required="true" placeholder="Street2" />
+                <label for="street2">Street2</label>
+                <ValidationMessage For="() => Input.Street2" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText id="state" @bind-Value="Input.State" class="form-control" autocomplete="state" aria-required="true" placeholder="State" />
+                <label for="state">State</label>
+                <ValidationMessage For="() => Input.State" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText id="postalCode" @bind-Value="Input.PostalCode" class="form-control" autocomplete="postalCode" aria-required="true" placeholder="PostalCode" />
+                <label for="postalCode">PostalCode</label>
+                <ValidationMessage For="() => Input.PostalCode" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText id="country" @bind-Value="Input.Country" class="form-control" autocomplete="country" aria-required="true" placeholder="Country" />
+                <label for="country">Country</label>
+                <ValidationMessage For="() => Input.Country" class="text-danger" />
+            </div>
+
+            <div class="form-floating mb-3">
+                <NavLink href="@ReturnUrl" class="btn w-25 btn-secondary">Cancel</NavLink>
+                <button type="submit" class="btn w-25 btn-primary">Create</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private InputModel Input { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    private string? Message { get; set; }
+
+    private async Task AddUserAddress(EditContext editContext)
+    {
+        var result = await ApiCaller.AddUserAddress(
+            new AddAddressRequest(
+                Input.Street1, 
+                Input.Street2, 
+                Input.City, 
+                Input.State, 
+                Input.PostalCode, 
+                Input.Country));
+
+        if (!result.IsSuccess)
+        {
+            Message = result.Error.Description;
+            return;
+        }
+
+        NavigationManager.RedirectTo(ReturnUrl);
+    }
+
+    private sealed class InputModel
+    {
+        [Required]
+        [Display(Name = "Street")]
+        public string Street1 { get; set; } = "";
+
+        [Display(Name = "Street 2")]
+        public string Street2 { get; set; } = "";
+
+        [Required]
+        [Display(Name = "City")]
+        public string City { get; set; } = "";
+
+        [Display(Name = "State")]
+        public string State { get; set; } = "";
+
+        [Required]
+        [Display(Name = "PostalCode")]
+        public string PostalCode { get; set; } = "";
+
+        [Required]
+        [Display(Name = "Country")]
+        public string Country { get; set; } = "";
+    }
+}

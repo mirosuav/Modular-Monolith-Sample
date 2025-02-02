@@ -106,3 +106,6 @@ dotnet sql-cache create "Server=(local);Integrated Security=true;Initial Catalog
 - ...
 
 
+https://learn.microsoft.com/en-us/aspnet/core/blazor/security/additional-scenarios?view=aspnetcore-8.0#pass-tokens-to-a-server-side-blazor-app
+
+https://learn.microsoft.com/en-us/aspnet/core/blazor/components/render-modes?view=aspnetcore-8.0#area-folder-of-static-ssr-components

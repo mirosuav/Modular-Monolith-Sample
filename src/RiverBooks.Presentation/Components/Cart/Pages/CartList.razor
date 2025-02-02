@@ -1,4 +1,6 @@
 ﻿@page "/cart"
+@using System.Diagnostics.CodeAnalysis
+@using System.Globalization
 @using RiverBooks.Users.Contracts
 
 @inject IApiCaller ApiCaller
@@ -11,13 +13,7 @@
 
 <h1>Your cart</h1>
 
-@if (_cartItems == null)
-{
-    <p>
-        <em>Loading cart...</em>
-    </p>
-}
-else if (_cartItems is [])
+@if (_cartItems is null or [])
 {
     <p>
         <em>Your cart is empty</em>
@@ -25,34 +21,66 @@ else if (_cartItems is [])
 }
 else
 {
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Description</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Unit price</th>
-                <th scope="col">Total price</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var (idx, item) in _cartItems.Select((b, i) => (i, b)))
-            {
+
+    <div class="row mb-3">
+        <table class="table table-hover">
+            <thead>
                 <tr>
-                    <td>@(idx + 1)</td>
-                    <td>@item.Description</td>
-                    <td>@item.Quantity</td>
-                    <td>@item.UnitPrice.ToString("C")</td>
-                    <td>@item.TotalPrice.ToString("C")</td>
+                    <th scope="col">#</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Unit price</th>
+                    <th scope="col">Total price</th>
+                    <th scope="col">Quantity</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var (idx, item) in _cartItems.Select((b, i) => (i, b)))
+                {
+                    <tr>
+                        <td>@(idx + 1)</td>
+                        <td>@item.Description</td>
+                        <td>@item.UnitPrice.ToString("C", enCulture)</td>
+                        <td>@item.TotalPrice.ToString("C", enCulture)</td>
+                        <td>
+                            <NumberInput TValue="int"
+                                         ValueExpression="() => item.Quantity"
+                                         Value="item.Quantity"
+                                         ValueChanged="q => UpdateCartItem(item,q)"
+                                         Min="0"
+                                         Placeholder="Quantity" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td>Total: </td>
+                    <td></td>
+                    <td><strong>@TotalPrice.ToString("C")</strong></td>
+                    <td>@TotalQuantity items</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+
+    <div class="row">
+        <div class="col-12 gap-2 d-flex justify-content-end">
+            <NavLink href="/cart/checkout" class="btn btn-success">Checkout</NavLink>
+        </div>
+    </div>
 }
 
 
 @code {
-    private List<CartItemDto>? _cartItems;
+    [Inject] protected ToastService ToastService { get; set; } = default!;
+    [Inject] protected PreloadService PreloadService { get; set; } = default!;
+    private CultureInfo enCulture { get; set; } = CultureInfo.GetCultureInfo("en-US");
+    private List<InputCartItemModel>? _cartItems;
+
+    private decimal TotalPrice => _cartItems?.Sum(x => x.TotalPrice) ?? 0m;
+    private decimal TotalQuantity => _cartItems?.Sum(x => x.Quantity) ?? 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -61,10 +89,55 @@ else
 
     private async Task ReloadCartItems()
     {
-        _cartItems = null;
-        StateHasChanged();
-        var booksResponse = await ApiCaller.ListCartItems();
-        _cartItems = booksResponse.Match(x => x, _ => []);
+
+        try
+        {
+            PreloadService.Show(SpinnerColor.Secondary, "Loading cart...");
+            _cartItems = null;
+            StateHasChanged();
+            var booksResponse = await ApiCaller.ListCartItems();
+            _cartItems = booksResponse.Match(x => x.Select(i => new InputCartItemModel(i)).ToList(), _ => []);
+        }
+        catch (Exception ex)
+        {
+            ToastService.Notify(new(ToastType.Danger, "Unexpected error", ex.Message));
+        }
+        finally
+        {
+            PreloadService.Hide();
+            StateHasChanged();
+        }
     }
 
+    private async Task UpdateCartItem(InputCartItemModel cartItem, int? newQuantity)
+    {
+        if (newQuantity is null || cartItem.Quantity == newQuantity)
+        {
+            return;
+        }
+
+        var response = await ApiCaller.UpdateCartItem(cartItem.CartItem.Id, newQuantity.Value);
+
+        if (!response.IsSuccess)
+        {
+            ToastService.Notify(new(ToastType.Danger, response.Error.Code, response.Error.Description));
+            return;
+        }
+        await ReloadCartItems();
+    }
+
+
+    [method: SetsRequiredMembers]
+    public sealed class InputCartItemModel(CartItemDto cartItem)
+    {
+        public required CartItemDto CartItem { get; init; } = cartItem;
+
+        public int Quantity { get; set; } = cartItem.Quantity;
+
+        public string Description => CartItem.Description;
+
+        public decimal UnitPrice => CartItem.UnitPrice;
+
+        public decimal TotalPrice => CartItem.TotalPrice;
+    }
 }

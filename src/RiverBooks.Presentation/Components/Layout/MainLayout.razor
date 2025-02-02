@@ -8,12 +8,12 @@
 
     <main>
         <div class="bb-top-row px-4 d-flex justify-content-end">
-            <ThemeSwitcher Class="ps-3 ps-lg-2" />
             <AuthorizeView>
                 <Authorized>
                     <small>@context.User.Identity?.Name</small>
                 </Authorized>
             </AuthorizeView>
+            <ThemeSwitcher Class="ps-3 ps-lg-2" />
         </div>
 
         <article class="content px-4">

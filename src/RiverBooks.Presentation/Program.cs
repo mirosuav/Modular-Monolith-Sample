@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -57,14 +58,18 @@ namespace RiverBooks.Presentation
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode()
                 .AddInteractiveWebAssemblyRenderMode();
-
+            
             app.Map("/Account/Logout", async (
+                HttpContext httpContext,
                 AuthenticationStateProvider authenticationStateProvider,
                 [FromForm] string returnUrl) =>
             {
                 await ((JwtAuthenticationStateProvider)authenticationStateProvider).SignOut();
+                await httpContext.SignOutAsync();
                 return TypedResults.LocalRedirect($"~/{returnUrl}");
             });
+
+
 
             app.Run();
         }

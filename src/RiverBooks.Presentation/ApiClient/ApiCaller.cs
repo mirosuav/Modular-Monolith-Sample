@@ -26,7 +26,7 @@ public interface IApiCaller
     Task<ResultOf> CheckoutCart(Guid shippingAddressId, Guid billingAddressId);
     Task<ResultOf<List<UserAddressDto>>> ListUserAddresses();
     Task<ResultOf<Guid>> AddUserAddress(AddAddressRequest addressRequest);
-
+    Task<ResultOf> UpdateCartItem(Guid itemId, int quantity);
 }
 
 public class ApiCaller(
@@ -174,6 +174,17 @@ public class ApiCaller(
     {
         var httpClient = await GetHttpClient();
         var response = await httpClient.PostAsJsonAsync($"/cart", new { bookId, quantity });
+        if (!response.IsSuccessStatusCode)
+        {
+            return await CreateError(response);
+        }
+        return ResultOf.Success();
+    }
+
+    public async Task<ResultOf> UpdateCartItem(Guid itemId, int quantity)
+    {
+        var httpClient = await GetHttpClient();
+        var response = await httpClient.PostAsJsonAsync($"/cart/{itemId}", new UpdateCartItemRequest(itemId, quantity));
         if (!response.IsSuccessStatusCode)
         {
             return await CreateError(response);

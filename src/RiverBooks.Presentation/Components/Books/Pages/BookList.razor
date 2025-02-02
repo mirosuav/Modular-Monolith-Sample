@@ -1,4 +1,5 @@
 ﻿@page "/books"
+@using System.Globalization
 @using RiverBooks.Books.Contracts
 
 @inject IApiCaller ApiCaller
@@ -13,7 +14,7 @@
 
 <div class="row">
     <div class="col-7">
-        <NavLink href="@(NavigationManager.GetUriWithQueryParameters("/books/new", new Dictionary<string, object?> { ["ReturnUrl"] = "/books" }))" class="btn btn-sm btn-primary">Add Book</NavLink>
+        <NavLink href="@NavigationManager.GetUriWithReturn("/books/new")" class="btn btn-outline-primary">New Book</NavLink>
     </div>
 </div>
 
@@ -38,7 +39,7 @@
                     <td>@(idx + 1)</td>
                     <td>@book.Title</td>
                     <td>@book.Author</td>
-                    <td>@book.Price.ToString("C")</td>
+                    <td>@book.Price.ToString("C", enCulture)</td>
                     <td>
                         <button type="button" class="btn btn-link" @onclick="_ => EditPrice(book)">Update price</button>
                     </td>
@@ -54,46 +55,47 @@
     </table>
 }
 
-<EditableModal @ref="_deleteBookModal" Title="Deleting book ?">
-    <BodyContent>
+<Modal @ref="_deleteBookModal" Title="Deleting book ?" CloseOnEscape="true">
+    <BodyTemplate>
         <p>Are you sure you want to delete book: '@_book?.Title' ?</p>
-    </BodyContent>
-    <FooterContent>
-        <button type="button" class="btn" data-bs-dismiss="modal" @onclick="@_deleteBookModal.Hide">Cancel</button>
+    </BodyTemplate>
+    <FooterTemplate>
+        <button type="button" class="btn" data-bs-dismiss="modal" @onclick="@_deleteBookModal.HideAsync">Cancel</button>
         <button type="button" class="btn btn-success" @onclick=DeleteBook>Delete</button>
-    </FooterContent>
-</EditableModal>
+    </FooterTemplate>
+</Modal>
 
-<EditableModal @ref="_updatePriceModal" Title="Update book price">
-    <BodyContent>
+<Modal @ref="_updatePriceModal" Title="Update book price" CloseOnEscape="true" ShowCloseButton="true">
+    <BodyTemplate>
         <p>Provide new price for book: '@_book?.Title' ?</p>
-        <InputNumber id="price" @bind-Value="@_updatedPrice" class="form-control" autocomplete="price" aria-required="true" placeholder="Price" />
-    </BodyContent>
-    <FooterContent>
-        <button type="button" class="btn" data-bs-dismiss="modal" @onclick="@_updatePriceModal.Hide">Cancel</button>
+        <CurrencyInput TValue="decimal" MaximumFractionDigits="2" id="price" Locale="en-US" class="form-control" @bind-Value="@_updatedPrice" Placeholder="Price" />
+    </BodyTemplate>
+    <FooterTemplate>
+        <button type="button" class="btn" data-bs-dismiss="modal" @onclick="@_updatePriceModal.HideAsync">Cancel</button>
         <button type="button" class="btn btn-success" @onclick=UpdatePrice>Update</button>
-    </FooterContent>
-</EditableModal>
+    </FooterTemplate>
+</Modal>
 
-<EditableModal @ref="_addToCartModal" Title="Add book to cart">
-    <BodyContent>
+<Modal @ref="_addToCartModal" Title="Add book to cart">
+    <BodyTemplate>
         <p>Add book: '@_book?.Title' to cart?</p>
-        <InputNumber id="quantity" @bind-Value="@_bookQuantity" class="form-control" autocomplete="quantity" aria-required="true" placeholder="Quantity" />
-    </BodyContent>
-    <FooterContent>
-        <button type="button" class="btn" data-bs-dismiss="modal" @onclick="@_updatePriceModal.Hide">Cancel</button>
+        <NumberInput id="quantity" @bind-Value="@_bookQuantity" class="form-control" aria-required="true" placeholder="Quantity" />
+    </BodyTemplate>
+    <FooterTemplate>
+        <button type="button" class="btn" data-bs-dismiss="modal" @onclick="@_addToCartModal.HideAsync">Cancel</button>
         <button type="button" class="btn btn-success" @onclick=AddToCart>Add</button>
-    </FooterContent>
-</EditableModal>
+    </FooterTemplate>
+</Modal>
 
 @code {
 
     [Inject] protected ToastService ToastService { get; set; } = default!;
     [Inject] protected PreloadService PreloadService { get; set; } = default!;
 
-    private EditableModal _deleteBookModal = null!;
-    private EditableModal _updatePriceModal = null!;
-    private EditableModal _addToCartModal = null!;
+    private CultureInfo enCulture { get; set; } = CultureInfo.GetCultureInfo("en-US");
+    private Modal _deleteBookModal = null!;
+    private Modal _updatePriceModal = null!;
+    private Modal _addToCartModal = null!;
     private List<BookDto>? _books;
     private BookDto? _book;
     private decimal _updatedPrice;
@@ -102,13 +104,6 @@
     protected override async Task OnInitializedAsync()
     {
         await ReloadBookList();
-        ToastService.Notify(new(ToastType.Primary, "Hello in RiverBooks on initialized"));
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        base.OnAfterRender(firstRender);
-        ToastService.Notify(new(ToastType.Secondary, IconName.Exclamation, "River books", $"{DateTime.Now}", "After render called"));
     }
 
     private async Task ReloadBookList()
@@ -131,10 +126,10 @@
         }
     }
 
-    private void ConfirmDelete(BookDto book)
+    private Task ConfirmDelete(BookDto book)
     {
         _book = book;
-        _deleteBookModal.Show();
+        return _deleteBookModal.ShowAsync();
     }
 
     private async Task DeleteBook()
@@ -145,15 +140,15 @@
             await ReloadBookList();
         }
 
-        _deleteBookModal.Hide();
+        await _deleteBookModal.HideAsync();
         _book = null;
     }
 
-    private void EditPrice(BookDto book)
+    private Task EditPrice(BookDto book)
     {
         _book = book;
         _updatedPrice = _book.Price;
-        _updatePriceModal.Show();
+        return _updatePriceModal.ShowAsync();
     }
 
     private async Task UpdatePrice()
@@ -163,22 +158,23 @@
             var result = await ApiCaller.UpdateBookPrice(_book.Id, _updatedPrice);
             if (!result.IsSuccess)
             {
-                _updatePriceModal.ErrorMessage = result.Error?.Description;
+                ToastService.Notify(new(ToastType.Danger, result.Error.Code, result.Error.Description));
                 return;
             }
             await ReloadBookList();
         }
 
         _updatedPrice = 0;
-        _updatePriceModal.Hide();
+        await _updatePriceModal.HideAsync();
+        
         _book = null;
     }
 
-    private void ConfirmAddToCart(BookDto book)
+    private Task ConfirmAddToCart(BookDto book)
     {
         _book = book;
         _bookQuantity = 1;
-        _addToCartModal.Show();
+        return _addToCartModal.ShowAsync();
     }
 
     private async Task AddToCart()
@@ -188,13 +184,13 @@
             var result = await ApiCaller.AddBookToCart(_book.Id, _bookQuantity);
             if (!result.IsSuccess)
             {
-                _addToCartModal.ErrorMessage = result.Error?.Description;
+                ToastService.Notify(new(ToastType.Danger, result.Error.Code, result.Error.Description));
                 return;
             }
             await ReloadBookList();
         }
 
-        _addToCartModal.Hide();
+        await _addToCartModal.HideAsync();
         _book = null;
     }
 

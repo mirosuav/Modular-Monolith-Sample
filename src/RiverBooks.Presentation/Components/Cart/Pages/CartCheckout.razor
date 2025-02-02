@@ -1,0 +1,175 @@
+﻿@page "/cart/checkout"
+@using System.Globalization
+@using RiverBooks.Users.Contracts
+
+@inject IApiCaller ApiCaller
+@inject NavigationManager NavigationManager
+
+@attribute [StreamRendering]
+@attribute [Authorize]
+
+<PageTitle>Checkout cart</PageTitle>
+
+<h1>Submit your order</h1>
+
+@if (_cartItems is null or [])
+{
+    <p>
+        <em>Your cart is empty</em>
+    </p>
+}
+else
+{
+
+    <div class="row mb-3">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Unit price</th>
+                    <th scope="col">Total price</th>
+                    <th scope="col">Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var (idx, item) in _cartItems.Select((b, i) => (i, b)))
+                {
+                    <tr>
+                        <td>@(idx + 1)</td>
+                        <td>@item.Description</td>
+                        <td>@item.UnitPrice.ToString("C", enCulture)</td>
+                        <td>@item.TotalPrice.ToString("C", enCulture)</td>
+                        <td>@item.Quantity</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td>Total: </td>
+                    <td></td>
+                    <td><strong>@TotalPrice.ToString("C", enCulture)</strong></td>
+                    <td>@TotalQuantity items</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+
+    <div class="row mb-3">
+
+        <div class="col-md-6">
+            <h3>Select shipping address</h3>
+            <div class="row d-flex flex-wrap gap-3">
+                @foreach (var item in _addresses)
+                {
+                    <Card Color="@(item.AddressId == ShippingAddressId ?  CardColor.Success : CardColor.None)"
+                          Style="width: 18rem;"
+                          @onclick="_=>ShippingAddressId = item.AddressId">
+                        <CardBody>
+                            <CardTitle>@item.City</CardTitle>
+                            <CardSubTitle Class="mb-2 text-muted">@item.Country, @item.State</CardSubTitle>
+                            <CardText>@item.Street1 @item.Street2 @item.PostalCode</CardText>
+                        </CardBody>
+                    </Card>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <h3>Select billing address</h3>
+            <div class="row d-flex flex-wrap gap-3">
+                @foreach (var item in _addresses)
+                {
+                    <Card Color="@(item.AddressId == BillingAddressId ?  CardColor.Success : CardColor.None)"
+                          Style="width: 18rem;"
+                          @onclick="_=>BillingAddressId = item.AddressId">
+                        <CardBody>
+                            <CardTitle>@item.City</CardTitle>
+                            <CardSubTitle Class="mb-2 text-muted">@item.Country, @item.State</CardSubTitle>
+                            <CardText>@item.Street1 @item.Street2 @item.PostalCode</CardText>
+                        </CardBody>
+                    </Card>
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-12 gap-2 d-flex justify-content-end">
+            <NavLink href="/cart" class="btn btn-outline-primary">Back to cart</NavLink>
+            <NavLink href="@NavigationManager.GetUriWithReturn("/addresses/new")" class="btn btn-outline-primary">Add new address</NavLink>
+            <Button Color="ButtonColor.Success" @onclick="CheckoutCart">Checkout</Button>
+        </div>
+    </div>
+}
+
+
+@code {
+    [Inject] protected ToastService ToastService { get; set; } = default!;
+    [Inject] protected PreloadService PreloadService { get; set; } = default!;
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    private CultureInfo enCulture { get; set; } = CultureInfo.GetCultureInfo("en-US");
+    public Guid? ShippingAddressId { get; set; }
+    public Guid? BillingAddressId { get; set; }
+
+    private List<CartItemDto> _cartItems = [];
+    private List<UserAddressDto> _addresses = [];
+
+    private decimal TotalPrice => _cartItems?.Sum(x => x.TotalPrice) ?? 0m;
+    private decimal TotalQuantity => _cartItems?.Sum(x => x.Quantity) ?? 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ReloadCartItems();
+    }
+
+    private async Task ReloadCartItems()
+    {
+
+        try
+        {
+            PreloadService.Show(SpinnerColor.Secondary, "Loading order details...");
+            StateHasChanged();
+            var booksResponse = await ApiCaller.ListCartItems();
+            _cartItems = booksResponse.Match(x => x, _ => []);
+            var response = await ApiCaller.ListUserAddresses();
+            _addresses = response.Match(x => x, _ => []);
+        }
+        catch (Exception ex)
+        {
+            ToastService.Notify(new(ToastType.Danger, "Unexpected error", ex.Message));
+        }
+        finally
+        {
+            PreloadService.Hide();
+            StateHasChanged();
+        }
+    }
+
+    private async Task CheckoutCart()
+    {
+        if (ShippingAddressId is null || BillingAddressId is null)
+        {
+            ToastService.Notify(new(ToastType.Warning, "Validation", "Select shipping and billing addresses."));
+            return;
+        }
+
+        var response = await ApiCaller.CheckoutCart(ShippingAddressId.Value, BillingAddressId.Value);
+
+        if (!response.IsSuccess)
+        {
+            ToastService.Notify(new(ToastType.Danger, response.Error.Code, response.Error.Description));
+            return;
+        }
+
+        ToastService.Notify(new(ToastType.Success, "Order submitted", "Your order has successfully been submitted."));
+
+        NavigationManager.RedirectTo(ReturnUrl);
+    }
+}

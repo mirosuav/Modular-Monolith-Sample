@@ -9,6 +9,7 @@ using RiverBooks.SharedKernel.Helpers;
 using RiverBooks.Users.Application.UseCases.Cart.AddItem;
 using RiverBooks.Users.Application.UseCases.Cart.Checkout;
 using RiverBooks.Users.Application.UseCases.Cart.ListItems;
+using RiverBooks.Users.Application.UseCases.Cart.UpdateItem;
 using RiverBooks.Users.Contracts;
 
 namespace RiverBooks.Users.Api;
@@ -18,6 +19,10 @@ internal static class CartEndpoints
     internal static RouteGroupBuilder MapCartEndpoints(this RouteGroupBuilder group)
     {
         group.MapPost("", AddItemToCartAsync)
+            .Produces<Ok>()
+            .Produces<BadRequest>();
+
+        group.MapPost("/{cartId}/", UpdateCartItemAsync)
             .Produces<Ok>()
             .Produces<BadRequest>();
 
@@ -44,6 +49,28 @@ internal static class CartEndpoints
             return TypedResults.Unauthorized();
 
         var command = new AddItemToCartCommand(request.BookId, request.Quantity, userId.Value);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        return result.ToHttpOk();
+    }
+
+    internal static async Task<IResult> UpdateCartItemAsync(
+        Guid cartId,
+        UpdateCartItemRequest request,
+        [FromServices] ISender sender,
+        [FromServices] IUserClaimsProvider userClaimsProvider,
+        CancellationToken cancellationToken = default)
+    {
+        if (cartId != request.ItemId)
+            return TypedResults.BadRequest("Invalid cart item Id.");
+
+        var userId = userClaimsProvider.GetId();
+
+        if (userId is null)
+            return TypedResults.Unauthorized();
+
+        var command = new UpdateCartItemCommand(request.ItemId, request.Quantity, userId.Value);
 
         var result = await sender.Send(command, cancellationToken);
 

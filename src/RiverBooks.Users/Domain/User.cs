@@ -51,6 +51,12 @@ public class User : HaveEvents
         _cartItems.Add(cartItem);
     }
 
+    public void RemoveItemFromCart(CartItem cartItem)
+    {
+        ArgumentNullException.ThrowIfNull(cartItem);
+        _cartItems.Remove(cartItem);
+    }
+
     internal UserStreetAddress AddAddress(Address address, TimeProvider timeProvider)
     {
         ThrowWhen.Null(address);

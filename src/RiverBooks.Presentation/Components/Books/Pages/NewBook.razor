@@ -27,11 +27,10 @@
                 <ValidationMessage For="() => Input.Author" class="text-danger" />
             </div>
             <div class="form-floating mb-3">
-                <InputNumber id="price" @bind-Value="Input.Price" class="form-control" autocomplete="price" aria-required="true" placeholder="Price" />
+                <CurrencyInput TValue="decimal" MaximumFractionDigits="2" id="price" Locale="en-US" @bind-Value="Input.Price" class="form-control" aria-required="true" placeholder="Price" />
                 <label for="price">Price</label>
                 <ValidationMessage For="() => Input.Price" class="text-danger" />
             </div>
-
             <div class="form-floating mb-3">
                 <NavLink href="@ReturnUrl" class="btn w-25 btn-secondary">Cancel</NavLink>
                 <button type="submit" class="btn w-25 btn-primary">Add</button>
@@ -56,7 +55,7 @@
 
         if (!result.IsSuccess)
         {
-            Message = result.Error?.Description;
+            Message = result.Error.Description;
             return;
         }
 

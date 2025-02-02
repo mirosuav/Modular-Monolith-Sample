@@ -1,0 +1,96 @@
+﻿@page "/orderslist"
+@using RiverBooks.OrderProcessing.Contracts
+
+@inject IApiCaller ApiCaller
+@inject NavigationManager NavigationManager
+
+@attribute [StreamRendering]
+@attribute [Authorize]
+
+<PageTitle>Orders</PageTitle>
+
+<h1>Your orders history</h1>
+
+
+@if (_ordersList is null or [])
+{
+    <p>
+        <em>No orders to display...</em>
+    </p>
+}
+else
+{
+
+    <div class="row mb-3">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Id</th>
+                    <th scope="col">Created On</th>
+                    <th scope="col">Shipped On</th>
+                    <th scope="col">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var (idx, item) in _ordersList.Select((b, i) => (i, b)))
+                {
+                    <tr>
+                        <td>@(idx + 1)</td>
+                        <td>@item.OrderId</td>
+                        <td>@item.DateCreated</td>
+                        <td>@item.DateShipped</td>
+                        <td>@item.Total</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>@TotalCount</td>
+                    <td></td>
+                    <td></td>
+                    <td>Total: </td>
+                    <td><strong>@TotalPrice.ToString("C")</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}
+
+
+@code {
+    [Inject] protected ToastService ToastService { get; set; } = default!;
+    [Inject] protected PreloadService PreloadService { get; set; } = default!;
+    private List<OrderSummary>? _ordersList;
+
+    private decimal TotalPrice => _ordersList?.Sum(x => x.Total) ?? 0m;
+    private decimal TotalCount => _ordersList?.Count ?? 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ReloadItems();
+    }
+
+    private async Task ReloadItems()
+    {
+
+        try
+        {
+            PreloadService.Show(SpinnerColor.Secondary, "Loading orders list...");
+            _ordersList = null;
+            StateHasChanged();
+            var response = await ApiCaller.ListOrdersForUser();
+            _ordersList = response.Match(x => x, _ => []);
+        }
+        catch (Exception ex)
+        {
+            ToastService.Notify(new(ToastType.Danger, "Unexpected error", ex.Message));
+        }
+        finally
+        {
+            PreloadService.Hide();
+            StateHasChanged();
+        }
+    }
+
+}
