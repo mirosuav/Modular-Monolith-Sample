@@ -14,7 +14,7 @@
 
 <div class="row">
     <div class="col-7">
-        <NavLink href="@NavigationManager.GetUriWithReturn("/books/new")" class="btn btn-outline-primary">New Book</NavLink>
+        <NavLink href="@NavigationManager.GetUriWithReturn("/books/new")" class="btn btn-primary">New Book</NavLink>
     </div>
 </div>
 
@@ -41,13 +41,29 @@
                     <td>@book.Author</td>
                     <td>@book.Price.ToString("C", enCulture)</td>
                     <td>
-                        <button type="button" class="btn btn-link" @onclick="_ => EditPrice(book)">Update price</button>
+                        <Button Color="ButtonColor.Primary"
+                                Size="ButtonSize.Small"
+                                @onclick="_ => EditPrice(book)"
+                                TooltipTitle="Update price">
+                            <Icon Name="IconName.CashCoin"></Icon> Update price
+                        </Button>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-link" @onclick="_ => ConfirmDelete(book)">Delete book</button>
+                        <Button Color="ButtonColor.Warning"
+                                Size="ButtonSize.Small"
+                                @onclick="_ => ConfirmDelete(book)"
+                                TooltipTitle="Delete book">
+                            <Icon Name="IconName.Trash"></Icon> Delete book
+                        </Button>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-link" @onclick="_ => ConfirmAddToCart(book)">Add to cart</button>
+
+                        <Button Color="ButtonColor.Success"
+                                Size="ButtonSize.Small"
+                                @onclick="_ => ConfirmAddToCart(book)"
+                                TooltipTitle="Add to cart">
+                            <Icon Name="IconName.Cart"></Icon> Add to cart
+                        </Button>
                     </td>
                 </tr>
             }
@@ -166,7 +182,7 @@
 
         _updatedPrice = 0;
         await _updatePriceModal.HideAsync();
-        
+
         _book = null;
     }
 

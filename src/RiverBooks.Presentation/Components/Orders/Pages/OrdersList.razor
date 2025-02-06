@@ -38,9 +38,9 @@ else
                     <tr>
                         <td>@(idx + 1)</td>
                         <td>@item.OrderId</td>
-                        <td>@item.DateCreated</td>
-                        <td>@item.DateShipped</td>
-                        <td>@item.Total</td>
+                        <td>@item.DateCreated.ToString("MM.dd.yy H:mm")</td>
+                        <td>@item.DateShipped?.ToString("MM.dd.yy H:mm")</td>
+                        <td>@item.Total.ToString("C")</td>
                     </tr>
                 }
             </tbody>

@@ -60,46 +60,60 @@ else
     <div class="row mb-3">
 
         <div class="col-md-6">
-            <h3>Select shipping address</h3>
-            <div class="row d-flex flex-wrap gap-3">
-                @foreach (var item in _addresses)
-                {
-                    <Card Color="@(item.AddressId == ShippingAddressId ?  CardColor.Success : CardColor.None)"
-                          Style="width: 18rem;"
-                          @onclick="_=>ShippingAddressId = item.AddressId">
-                        <CardBody>
-                            <CardTitle>@item.City</CardTitle>
-                            <CardSubTitle Class="mb-2 text-muted">@item.Country, @item.State</CardSubTitle>
-                            <CardText>@item.Street1 @item.Street2 @item.PostalCode</CardText>
-                        </CardBody>
-                    </Card>
-                }
-            </div>
+            <h3>Shipping to:</h3>
+            @if (_addresses.Any())
+            {
+                <div class="row d-flex flex-wrap gap-3">
+                    @foreach (var item in _addresses)
+                    {
+                        <Card Color="@(item.AddressId == ShippingAddressId ?  CardColor.Success : CardColor.None)"
+                              Style="width: 18rem;"
+                              @onclick="_=>ShippingAddressId = item.AddressId">
+                            <CardBody>
+                                <CardTitle>@item.City</CardTitle>
+                                <CardSubTitle Class="mb-2 text-muted">@item.Country, @item.State</CardSubTitle>
+                                <CardText>@item.Street1 @item.Street2 @item.PostalCode</CardText>
+                            </CardBody>
+                        </Card>
+                    }
+                </div>
+            }
+            else
+            {
+                <p>No addresses. Create new.</p>
+            }
         </div>
 
         <div class="col-md-6">
-            <h3>Select billing address</h3>
-            <div class="row d-flex flex-wrap gap-3">
-                @foreach (var item in _addresses)
-                {
-                    <Card Color="@(item.AddressId == BillingAddressId ?  CardColor.Success : CardColor.None)"
-                          Style="width: 18rem;"
-                          @onclick="_=>BillingAddressId = item.AddressId">
-                        <CardBody>
-                            <CardTitle>@item.City</CardTitle>
-                            <CardSubTitle Class="mb-2 text-muted">@item.Country, @item.State</CardSubTitle>
-                            <CardText>@item.Street1 @item.Street2 @item.PostalCode</CardText>
-                        </CardBody>
-                    </Card>
-                }
-            </div>
+            <h3>Send invoice to:</h3>
+            @if (_addresses.Any())
+            {
+                <div class="row d-flex flex-wrap gap-3">
+                    @foreach (var item in _addresses)
+                    {
+                        <Card Color="@(item.AddressId == BillingAddressId ? CardColor.Success : CardColor.None)"
+                              Style="width: 18rem;"
+                              @onclick="_ => BillingAddressId = item.AddressId">
+                            <CardBody>
+                                <CardTitle>@item.City</CardTitle>
+                                <CardSubTitle Class="mb-2 text-muted">@item.Country, @item.State</CardSubTitle>
+                                <CardText>@item.Street1 @item.Street2 @item.PostalCode</CardText>
+                            </CardBody>
+                        </Card>
+                    }
+                </div>
+            }
+            else
+            {
+                <p>No addresses. Create new.</p>
+            }
         </div>
 
     </div>
 
     <div class="row">
         <div class="col-12 gap-2 d-flex justify-content-end">
-            <NavLink href="/cart" class="btn btn-outline-primary">Back to cart</NavLink>
+            <a href="/cart" class="btn btn-outline-secondary">Cancel</a>
             <NavLink href="@NavigationManager.GetUriWithReturn("/addresses/new")" class="btn btn-outline-primary">Add new address</NavLink>
             <Button Color="ButtonColor.Success" @onclick="CheckoutCart">Checkout</Button>
         </div>
