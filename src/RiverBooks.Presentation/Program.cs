@@ -53,6 +53,7 @@ namespace RiverBooks.Presentation
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseStaticFiles();
             app.UseAntiforgery();
             app.MapRazorComponents<App>()
