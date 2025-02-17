@@ -10,6 +10,7 @@ var api = builder.AddProject<Projects.RiverBooks_Web>("riverbooks-api")
     .WaitFor(db);
 
 builder.AddProject<Projects.RiverBooks_Presentation>("riverbooks-presentation")
+    .WithExternalHttpEndpoints()
     .WithReference(api)
     .WaitFor(api);
 

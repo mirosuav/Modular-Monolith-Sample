@@ -39,7 +39,8 @@ namespace RiverBooks.Presentation
             // API client
             builder.Services.AddHttpClient("RiverBooksApi", client =>
                 {
-                    client.BaseAddress = new("https+http://riverbooks-api");
+                    client.BaseAddress = new(builder.Configuration.GetConnectionString("RiverBooksApi") 
+                                             ?? throw new ApplicationException("No connection string to RiverBooksApi found!"));
                 })
                 .AddStandardResilienceHandler();
             builder.Services.AddScoped<IApiCaller, ApiCaller>();
@@ -59,7 +60,7 @@ namespace RiverBooks.Presentation
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode()
                 .AddInteractiveWebAssemblyRenderMode();
-            
+
             app.Map("/Account/Logout", async (
                 HttpContext httpContext,
                 AuthenticationStateProvider authenticationStateProvider,
