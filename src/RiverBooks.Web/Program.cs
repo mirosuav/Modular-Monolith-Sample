@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Serilog;
+using Microsoft.Extensions.Hosting;
 
 namespace RiverBooks.Web;
 

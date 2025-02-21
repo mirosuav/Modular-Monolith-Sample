@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>f68b98c8-17fb-4509-b348-77c5d3cc48ef</UserSecretsId>
+		<ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -16,15 +17,21 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Blazor.Bootstrap" Version="3.2.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.11" />
+		<PackageReference Include="Blazor.Bootstrap" Version="3.3.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.2" />
 		<PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
 		<PackageReference Update="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.12" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.12" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.2" />
 		<PackageReference Update="Microsoft.EntityFrameworkCore" Version="8.0.12" />
 		<PackageReference Update="Microsoft.EntityFrameworkCore.Relational" Version="8.0.12" />
 		<PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.12" />
 		<PackageReference Update="Microsoft.Extensions.Caching.SqlServer" Version="8.0.12" />
+
+		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.11.1" />
+		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.11.1" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.11.0" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.11.0" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.11.0" />
 	</ItemGroup>
 
 </Project>

@@ -7,21 +7,35 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
-		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
+		<PackageReference Include="MediatR" />
+		<PackageReference Include="FluentValidation" />
+		<PackageReference Include="Asp.Versioning.Http" />
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 
-		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-		<PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
-		<PackageReference Include="Serilog.Enrichers.Process" Version="3.0.0" />
-		<PackageReference Include="Serilog.Enrichers.Sensitive" Version="1.7.3" />
-		<PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.1.1" />
-		<PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
+		<PackageReference Include="Serilog.AspNetCore" />
+		<PackageReference Include="Serilog.Settings.Configuration" />
+		<PackageReference Include="Serilog.Extensions.Hosting" />
+		<PackageReference Include="Serilog.Enrichers.Environment" />
+		<PackageReference Include="Serilog.Enrichers.Process" />
+		<PackageReference Include="Serilog.Enrichers.Sensitive" />
+		<PackageReference Include="Serilog.Sinks.OpenTelemetry" />
+		<PackageReference Include="Serilog.Enrichers.Thread" />
+		<PackageReference Include="Swashbuckle.AspNetCore" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+		<PackageReference Include="Microsoft.Extensions.Resilience" />
+		<PackageReference Include="Microsoft.Extensions.Caching.SqlServer" />
+		<PackageReference Include="Microsoft.Extensions.Http.Resilience" />
 	</ItemGroup>
 
 	<ItemGroup>

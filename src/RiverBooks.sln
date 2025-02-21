@@ -67,13 +67,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.EventsProcessing
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiverBooks.Integration.Tests", "RiverBooks.Integration.Tests\RiverBooks.Integration.Tests.csproj", "{753EF1B0-DE85-4F97-A917-3AFADDA7455D}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{C8030692-3A6D-4C12-952C-C4DB1C04E00E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.AppHost", "RiverBooks.AppHost\RiverBooks.AppHost.csproj", "{66B83586-6F56-443C-AB26-ADA363DEF1EC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.ServiceDefaults", "RiverBooks.ServiceDefaults\RiverBooks.ServiceDefaults.csproj", "{C22B642C-830F-4ECF-A473-DC2385CC420C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.Presentation", "RiverBooks.Presentation\RiverBooks.Presentation.csproj", "{D5F7BA2F-C7FC-4557-ADB0-41EA1917132F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.AppHost", "RiverBooks.AppHost\RiverBooks.AppHost.csproj", "{5B4A68E8-54E0-4B84-AAA0-833B7CF0370B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverBooks.ServiceDefaults", "RiverBooks.ServiceDefaults\RiverBooks.ServiceDefaults.csproj", "{4B258CF6-B91F-157A-EF3A-2DD552B1B10B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -169,22 +167,18 @@ Global
 		{753EF1B0-DE85-4F97-A917-3AFADDA7455D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{753EF1B0-DE85-4F97-A917-3AFADDA7455D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{753EF1B0-DE85-4F97-A917-3AFADDA7455D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C8030692-3A6D-4C12-952C-C4DB1C04E00E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C8030692-3A6D-4C12-952C-C4DB1C04E00E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C8030692-3A6D-4C12-952C-C4DB1C04E00E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C8030692-3A6D-4C12-952C-C4DB1C04E00E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{66B83586-6F56-443C-AB26-ADA363DEF1EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{66B83586-6F56-443C-AB26-ADA363DEF1EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{66B83586-6F56-443C-AB26-ADA363DEF1EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{66B83586-6F56-443C-AB26-ADA363DEF1EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C22B642C-830F-4ECF-A473-DC2385CC420C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C22B642C-830F-4ECF-A473-DC2385CC420C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C22B642C-830F-4ECF-A473-DC2385CC420C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C22B642C-830F-4ECF-A473-DC2385CC420C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D5F7BA2F-C7FC-4557-ADB0-41EA1917132F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D5F7BA2F-C7FC-4557-ADB0-41EA1917132F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5F7BA2F-C7FC-4557-ADB0-41EA1917132F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5F7BA2F-C7FC-4557-ADB0-41EA1917132F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B4A68E8-54E0-4B84-AAA0-833B7CF0370B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B4A68E8-54E0-4B84-AAA0-833B7CF0370B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B4A68E8-54E0-4B84-AAA0-833B7CF0370B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B4A68E8-54E0-4B84-AAA0-833B7CF0370B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B258CF6-B91F-157A-EF3A-2DD552B1B10B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B258CF6-B91F-157A-EF3A-2DD552B1B10B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B258CF6-B91F-157A-EF3A-2DD552B1B10B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B258CF6-B91F-157A-EF3A-2DD552B1B10B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

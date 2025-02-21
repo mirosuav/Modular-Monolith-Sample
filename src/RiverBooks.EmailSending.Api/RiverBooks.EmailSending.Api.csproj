@@ -1,15 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\RiverBooks.EmailSending.Contracts\RiverBooks.EmailSending.Contracts.csproj" />
     <ProjectReference Include="..\RiverBooks.EmailSending\RiverBooks.EmailSending.csproj" />
     <ProjectReference Include="..\RiverBooks.SharedKernel\RiverBooks.SharedKernel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="MediatR" />
+	  <PackageReference Include="Serilog.AspNetCore"  />
+	  <PackageReference Include="Serilog.Extensions.Hosting" />
+	  <PackageReference Include="Serilog.Settings.Configuration"  />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"  />
+	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+	  <PackageReference Include="FluentValidation" />
+	  <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore"  />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+	  <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"  />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer"  />
+	  <PackageReference Include="Microsoft.Extensions.Resilience" />
+	  <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" />
+	  <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
   </ItemGroup>
 
 </Project>
