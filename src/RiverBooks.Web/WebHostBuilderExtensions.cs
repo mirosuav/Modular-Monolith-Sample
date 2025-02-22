@@ -44,8 +44,6 @@ internal static class WebHostBuilderExtensions
     }
     public static void AddLogging(this WebApplicationBuilder builder)
     {
-        builder.Services.AddApplicationInsightsTelemetry();
-
         builder.Host.UseSerilog((context, services, loggerConfig) =>
                 loggerConfig
                     .ReadFrom.Configuration(context.Configuration)
