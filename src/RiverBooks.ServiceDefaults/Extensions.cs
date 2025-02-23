@@ -44,16 +44,21 @@ public static class Extensions
 
     public static TBuilder ConfigureOpenTelemetry<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
+        var aiConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
+
         builder.Logging.AddOpenTelemetry(logging =>
         {
             logging.IncludeFormattedMessage = true;
             logging.IncludeScopes = true;
             logging.ParseStateValues = true;
 
-            logging.AddAzureMonitorLogExporter(options =>
+            if (!string.IsNullOrWhiteSpace(aiConnectionString))
             {
-                options.ConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
-            });
+                logging.AddAzureMonitorLogExporter(options =>
+                {
+                    options.ConnectionString = aiConnectionString;
+                });
+            }
         });
 
         builder.Services.AddOpenTelemetry()
@@ -75,8 +80,7 @@ public static class Extensions
             builder.Services.AddOpenTelemetry().UseOtlpExporter();
         }
 
-        // Uncomment the following lines to enable the Azure Monitor exporter (requires the Azure.Monitor.OpenTelemetry.AspNetCore package)
-        if (!string.IsNullOrWhiteSpace(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
+        if (!string.IsNullOrWhiteSpace(aiConnectionString))
         {
             builder.Services.AddOpenTelemetry()
                 .UseAzureMonitor();

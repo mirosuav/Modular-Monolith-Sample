@@ -6,9 +6,9 @@ var builder = DistributedApplication.CreateBuilder(args);
 var sql = builder.AddSqlServer("riverbooks-sql")
     .WithLifetime(ContainerLifetime.Persistent);
 
-var db = sql.AddDatabase("riverbooks-db","RiverBooks");
+var db = sql.AddDatabase("riverbooksdb","RiverBooks");
 
-var api = builder.AddProject<Projects.RiverBooks_Web>("riverbooks-api")
+var api = builder.AddProject<Projects.RiverBooks_Web>("riverbooksapi")
     .WithReference(db)
     .WaitFor(db);
 
