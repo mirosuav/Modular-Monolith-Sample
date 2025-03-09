@@ -26,7 +26,6 @@ public static class ModuleBootstrap
     public static IServiceCollection AddEmailSendingModule(
         this IServiceCollection services,
         ConfigurationManager config,
-        Serilog.ILogger logger,
         List<Assembly> mediatRAssemblies)
     {
         // configure EF db context
@@ -71,16 +70,14 @@ public static class ModuleBootstrap
 
         // Add BackgroundWorker
         services.AddHostedService<EmailSendingBackgroundService>();
-
-        logger.Information("{Module} module services registered", ModuleDescriptor.Name);
         return services;
     }
 
     public static void MigrateDatabase(
-        this IServiceProvider services, Serilog.ILogger logger)
+        this IServiceProvider services, ILogger logger)
     {
         var dbContext = services.GetRequiredService<EmailSendingDbContext>();
-        logger.Information("Migrating database for {Module}.", ModuleDescriptor.Name);
+        logger.LogInformation("Migrating database for {Module}.", ModuleDescriptor.Name);
         dbContext.Database.Migrate();
     }
 }

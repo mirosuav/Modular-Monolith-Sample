@@ -4,7 +4,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="MediatR" />
-		<PackageReference Include="Serilog.Extensions.Hosting" />
 		<PackageReference Include="FluentValidation" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />

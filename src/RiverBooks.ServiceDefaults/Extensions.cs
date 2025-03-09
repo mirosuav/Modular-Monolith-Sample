@@ -1,5 +1,6 @@
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Azure.Monitor.OpenTelemetry.Exporter;
+using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,8 @@ public static class Extensions
 {
     public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
+        builder.Services.AddLogging();
+
         builder.ConfigureOpenTelemetry();
 
         builder.AddDefaultHealthChecks();
@@ -59,6 +62,11 @@ public static class Extensions
                     options.ConnectionString = aiConnectionString;
                 });
             }
+        });
+
+        builder.Services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, _) =>
+        {
+            module.EnableSqlCommandTextInstrumentation = true; // Capture SQL queries
         });
 
         builder.Services.AddOpenTelemetry()

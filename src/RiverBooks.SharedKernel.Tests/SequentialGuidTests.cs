@@ -9,11 +9,11 @@ public class SequentialGuidTests
     {
         // ACT
         var guids = Enumerable
-            .Range(1, 1_000_000).Select(_ => SequentialGuid.NewGuid())
-            .Select(g => g.ToString())
+            .Range(1, 10_000_000).Select(_ => SequentialGuid.NewGuid())
             .ToList();
 
         // ASSERT
+        guids.Should().OnlyHaveUniqueItems();
         guids.Should().BeInAscendingOrder();
     }
 

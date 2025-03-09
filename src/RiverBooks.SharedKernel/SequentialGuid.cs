@@ -12,6 +12,7 @@ public static class SequentialGuid
     /// </summary>
     public static Guid NewGuid()
     {
+        // return Guid.CreateVersion7();
         return Uuid7.Guid();
     }
 

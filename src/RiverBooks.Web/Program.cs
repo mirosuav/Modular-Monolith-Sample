@@ -1,6 +1,4 @@
 using Asp.Versioning;
-using Serilog;
-using Microsoft.Extensions.Hosting;
 
 namespace RiverBooks.Web;
 
@@ -8,52 +6,29 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        // BootstrapLogger
-        Log.Logger = new LoggerConfiguration()
-            .UseCommonSerilogConfiguration()
-            .CreateLogger();
-
-        try
+        var builder = WebApplication.CreateBuilder(args);
         {
-            Log.Logger.Information("Configuring web host");
-            
-            var builder = WebApplication.CreateBuilder(args);
-            
-            {
-                builder.AddServiceDefaults();
-                builder.AddLogging();
-                builder.AddModules(Log.Logger);
-                builder.AddAuth();
-                builder.AddApplicationServices();
-                builder.AddMessaging();
-                builder.AddApiVersioning(new ApiVersion(1, 0));
-                builder.AddOpenApi();
-                builder.MigrateDatabase(Log.Logger);
-            }
-            
-            Log.Logger.Information("Starting web host");
+            builder.AddServiceDefaults();
+            builder.AddModules();
+            builder.AddAuth();
+            builder.AddApplicationServices();
+            builder.AddMessaging();
+            builder.AddApiVersioning(new ApiVersion(1, 0));
+            builder.AddOpenApi();
+            builder.MigrateDatabase();
+        }
 
-            var app = builder.Build();
-
+        var app = builder.Build();
+        {
             app.MapDefaultEndpoints();
-            {
-                app.UseAuthentication();
-                app.UseAuthorization();
-                app.UseExceptionHandler();
-                app.MapVersionPrompt("/").AllowAnonymous();
-                app.MapLogAppRedirect("/logs").AllowAnonymous();
-                app.MapModulesEndpoints();
-                app.UseSwaggerDevelopmentUI();
-                app.Run();
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.Fatal(ex, "Host terminated unexpectedly");
-        }
-        finally
-        {
-            Log.CloseAndFlush();
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseExceptionHandler();
+            app.MapVersionPrompt("/").AllowAnonymous();
+            app.MapLogAppRedirect("/logs").AllowAnonymous();
+            app.MapModulesEndpoints();
+            app.UseSwaggerDevelopmentUI();
+            app.Run();
         }
     }
 }

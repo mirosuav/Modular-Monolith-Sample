@@ -12,9 +12,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="MediatR" />
-		<PackageReference Include="Serilog.AspNetCore"  />
-		<PackageReference Include="Serilog.Extensions.Hosting" />
-		<PackageReference Include="Serilog.Settings.Configuration"  />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"  />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
 		<PackageReference Include="FluentValidation" />

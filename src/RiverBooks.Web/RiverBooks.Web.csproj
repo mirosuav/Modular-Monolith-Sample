@@ -11,8 +11,11 @@
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
 
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
-		<PackageReference Include="Serilog.Enrichers.Environment" />
-		<PackageReference Include="Serilog.Enrichers.Thread" />
+
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
+		<PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" />
+
 		<PackageReference Include="Swashbuckle.AspNetCore" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"/>
 		<PackageReference Include="Microsoft.EntityFrameworkCore"  />

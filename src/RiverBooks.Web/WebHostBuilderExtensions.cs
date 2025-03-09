@@ -5,13 +5,9 @@ using RiverBooks.EventsProcessing.Api;
 using RiverBooks.OrderProcessing.Api;
 using RiverBooks.Reporting.Api;
 using RiverBooks.SharedKernel.Authentication;
-using RiverBooks.SharedKernel.Extensions;
 using RiverBooks.SharedKernel.Messaging.PipelineBehaviors;
 using RiverBooks.SharedKernel.Middlewares;
 using RiverBooks.Users.Api;
-using Serilog;
-using Serilog.Events;
-using Serilog.Sinks.SystemConsole.Themes;
 using System.Reflection;
 
 namespace RiverBooks.Web;
@@ -42,34 +38,6 @@ internal static class WebHostBuilderExtensions
             opt.ApiVersionReader = new UrlSegmentApiVersionReader();
         });
     }
-    public static void AddLogging(this WebApplicationBuilder builder)
-    {
-        builder.Host.UseSerilog((context, services, loggerConfig) =>
-                loggerConfig
-                    .ReadFrom.Configuration(context.Configuration)
-                    .UseCommonSerilogConfiguration()
-                );
-    }
-
-    public static LoggerConfiguration UseCommonSerilogConfiguration(this LoggerConfiguration configuration)
-    {
-        return configuration
-            .MinimumLevel.Verbose()
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-            .MinimumLevel.Override("System", LogEventLevel.Error)
-            .Enrich.FromLogContext()
-            .Enrich.WithThreadId()
-            .Enrich.WithThreadName()
-            .Enrich.WithEnvironmentName()
-            .Enrich.With(new ModuleNameEnricher())
-            .WriteTo.Console(
-                theme: AnsiConsoleTheme.Literate,
-                outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {ModuleName} {Message:lj} {NewLine}{Exception}",
-                // outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] ({ModuleName}) {Message:lj} <s:{SourceContext}>{NewLine}{Exception}"
-                restrictedToMinimumLevel: LogEventLevel.Information)
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-                .MinimumLevel.Override("System", LogEventLevel.Error);
-    }
 
     internal static void AddAuth(this WebApplicationBuilder builder)
     {
@@ -97,7 +65,7 @@ internal static class WebHostBuilderExtensions
         return moduleAssemblies;
     }
 
-    internal static void AddModules(this WebApplicationBuilder builder, Serilog.ILogger logger)
+    internal static void AddModules(this WebApplicationBuilder builder)
     {
         var configuration = builder.Configuration;
 
@@ -105,20 +73,23 @@ internal static class WebHostBuilderExtensions
         var moduleAssemblies = builder.GetModuleAssemblies();
         moduleAssemblies.Add(typeof(AppDescriptor).Assembly);
 
-        builder.Services.AddEventsProcessingModule(configuration, logger, moduleAssemblies);
-        builder.Services.AddBooksModule(configuration, logger, moduleAssemblies);
-        builder.Services.AddEmailSendingModule(configuration, logger, moduleAssemblies);
-        builder.Services.AddReportingModule(configuration, logger, moduleAssemblies);
-        builder.Services.AddOrderProcessingModule(configuration, logger, moduleAssemblies);
-        builder.Services.AddUserModule(configuration, logger, moduleAssemblies);
+        builder.Services.AddEventsProcessingModule(configuration, moduleAssemblies);
+        builder.Services.AddBooksModule(configuration, moduleAssemblies);
+        builder.Services.AddEmailSendingModule(configuration, moduleAssemblies);
+        builder.Services.AddReportingModule(configuration, moduleAssemblies);
+        builder.Services.AddOrderProcessingModule(configuration, moduleAssemblies);
+        builder.Services.AddUserModule(configuration, moduleAssemblies);
     }
 
-    public static void MigrateDatabase(this WebApplicationBuilder app, Serilog.ILogger logger)
+    public static void MigrateDatabase(this WebApplicationBuilder app)
     {
+        using var serviceProvider = app.Services.BuildServiceProvider();
+        using var scope = serviceProvider.CreateScope();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        
+        logger.LogInformation("Database verification...");
         try
         {
-            using var serviceProvider = app.Services.BuildServiceProvider();
-            using var scope = serviceProvider.CreateScope();
             Books.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
             Users.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
             Reporting.Api.ModuleBootstrap.MigrateDatabase(scope.ServiceProvider, logger);
@@ -127,11 +98,11 @@ internal static class WebHostBuilderExtensions
         }
         catch (Exception e)
         {
-            logger.Error(e, "Migrating database failed.");
+            logger.LogError(e, "Migrating database failed.");
             throw;
         }
 
-        logger.Information("Database up to date.");
+        logger.LogInformation("Database up to date.");
     }
 
     internal static void AddMessaging(this WebApplicationBuilder builder)
