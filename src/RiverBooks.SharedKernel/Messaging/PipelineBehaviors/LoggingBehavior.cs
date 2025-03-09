@@ -17,16 +17,14 @@ public class LoggingBehavior<TRequest, TResponse>(ILogger<LoggingBehavior<TReque
 
         logger.LogDebug("Handling {RequestName}", typeof(TRequest).Name);
 
-        var sw = Stopwatch.StartNew();
+        var start = Stopwatch.GetTimestamp();
 
         var response = await next();
 
-        logger.LogDebug("Handled {RequestName} with {ResponseType} in {ms} ms",
+        logger.LogDebug("Handled {RequestName} with {ResponseType} in {ResponseDuration}",
             typeof(TRequest).Name,
             response?.GetType().Name,
-            sw.ElapsedMilliseconds);
-
-        sw.Stop();
+            Stopwatch.GetElapsedTime(start));
 
         return response;
     }

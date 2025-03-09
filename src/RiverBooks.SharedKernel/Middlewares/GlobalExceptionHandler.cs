@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,16 +13,24 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         Exception exception,
         CancellationToken cancellationToken)
     {
-        logger.LogError(
-            exception, "Exception occurred: {Message}", exception.Message);
+        logger.LogError(exception, "Exception occured");
 
-        var problemDetails = new ProblemDetails
+        var problemDetails = exception switch
         {
-            Status = StatusCodes.Status500InternalServerError,
-            Title = "Server error"
+            OperationCanceledException => new ProblemDetails
+            {
+                Title = "Request was cancelled",
+                Status = StatusCodes.Status400BadRequest,
+            },
+            _ => new ProblemDetails
+            {
+                Title = "An error occurred",
+                Status = StatusCodes.Status500InternalServerError,
+                Detail = exception.Message,
+            },
         };
 
-        httpContext.Response.StatusCode = problemDetails.Status.Value;
+        httpContext.Response.StatusCode = problemDetails.Status!.Value;
 
         await httpContext.Response
             .WriteAsJsonAsync(problemDetails, cancellationToken);
