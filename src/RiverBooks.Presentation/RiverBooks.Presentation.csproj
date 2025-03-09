@@ -17,20 +17,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.2" />
-		<PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights"  Version="2.23.0"/>
 		<PackageReference Include="Blazor.Bootstrap" Version="3.3.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.2">
 		  <TreatAsUsed>true</TreatAsUsed>
 		</PackageReference>
 		<PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
-		<PackageReference Update="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.12" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.2" />
-		<PackageReference Update="Microsoft.EntityFrameworkCore" Version="8.0.12" />
-		<PackageReference Update="Microsoft.EntityFrameworkCore.Relational" Version="8.0.12" />
-		<PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.12" />
-		<PackageReference Update="Microsoft.Extensions.Caching.SqlServer" Version="8.0.12" />
 	</ItemGroup>
 
 </Project>
