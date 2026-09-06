@@ -3,15 +3,23 @@ using Aspire.Hosting.ApplicationModel;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-var sql = builder.AddSqlServer("riverbooks-sql")
-    .WithLifetime(ContainerLifetime.Persistent);
+// Database SqlServer
+// Use existing local running SqlServer
+var db = builder.AddConnectionString("riverbooksdb");
 
-var db = sql.AddDatabase("riverbooksdb","RiverBooks");
+// Deploy and new Docker SqlServer
+// var db = builder
+//     .AddSqlServer("riverbooks-sql")
+//     .WithLifetime(ContainerLifetime.Persistent)
+//     .AddDatabase("riverbooksdb", "RiverBooks");
 
-var api = builder.AddProject<Projects.RiverBooks_Web>("riverbooksapi")
+// Backend Web API
+var api = builder
+    .AddProject<Projects.RiverBooks_Web>("riverbooksapi")
     .WithReference(db)
     .WaitFor(db);
 
+// Web Client App
 builder.AddProject<Projects.RiverBooks_Presentation>("riverbooks-presentation")
     .WithExternalHttpEndpoints()
     .WithReference(api)

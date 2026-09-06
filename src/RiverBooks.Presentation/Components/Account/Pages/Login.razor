@@ -44,12 +44,14 @@
 
     private string? errorMessage = null;
 
-    [SupplyParameterFromForm] private InputModel Input { get; set; } = new();
+    [SupplyParameterFromForm] private InputModel Input { get; set; } = default!;
 
     [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        Input ??= new();
+
         await base.OnInitializedAsync();
         await ((JwtAuthenticationStateProvider)AuthenticationStateProvider).SignOut();
     }

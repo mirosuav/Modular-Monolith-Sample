@@ -7,7 +7,6 @@
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
 		<PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" />
 
 		<PackageReference Include="Microsoft.Extensions.Http.Resilience" />
@@ -17,6 +16,7 @@
 		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.Http" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.SqlClient" />
 		<PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
 		<PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter " />
 	</ItemGroup>

@@ -1,6 +1,5 @@
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Azure.Monitor.OpenTelemetry.Exporter;
-using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
@@ -64,11 +63,6 @@ public static class Extensions
             }
         });
 
-        builder.Services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, _) =>
-        {
-            module.EnableSqlCommandTextInstrumentation = true; // Capture SQL queries
-        });
-
         builder.Services.AddOpenTelemetry()
             .WithMetrics(metrics =>
             {
@@ -80,7 +74,9 @@ public static class Extensions
             {
                 tracing.AddSource(builder.Environment.ApplicationName)
                     .AddAspNetCoreInstrumentation()
-                    .AddHttpClientInstrumentation();
+                    .AddHttpClientInstrumentation()
+                    // db.query.text is emitted by default for text commands
+                    .AddSqlClientInstrumentation();
             });
 
         if (!string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]))

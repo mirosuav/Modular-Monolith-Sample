@@ -15,11 +15,11 @@ public class Program
             builder.AddMessaging();
             builder.AddApiVersioning(new ApiVersion(1, 0));
             builder.AddOpenApi();
-            builder.MigrateDatabase();
         }
 
         var app = builder.Build();
         {
+            app.MigrateDatabase();
             app.MapDefaultEndpoints();
             app.UseAuthentication();
             app.UseAuthorization();

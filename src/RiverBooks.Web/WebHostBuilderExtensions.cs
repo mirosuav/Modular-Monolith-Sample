@@ -36,7 +36,8 @@ internal static class WebHostBuilderExtensions
             opt.AssumeDefaultVersionWhenUnspecified = true;
             opt.ReportApiVersions = true;
             opt.ApiVersionReader = new UrlSegmentApiVersionReader();
-        });
+        })
+        .AddApiExplorer();
     }
 
     internal static void AddAuth(this WebApplicationBuilder builder)
@@ -81,10 +82,9 @@ internal static class WebHostBuilderExtensions
         builder.Services.AddUserModule(configuration, moduleAssemblies);
     }
 
-    public static void MigrateDatabase(this WebApplicationBuilder app)
+    public static void MigrateDatabase(this WebApplication app)
     {
-        using var serviceProvider = app.Services.BuildServiceProvider();
-        using var scope = serviceProvider.CreateScope();
+        using var scope = app.Services.CreateScope();
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
         
         logger.LogInformation("Database verification...");

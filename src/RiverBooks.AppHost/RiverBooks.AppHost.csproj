@@ -1,11 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0" />
+	<Sdk Name="Aspire.AppHost.Sdk" Version="13.5.3" />
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<IsAspireHost>true</IsAspireHost>
 		<UserSecretsId>cd169d42-c94f-44a6-a004-00006e394347</UserSecretsId>
+		<!-- DCP and the dashboard come from NuGet, not an installed Aspire CLI bundle -->
+		<AspireUseCliBundle>false</AspireUseCliBundle>
+		<MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);ASPIRE010</MSBuildWarningsAsMessages>
 	</PropertyGroup>
 
 	<ItemGroup>

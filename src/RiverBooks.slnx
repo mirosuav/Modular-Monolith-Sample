@@ -1,0 +1,46 @@
+<Solution>
+  <Folder Name="/Books Module/">
+    <Project Path="RiverBooks.Books.Api/RiverBooks.Books.Api.csproj" />
+    <Project Path="RiverBooks.Books.Contracts/RiverBooks.Books.Contracts.csproj" />
+    <Project Path="RiverBooks.Books/RiverBooks.Books.csproj" />
+  </Folder>
+  <Folder Name="/EmailSending Module/">
+    <Project Path="RiverBooks.EmailSending.Api/RiverBooks.EmailSending.Api.csproj" />
+    <Project Path="RiverBooks.EmailSending.Contracts/RiverBooks.EmailSending.Contracts.csproj" />
+    <Project Path="RiverBooks.EmailSending/RiverBooks.EmailSending.csproj" />
+  </Folder>
+  <Folder Name="/Events Module/">
+    <Project Path="RiverBooks.EventsProcessing.Api/RiverBooks.EventsProcessing.Api.csproj" />
+    <Project Path="RiverBooks.EventsProcessing.Contracts/RiverBooks.EventsProcessing.Contracts.csproj" />
+    <Project Path="RiverBooks.EventsProcessing/RiverBooks.EventsProcessing.csproj" />
+  </Folder>
+  <Folder Name="/OrderProcessing Module/">
+    <Project Path="RiverBooks.OrderProcessing.Api/RiverBooks.OrderProcessing.Api.csproj" />
+    <Project Path="RiverBooks.OrderProcessing.Contracts/RiverBooks.OrderProcessing.Contracts.csproj" />
+    <Project Path="RiverBooks.OrderProcessing/RiverBooks.OrderProcessing.csproj" />
+  </Folder>
+  <Folder Name="/Reporting Module/">
+    <Project Path="RiverBooks.Reporting.Api/RiverBooks.Reporting.Api.csproj" />
+    <Project Path="RiverBooks.Reporting.Contracts/RiverBooks.Reporting.Contracts.csproj" />
+    <Project Path="RiverBooks.Reporting/RiverBooks.Reporting.csproj" />
+  </Folder>
+  <Folder Name="/SharedKernel/">
+    <Project Path="RiverBooks.SharedKernel.Tests/RiverBooks.SharedKernel.Tests.csproj" />
+    <Project Path="RiverBooks.SharedKernel/RiverBooks.SharedKernel.csproj" />
+  </Folder>
+  <Folder Name="/Users Module/">
+    <Project Path="RiverBooks.Users.Api/RiverBooks.Users.Api.csproj" />
+    <Project Path="RiverBooks.Users.Contracts/RiverBooks.Users.Contracts.csproj" />
+    <Project Path="RiverBooks.Users/RiverBooks.Users.csproj" />
+  </Folder>
+  <Folder Name="/_Solution Items/">
+    <File Path="../Readme.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="RiverBooks.AppHost/RiverBooks.AppHost.csproj" />
+  <Project Path="RiverBooks.Integration.Tests/RiverBooks.Integration.Tests.csproj" />
+  <Project Path="RiverBooks.Presentation/RiverBooks.Presentation.csproj" />
+  <Project Path="RiverBooks.ServiceDefaults/RiverBooks.ServiceDefaults.csproj" />
+  <Project Path="RiverBooks.Web/RiverBooks.Web.csproj" />
+</Solution>

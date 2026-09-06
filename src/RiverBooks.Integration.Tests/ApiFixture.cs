@@ -17,6 +17,7 @@ namespace RiverBooks.Integration.Tests;
 public class ApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
     public const string DatabaseName = "RiverBooksTests";
+    private const string ConnectionStringVariable = "ConnectionStrings__riverbooksdb";
     private readonly MSSqlContainer _dbContainer;
 
     public ApiFixture()
@@ -27,10 +28,16 @@ public class ApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
+
+        // Modules capture the connection string while registering services, which happens before
+        // ConfigureAppConfiguration can override it, so it has to come from the environment.
+        Environment.SetEnvironmentVariable(ConnectionStringVariable,
+            _dbContainer.GetConnectionString(DatabaseName));
     }
 
     async Task IAsyncLifetime.DisposeAsync()
     {
+        Environment.SetEnvironmentVariable(ConnectionStringVariable, null);
         await _dbContainer.DisposeAsync();
     }
 

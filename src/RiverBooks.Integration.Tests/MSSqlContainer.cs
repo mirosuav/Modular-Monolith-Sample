@@ -16,8 +16,7 @@ internal class MSSqlContainer
         {
             sqlPassword = "pAs5!w0R!D" + Convert.ToBase64String(RandomNumberGenerator.GetBytes(3)).TrimEnd('=');
 
-            msSqlContainer = new MsSqlBuilder()
-                .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
+            msSqlContainer = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest")
                 .WithPortBinding(1433, true)
                 .WithPassword(sqlPassword)
                 .WithWaitStrategy(Wait
